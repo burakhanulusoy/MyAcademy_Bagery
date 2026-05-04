@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Context\" />
+    <Folder Include="Interceptors\" />
+    <Folder Include="MediatorPattern\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="UOW\" />
+  </ItemGroup>
+
+</Project>
