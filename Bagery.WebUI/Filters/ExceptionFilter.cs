@@ -11,7 +11,7 @@ namespace Bagery.WebUI.Filters
         public void OnException(ExceptionContext context)
         {
             
-            if(context.Exception is ValidationException validationException)
+            if(context.Exception is ValidationUIException validationException)
             {
 
                 foreach(var error in validationException.Errors)

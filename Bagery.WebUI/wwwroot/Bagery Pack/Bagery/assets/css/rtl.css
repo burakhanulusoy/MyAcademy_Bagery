@@ -1,0 +1,240 @@
+
+
+.rtl {
+  direction: rtl; 
+}
+
+.ltr {
+  direction: ltr; 
+}
+
+.rtl .banner-carousel{
+  direction: ltr;
+}
+
+.rtl .main-menu{
+  float: right;
+}
+
+.rtl .main-header .menu-right-content{
+  float: left;
+}
+
+.rtl .main-menu .navigation > li{
+  float: right;
+}
+
+.rtl .main-menu .navigation > li > ul > li > a, 
+.rtl .main-menu .navigation > li > .megamenu li > a{
+  text-align: right;
+}
+
+.rtl .main-menu .navigation li.dropdown .megamenu li h4{
+  text-align: right;
+}
+
+.rtl .main-header.style-two .search-box-outer .dropdown-menu{
+  left: 0px !important;
+}
+
+.rtl .main-header .search-panel .search-btn{
+  right: inherit;
+  left: 1px;
+}
+
+.rtl .main-menu .navigation > li:first-child{
+  margin-left: 32px !important;
+  margin-right: 0px !important;
+}
+
+.rtl .main-menu .navigation > li:last-child{
+  margin-right: 32px !important;
+  margin-left: 0px !important;
+}
+
+.rtl .main-header .search-panel input[type="text"], 
+.rtl .main-header .search-panel input[type="search"], 
+.rtl .main-header .search-panel input[type="password"], 
+.rtl .main-header .search-panel select{
+  padding-right: 15px;
+  padding-left: 50px;
+}
+
+.rtl .main-menu .navigation > li > ul > li.dropdown > a:after{
+  right: inherit;
+  left: 20px;
+  content: "\f104";
+}
+
+.rtl .main-menu .navigation > li > ul > li > ul > li > a{
+  text-align: right;
+}
+
+.rtl .product-sidebar .sidebar-widget-container{
+  text-align: right;
+}
+
+.rtl .product-sidebar .sidebar-content .single-box .title-box:after{
+  left: inherit;
+  right: 0px;
+}
+
+.rtl .product-sidebar .sidebar-content .single-box .item-name .bye-btn{
+  right: inherit;
+  left: 0px;
+}
+
+.rtl #image_block_1 .image-box{
+  padding-left: 0px;
+  padding-right: 120px;
+}
+
+.rtl #image_block_1 .image-box .image-2{
+  left: inherit;
+  right: -70px;
+}
+
+.rtl .main-header.style-two .sticky-header .menu-right-content .search-box-outer{
+  margin-right: 0px;
+  margin-left: 10px;
+}
+
+.rtl .main-header.style-two .sticky-header .search-box-outer .dropdown-menu{
+  left: 0px !important;
+  right: inherit !important; 
+}
+
+.rtl .ourstory-style-three #content_block_3 .content-box{
+  margin-right: 0px;
+  margin-left: 50px;
+  text-align: right;
+}
+
+.rtl #image_block_1 .image-box .bg-layer{
+  right: -100px;
+}
+
+.rtl .video-style-two .inner-box{
+  text-align: right;
+}
+
+.rtl .video-style-two .inner-box .video-btn{
+  right: inherit;
+  left: 0px;
+}
+
+.rtl .shop-block-one .inner-box .lower-content .price-box{
+  right: inherit;
+  left: 0px;
+}
+
+.rtl .scroll-top{
+  right: inherit;
+  left: 30px;
+}
+
+.rtl .preloader-close{
+  right: inherit;
+  left: 0px;
+  text-align: right;
+}
+
+.rtl .project-carousel{
+  direction: ltr;
+}
+
+.rtl .project-style-three .tabs-content-inner{
+  margin-right: 0px;
+  margin-left: -345px;
+}
+
+.rtl .project-style-three .content-box{
+  text-align: right;
+}
+
+.rtl .project-style-three .project-tab-btns li{
+  margin-right: 0px;
+  margin-left: 30px;
+}
+
+.rtl .project-style-three .owl-nav{
+  left: inherit;
+  right: -400px;
+}
+
+.rtl .single-item-carousel{
+  direction: ltr;
+}
+
+.rtl .promotion-section .row{
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+  -ms-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+.rtl .promotion-section.alternat-2 .inner-box .content-box{
+  text-align: right;
+}
+
+.rtl .testimonial-style-three{
+  direction: ltr;
+  text-align: right;
+}
+
+.rtl .clients-carousel{
+  direction: ltr;
+}
+
+.rtl .news-block-one .inner-box .lower-content{
+  text-align: right;
+}
+
+.rtl .news-block-one .inner-box .image-box .category{
+  left: inherit;
+  right: 30px;
+}
+
+.rtl .nice-select{
+  text-align: right !important;
+}
+
+.rtl .nice-select:after{
+  right: inherit;
+  left: 20px;
+}
+
+.rtl .nice-select .option{
+  text-align: right;
+}
+
+.rtl .footer-style-two .footer-widget:before{
+  right: inherit;
+  left: -15px;
+}
+
+.rtl .mobile-menu{
+  text-align: right;
+}
+
+.rtl .mobile-menu .nav-logo{
+  text-align: right;
+}
+
+.rtl .mobile-menu .close-btn{
+  right: 260px;
+}
+
+.rtl .mobile-menu .navigation li.dropdown .dropdown-btn{
+  right: inherit;
+  left: 6px;
+}
+
+.rtl .mobile-menu .navigation li > a:before{
+  left: inherit;
+  right: 0px;
+}
+
+.rtl .mobile-menu .navigation li.dropdown .dropdown-btn.open{
+  transform: rotate(-90deg);
+}

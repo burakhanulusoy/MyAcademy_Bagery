@@ -1,7 +1,9 @@
 ﻿using Bagery.WebUI.Context;
 using Bagery.WebUI.Interceptors;
 using Bagery.WebUI.Repositories.BannerRepositories;
+using Bagery.WebUI.Services;
 using Bagery.WebUI.UOW;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -24,6 +26,7 @@ namespace Bagery.WebUI.Extensions
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBannerRepository, BannerRepository>();
+            services.AddScoped<IFileService, FileService>();
 
 
             services.AddMediatR(options =>
@@ -31,6 +34,8 @@ namespace Bagery.WebUI.Extensions
                 options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 
             });
+
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 
 

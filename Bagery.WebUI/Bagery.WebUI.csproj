@@ -13,6 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\main-files\documentation\assets\.DS_Store" />
+    <None Include="wwwroot\main-files\documentation\assets\blueprint-css\plugins\.DS_Store" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.36" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.22.2" />
     <PackageReference Include="FluentValidation" Version="11.12.0" />
