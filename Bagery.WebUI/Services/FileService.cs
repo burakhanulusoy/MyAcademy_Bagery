@@ -1,6 +1,8 @@
 ﻿
 using Amazon.S3;
 using Amazon.S3.Model;
+using Bagery.WebUI.Exceptions;
+using System.Net;
 
 namespace Bagery.WebUI.Services
 {
@@ -9,13 +11,39 @@ namespace Bagery.WebUI.Services
     {
         private readonly string _bucketName = _configuration["AWS:BucketName"];
 
+        public async Task DeleteFileAsync(string imageUrl)
+        {
+            
+            var uri=new Uri(imageUrl);
+
+            var fileKey = Uri.UnescapeDataString(uri.AbsolutePath.TrimStart('/'));
+
+
+            var request = new DeleteObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = fileKey
+            };
+
+            var response = await _amazonS3.DeleteObjectAsync(request);
+
+            if(response.HttpStatusCode != HttpStatusCode.NoContent)
+            {
+                throw new Exception("Hata ");
+            }
+
+
+
+        }
 
         public async Task<string> UploadFile(IFormFile file)
         {
 
             await _amazonS3.EnsureBucketExistsAsync(_bucketName);
 
-            var key = $"{Guid.NewGuid()}-{file.FileName}";
+            // UploadFile içerisinde
+            var safeFileName = file.FileName.Replace(" ", "-").ToLower();
+            var key = $"{Guid.NewGuid()}-{safeFileName}";
 
             var awsRequest = new PutObjectRequest
             {

@@ -1,0 +1,58 @@
+﻿@model UpdateBannerCommand
+@{
+    ViewData["Title"] = "UpdateBanner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<form enctype="multipart/form-data" method="post">
+
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ImageUrl" />
+    <input type="hidden" asp-for="BackgroundImageUrl" />
+
+    <div class="form-group">
+        <label>Başlık</label>
+        <input type="text" placeholder="Başlık Yazınız..." asp-for="Title" class="form-control" />
+        <span class="text-danger" asp-validation-for="Title"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Açıklama</label>
+        <textarea placeholder="Açıklama Yazınız..." asp-for="Description" class="form-control" rows="4"></textarea>
+        <span class="text-danger" asp-validation-for="Description"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Görsel Seçin</label>
+        <input type="file" placeholder="Görsel Seçiniz..." asp-for="File1" class="form-control" />
+        <span class="text-danger" asp-validation-for="File1"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Görsel Seçin</label>
+        <input type="file" placeholder="Görsel Seçiniz..." asp-for="File2" class="form-control" />
+        <span class="text-danger" asp-validation-for="File2"></span>
+    </div>
+
+    <button class="btn btn-success">Oluştur</button>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

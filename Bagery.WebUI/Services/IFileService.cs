@@ -3,7 +3,7 @@
     public interface IFileService
     {
         Task<string> UploadFile(IFormFile file);
-
+        Task DeleteFileAsync(string imageUrl);
 
     }
 }
