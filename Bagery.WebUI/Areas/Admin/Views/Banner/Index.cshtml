@@ -1,0 +1,51 @@
+﻿@using Bagery.WebUI.MediatorPattern.Results.BannerResults
+@model List<GetBannersQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int count = 0;
+}
+
+
+
+
+<table class="table table-bordered table-hover">
+
+    <tr>
+        <td>#</td>
+        <td>Başlık</td>
+        <td>Açıklama</td>
+        <td>Sektöre Başlama Yılı</td>
+        <td>İşlemler</td>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        count++;
+        <tr>
+            <td>
+                @count
+                <img style="width:125px;height:100px;" src="@item.ImageUrl" alt="Hakkımzda alanı görseli" />
+                <img style="width:125px;height:100px;" src="@item.BackgroundImageUrl" alt="Hakkımzda alanı görseli" />
+            </td>
+            <td>@item.Title</td>
+            <td>@item.Description</td>
+      
+            <td>
+                <a href="/Admin/Banner/UpdateBanner/@item.Id" class="btn btn-primary">
+                    <i class="bi bi-pencil-square me-1"></i> Düzenle
+                </a>
+                <a href="/Admin/Banner/DeleteBanner/@item.Id" class="btn btn-primary">
+                    <i class="bi bi-pencil-square me-1"></i> sil
+                </a>
+
+            </td>
+        </tr>
+
+    }
+
+</table>
+
+<a href="/Admin/Banner/CreateBanner" class="btn btn-primary">
+    <i class="bi bi-pencil-square me-1"></i> ekle
+</a>

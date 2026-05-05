@@ -1,0 +1,38 @@
+﻿@model CreateBannerCommand
+@{
+    ViewData["Title"] = "CreateBanner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<form  enctype="multipart/form-data" method="post">
+
+   
+
+    <div class="form-group">
+        <label>Başlık</label>
+        <input type="text" placeholder="Başlık Yazınız..." asp-for="Title" class="form-control" required />
+        <span class="text-danger" asp-validation-for="Title"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Açıklama</label>
+        <textarea placeholder="Açıklama Yazınız..." asp-for="Description" class="form-control" rows="4" required></textarea>
+        <span class="text-danger" asp-validation-for="Description"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Görsel Seçin</label>
+        <input type="file" placeholder="Görsel Seçiniz..." asp-for="File1" class="form-control" required />
+        <span class="text-danger" asp-validation-for="File1"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Görsel Seçin</label>
+        <input type="file" placeholder="Görsel Seçiniz..." asp-for="File2" class="form-control" required />
+        <span class="text-danger" asp-validation-for="File2"></span>
+    </div>
+
+    <button class="btn btn-success">Oluştur</button>
+
+</form>

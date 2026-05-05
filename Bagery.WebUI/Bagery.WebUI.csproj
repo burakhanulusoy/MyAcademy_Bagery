@@ -4,14 +4,28 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>6333942a-5605-4693-b895-e54ad7d84a24</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Context\" />
-    <Folder Include="Interceptors\" />
-    <Folder Include="MediatorPattern\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="UOW\" />
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.36" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.22.2" />
+    <PackageReference Include="FluentValidation" Version="11.12.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.12.0" />
+    <PackageReference Include="Mapster" Version="10.0.3" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.12" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
 </Project>

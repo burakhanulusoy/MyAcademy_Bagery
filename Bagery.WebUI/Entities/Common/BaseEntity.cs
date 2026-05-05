@@ -1,6 +1,6 @@
 ﻿namespace Bagery.WebUI.Entities.Common
 {
-    public abstract class BaseDto
+    public abstract class BaseEntity
     {
         public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; }
