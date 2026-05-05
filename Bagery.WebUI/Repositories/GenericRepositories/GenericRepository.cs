@@ -9,7 +9,7 @@ namespace Bagery.WebUI.Repositories.GenericRepositories
     public class GenericRepository<TEntity>(AppDbContext _context) : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
 
-        private readonly DbSet<TEntity> _table = _context.Set<TEntity>();
+        protected readonly DbSet<TEntity> _table = _context.Set<TEntity>();
 
         public async Task CreateAsync(TEntity entity)
         {

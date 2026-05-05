@@ -28,28 +28,28 @@
                     <div class="mb-3">
                         <label class="form-label">Başlık</label>
                         <input class="form-control" type="text" placeholder="Başlık Yazınız..." asp-for="Title"  />
-                        <span class="text-danger" asp-validation-for="Title"></span>
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Title"></span>
                     </div>
 
                     <!-- Açıklama -->
                     <div class="mb-3">
                         <label class="form-label">Açıklama</label>
                         <textarea class="form-control" placeholder="Açıklama Yazınız..." asp-for="Description" rows="4" ></textarea>
-                        <span class="text-danger" asp-validation-for="Description"></span>
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Description"></span>
                     </div>
 
                     <!-- Görsel 1 -->
                     <div class="mb-3">
                         <label class="form-label">1. Görseli Seçin</label>
                         <input class="form-control" type="file" asp-for="File1"  />
-                        <span class="text-danger" asp-validation-for="File1"></span>
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File1"></span>
                     </div>
 
                     <!-- Görsel 2 -->
                     <div class="mb-3">
                         <label class="form-label">2. Görseli Seçin</label>
                         <input class="form-control" type="file" asp-for="File2"  />
-                        <span class="text-danger" asp-validation-for="File2"></span>
+                        <span class ="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File2"></span>
                     </div>
 
                     <!-- Butonlar -->

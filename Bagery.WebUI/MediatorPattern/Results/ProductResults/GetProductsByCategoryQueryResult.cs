@@ -1,8 +1,6 @@
-﻿using Bagery.WebUI.Entities.Common;
-
-namespace Bagery.WebUI.Entities
+﻿namespace Bagery.WebUI.MediatorPattern.Results.ProductResults
 {
-    public class Product:BaseEntity
+    public class GetProductsByCategoryQueryResult
     {
         public string ProductName { get; set; }
         public decimal Price { get; set; }
@@ -11,10 +9,5 @@ namespace Bagery.WebUI.Entities
         public string ImageUrl1 { get; set; }
         public string ImageUrl2 { get; set; }
         public string PreperationDescription { get; set; }
-        public Guid CategoryId { get; set; }
-
-        public Category Category { get; set; }
-
-
     }
 }
