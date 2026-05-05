@@ -23,7 +23,7 @@ namespace Bagery.WebUI.Repositories.GenericRepositories
 
         public Task<List<TEntity>> GetAllAsync()
         {
-            return _table.AsNoTracking().ToListAsync();
+            return _table.AsNoTracking().OrderBy(x=>x.CreatedAt).ToListAsync();
         }
 
         public async Task<TEntity> GetByIdAsync(Guid id)

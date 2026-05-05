@@ -1,38 +1,86 @@
 ﻿@model CreateBannerCommand
 @{
     ViewData["Title"] = "CreateBanner";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<div class="page-content-wrapper">
+    <div class="page-content">
 
-<form  enctype="multipart/form-data" method="post">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Yeni Banner Ekle</h6>
+            </div>
+            <div class="card-body">
+                <form enctype="multipart/form-data" method="post" id="createItemForm">
 
-   
+                    <!-- Başlık -->
+                    <div class="mb-3">
+                        <label class="form-label">Başlık</label>
+                        <input class="form-control" type="text" placeholder="Başlık Yazınız..." asp-for="Title"  />
+                        <span class="text-danger" asp-validation-for="Title"></span>
+                    </div>
 
-    <div class="form-group">
-        <label>Başlık</label>
-        <input type="text" placeholder="Başlık Yazınız..." asp-for="Title" class="form-control"  />
-        <span class="text-danger" asp-validation-for="Title"></span>
+                    <!-- Açıklama -->
+                    <div class="mb-3">
+                        <label class="form-label">Açıklama</label>
+                        <textarea class="form-control" placeholder="Açıklama Yazınız..." asp-for="Description" rows="4" ></textarea>
+                        <span class="text-danger" asp-validation-for="Description"></span>
+                    </div>
+
+                    <!-- Görsel 1 -->
+                    <div class="mb-3">
+                        <label class="form-label">1. Görseli Seçin</label>
+                        <input class="form-control" type="file" asp-for="File1"  />
+                        <span class="text-danger" asp-validation-for="File1"></span>
+                    </div>
+
+                    <!-- Görsel 2 -->
+                    <div class="mb-3">
+                        <label class="form-label">2. Görseli Seçin</label>
+                        <input class="form-control" type="file" asp-for="File2"  />
+                        <span class="text-danger" asp-validation-for="File2"></span>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="button" onclick="confirmCreate()" class="btn btn-info text-white px-5">
+                            <i class="fadeIn animated bx bx-save"></i> Kaydet
+                        </button>
+                        <a href="/Admin/Banner/Index" class="btn btn-secondary px-5">
+                            <i class="fadeIn animated bx bx-x"></i> İptal
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <div class="form-group">
-        <label>Açıklama</label>
-        <textarea placeholder="Açıklama Yazınız..." asp-for="Description" class="form-control" rows="4" ></textarea>
-        <span class="text-danger" asp-validation-for="Description"></span>
-    </div>
+<script>
+    function confirmCreate() {
+        // Formu DOM üzerinden seçiyoruz
+        var form = document.getElementById("createItemForm");
 
-    <div class="form-group">
-        <label>Görsel Seçin</label>
-        <input type="file" placeholder="Görsel Seçiniz..." asp-for="File1" class="form-control"  />
-        <span class="text-danger" asp-validation-for="File1"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Görsel Seçin</label>
-        <input type="file" placeholder="Görsel Seçiniz..." asp-for="File2" class="form-control"  />
-        <span class="text-danger" asp-validation-for="File2"></span>
-    </div>
-
-    <button class="btn btn-success">Oluştur</button>
-
-</form>
+        // .valid() yerine tarayıcının yerleşik validasyonunu kullanıyoruz (Kütüphane gerektirmez)
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Kaydetmek istediğinize emin misiniz?",
+                text: "Yeni öğe sistemimize eklenecektir.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Ekle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kullanıcı onay verirse formu gönder
+                    form.submit();
+                }
+            });
+        }
+    }
+</script>

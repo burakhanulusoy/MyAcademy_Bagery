@@ -19,11 +19,11 @@ namespace Bagery.WebUI.Validators.BannerValidators
                 .MaximumLength(500).WithMessage("Açıklama en fazla 500 karakter olabilir.");
 
             RuleFor(x => x.File1)
-                .NotNull().WithMessage("Lütfen birinci görseli seçiniz.")
+                .NotNull().WithMessage("Lütfen Ana Fotoğraf görselini seçiniz.")
                 .Must(file => file?.Length > 0).WithMessage("Birinci görsel dosyası boş olamaz.");
 
             RuleFor(x => x.File2)
-                .NotNull().WithMessage("Lütfen ikinci görseli seçiniz.")
+                .NotNull().WithMessage("Lütfen Arka Plan görselini seçiniz.")
                 .Must(file => file?.Length > 0).WithMessage("İkinci görsel dosyası boş olamaz.");
 
 

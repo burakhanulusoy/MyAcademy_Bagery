@@ -1,51 +1,165 @@
-﻿@using Bagery.WebUI.MediatorPattern.Results.BannerResults
-@model List<GetBannersQueryResult>
+﻿@model List<GetBannersQueryResult>
+
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     int count = 0;
+
+    // LİSTENİN EN SONUNDAKİ (YAYINDA OLAN) ELEMANI YAKALIYORUZ
+    var activeBanner =Model.LastOrDefault();
 }
 
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Sayfa Afişimiz</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Gelişmiş Tablo Görünümü</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary">Ayarlar</button>
+                    <button type="button" class="btn btn-outline-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">
+                        <a class="dropdown-item" href="/Admin/Banner/CreateBanner">Yeni Afiş Ekle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">Afiş Detayları</h5>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <form class="position-relative">
+                            <div class="position-absolute top-50 translate-middle-y search-icon px-3"><ion-icon name="search-sharp"></ion-icon></div>
+                            <input class="form-control ps-5" type="text" placeholder="Arayınız">
+                        </form>
+
+                        <a href="/Admin/Banner/CreateBanner" class="btn btn-success px-4 d-flex align-items-center gap-2">
+                            <i class="bx bx-plus"></i> Yeni Ekle
+                        </a>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover mb-0">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>#</th>
+                                <th>Ana Fotoğrafı</th>
+                                <th>Başlık Vurgusu</th>
+                                <th>Açıklaması</th>
+                                <th>Arka Plan Fotoğrafı</th>
+                                <th>Durum</th> <!-- Durum sütunu eklendi -->
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                count++;
+                                <tr>
+                                    <td>@count</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                            <!-- Ana Fotoğraf: Boyutlar büyütüldü ve köşeler hafif yuvarlatıldı -->
+                                            <img src="@item.ImageUrl" class="rounded shadow-sm" style="width: 120px; height: 80px; object-fit: cover;" alt="">
+                                        </div>
+                                    </td>
+                                    <td>@item.Title</td>
+                                    <td>@item.Description</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                            <!-- Arka Plan Fotoğrafı -->
+                                            <img src="@item.BackgroundImageUrl" class="rounded shadow-sm" style="width: 120px; height: 80px; object-fit: cover;" alt="">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!-- YAYINDA MI KONTROLÜ -->
+                                        @if (activeBanner != null && item.Id == activeBanner.Id)
+                                        {
+                                            <span class="badge bg-success font-14">
+                                                <i class="bx bx-check-circle me-1"></i> Şu An Yayında
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Eski Kayıt
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="table-actions d-flex align-items-center gap-2 fs-6">
+                                            <a href="/Admin/Banner/UpdateBanner/@item.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="fadeIn animated bx bx-edit"></i> Güncelle
+                                            </a>
+                                            <button onclick="deleteItem('@item.Id')" class="btn btn-sm btn-outline-danger">
+                                                <i class="fadeIn animated bx bx-trash"></i> Sil
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- end page content-->
+</div>
 
 
+<script>
+    function deleteItem(id) {
+        Swal.fire({
+            title: "Silmek istediğinize emin misiniz?",
+            text: "Bu işlemi geri alamazsınız!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Evet, sil!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
 
-<table class="table table-bordered table-hover">
+                // Başarı mesajını ayarla ve bitmesini bekle
+                Swal.fire({
+                    title: "Silindi!",
+                    text: "Öğeniz başarılı bir şekilde silindi.",
+                    icon: "success",
+                    showConfirmButton: false, // Onay butonunu gizle
+                    timer: 2000, // Ekranda 2 saniye (2000ms) kalsın
+                    timerProgressBar: true // Şık bir geri sayım barı ekle
+                }).then(() => {
+                    // Alert süresi dolup kapandıktan SONRA yönlendirmeyi yap
+                    window.location.href = "/Admin/Banner/DeleteBanner/" + id;
+                });
 
-    <tr>
-        <td>#</td>
-        <td>Başlık</td>
-        <td>Açıklama</td>
-        <td>Sektöre Başlama Yılı</td>
-        <td>İşlemler</td>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-        count++;
-        <tr>
-            <td>
-                @count
-                <img style="width:125px;height:100px;" src="@item.ImageUrl" alt="Hakkımzda alanı görseli" />
-                <img style="width:125px;height:100px;" src="@item.BackgroundImageUrl" alt="Hakkımzda alanı görseli" />
-            </td>
-            <td>@item.Title</td>
-            <td>@item.Description</td>
-      
-            <td>
-                <a href="/Admin/Banner/UpdateBanner/@item.Id" class="btn btn-primary">
-                    <i class="bi bi-pencil-square me-1"></i> Düzenle
-                </a>
-                <a href="/Admin/Banner/DeleteBanner/@item.Id" class="btn btn-primary">
-                    <i class="bi bi-pencil-square me-1"></i> sil
-                </a>
-
-            </td>
-        </tr>
-
+            }
+        });
     }
+</script>
 
-</table>
 
-<a href="/Admin/Banner/CreateBanner" class="btn btn-primary">
-    <i class="bi bi-pencil-square me-1"></i> ekle
-</a>
+
+
+

@@ -12,8 +12,8 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
     {
         public async Task<IActionResult> Index()
         {
-            var banners = await _mediator.Send(new GetBannersQuery());
-            return View(banners);
+            var items = await _mediator.Send(new GetBannersQuery());
+            return View(items);
         }
 
         public IActionResult CreateBanner()
@@ -33,15 +33,14 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
         {
             await _mediator.Send(new RemoveBannerCommand(id));
             return RedirectToAction(nameof(Index));
-
         }
 
         public async Task<IActionResult> UpdateBanner(Guid id)
         {
+            var banner = await _mediator.Send(new GetBannerByIdQuery(id));
+            var updateBanner = banner.Adapt<UpdateBannerCommand>();
+            return View(updateBanner);
 
-            var item = await _mediator.Send(new GetBannerByIdQuery(id));
-            var updateItem = item.Adapt<UpdateBannerCommand>();
-            return View(updateItem);
         }
 
         [HttpPost]
@@ -49,8 +48,10 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
         {
             await _mediator.Send(command);
             return RedirectToAction(nameof(Index));
-
         }
+
+
+
 
 
 
