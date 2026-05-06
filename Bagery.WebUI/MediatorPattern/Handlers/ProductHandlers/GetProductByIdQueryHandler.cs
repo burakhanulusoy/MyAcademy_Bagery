@@ -13,7 +13,7 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.ProductHandlers
         public async Task<GetProductByIdQueryResult> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
 
-            var item = await productRepository.GetByIdAsync(request.Id);
+            var item = await productRepository.GetProductByIdWithProductVariants(request.Id);
             return item.Adapt<GetProductByIdQueryResult>();
 
 

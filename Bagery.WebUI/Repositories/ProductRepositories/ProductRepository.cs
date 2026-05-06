@@ -11,6 +11,11 @@ namespace Bagery.WebUI.Repositories.ProductRepositories
         {
         }
 
+        public  Task<Product> GetProductByIdWithProductVariants(Guid id)
+        {
+            return _table.AsNoTracking().Include(x=>x.ProductVariants).FirstOrDefaultAsync(x=>x.Id== id);
+        }
+
         public Task<List<Product>> GetProductsWithCategoryAsync()
         {
             return _table.AsNoTracking().Include(x => x.Category).ToListAsync();

@@ -12,9 +12,8 @@ namespace Bagery.WebUI.Entities
         public string ImageUrl2 { get; set; }
         public string PreperationDescription { get; set; }
         public Guid CategoryId { get; set; }
-
         public Category Category { get; set; }
-
+        public IList<ProductVariant> ProductVariants { get; set; }
 
     }
 }

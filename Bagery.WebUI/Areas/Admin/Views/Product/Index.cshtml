@@ -1,0 +1,143 @@
+﻿@model PagedList<GetProductsQueryResult>
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+	var customOption = PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext;
+	customOption.LinkToPreviousPageFormat = "<--";
+	customOption.LinkToNextPageFormat = "-->";
+
+
+}
+
+
+<!-- start page content wrapper-->
+<div class="page-content-wrapper">
+	<!-- start page content-->
+	<div class="page-content">
+
+		<!--start breadcrumb-->
+		<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+			<div class="breadcrumb-title pe-3">Ürünlerimiz</div>
+			<div class="ps-3">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb mb-0 p-0 align-items-center">
+						<li class="breadcrumb-item">
+							<a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+						</li>
+						<li class="breadcrumb-item active" aria-current="page">Tüm Ürünler Listesi</li>
+					</ol>
+				</nav>
+			</div>
+			<div class="ms-auto d-flex align-items-center">
+				<a href="/Admin/Product/CreateProduct" class="btn btn-primary px-4 me-2">
+					<i class="fadeIn animated bx bx-rocket"></i>Yeni Ürün Ekle
+				</a>
+
+				<div class="btn-group">
+					<button type="button" class="btn btn-outline-primary">Settings</button>
+					<button type="button" class="btn btn-outline-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+						<span class="visually-hidden">Toggle Dropdown</span>
+					</button>
+					<div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">
+						<a class="dropdown-item" href="javascript:;">Kategorilere Göre İncele</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--end breadcrumb-->
+		<!--start shop area-->
+		<section class="shop-page">
+			<div class="shop-container">
+				<div class="card shadow-sm border-0">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-12 col-xl-12">
+								<div class="product-wrapper">
+									<div class="card">
+										<div class="card-body">
+											<div class="position-relative">
+												<input type="text" class="form-control ps-5" placeholder="Ürün Arayınız...">
+												<span class="position-absolute top-50 product-show translate-middle-y"><ion-icon name="search-sharp" class="ms-3 fs-6"></ion-icon></span>
+											</div>
+										</div>
+									</div>
+
+
+									<div class="product-grid">
+										<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+										
+											@foreach(var item in Model)
+											{
+												<div class="col">
+													<div class="card product-card">
+														<a href="javascript:;" class="position-absolute end-0 top-0 m-3">
+															<div class="product-wishlist">
+																<i class="bx bx-heart"></i>
+															</div>
+														</a>
+														<img src="@item.MainImageUrl" class="card-img-top" alt="...">
+														<div class="card-body">
+															<div class="product-info">
+																<a href="javascript:;">
+																	<p class="product-catergory font-13 mb-1">@item.Category.CategoryName</p>
+																</a>
+																<a href="ecommerce-product-details.html">
+																	<h6 class="product-name mb-2">@item.ProductName</h6>
+																</a>
+																<div class="d-flex align-items-center">
+																	<div class="mb-1 product-price">
+																		<span class="fs-5">$@item.Price</span>
+																	</div>
+																	<div class="cursor-pointer ms-auto">
+																		<i class="bx bxs-star text-warning"></i>
+																		<i class="bx bxs-star text-warning"></i>
+																		<i class="bx bxs-star text-warning"></i>
+																		<i class="bx bxs-star text-warning"></i>
+																		<i class="bx bxs-star text-warning"></i>
+																	</div>
+																</div>
+																<div class="product-action mt-2">
+																	<div class="d-grid">
+																		<a href="#" class="btn btn-primary"><i class="fadeIn animated bx bx-meteor"></i>Ürünü İncele</a>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+
+											}
+
+
+										</div>
+										<!--end row-->
+									</div>
+									<hr>
+
+
+
+									<div class="d-flex justify-content-center mt-4">
+										<pager asp-action="Index" asp-controller="Product" list="@Model" options="@customOption"></pager>
+									</div>
+
+								
+								</div>
+							</div>
+						</div><!--end row-->
+					</div>
+				</div>
+			</div>
+		</section>
+		<!--end shop area-->
+
+	</div>
+	<!-- end page content-->
+</div>
+
+
+
+
+
+
+

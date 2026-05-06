@@ -1,4 +1,5 @@
 ﻿using Bagery.WebUI.MediatorPattern.Results.CategoryResults;
+using Bagery.WebUI.MediatorPattern.Results.ProductVariantResults;
 
 namespace Bagery.WebUI.MediatorPattern.Results.ProductResults
 {

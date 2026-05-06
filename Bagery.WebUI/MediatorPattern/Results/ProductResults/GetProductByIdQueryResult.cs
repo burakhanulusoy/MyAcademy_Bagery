@@ -1,4 +1,6 @@
-﻿namespace Bagery.WebUI.MediatorPattern.Results.ProductResults
+﻿using Bagery.WebUI.MediatorPattern.Results.ProductVariantResults;
+
+namespace Bagery.WebUI.MediatorPattern.Results.ProductResults
 {
     public class GetProductByIdQueryResult
     {
@@ -10,5 +12,7 @@
         public string ImageUrl1 { get; set; }
         public string ImageUrl2 { get; set; }
         public string PreperationDescription { get; set; }
+        public IList<GetProductVariantWithProductQueryResult> ProductVariants { get; set; }
+
     }
 }

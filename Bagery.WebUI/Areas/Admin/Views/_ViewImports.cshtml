@@ -2,6 +2,12 @@
 @using Bagery.WebUI.Models
 @using Bagery.WebUI.MediatorPattern.Results.BannerResults
 @using Bagery.WebUI.MediatorPattern.Commands.BannerCommands
+@using Bagery.WebUI.MediatorPattern.Results.CategoryResults
+@using Bagery.WebUI.MediatorPattern.Commands.CategoryCommands
+@using Bagery.WebUI.MediatorPattern.Results.ProductResults
+@using PagedList.Core
+@using PagedList.Core.Mvc
+@using Bagery.WebUI.MediatorPattern.Commands.ProductCommands
 
 
 
@@ -12,5 +18,5 @@
 
 
 
-
+@addTagHelper *, PagedList.Core.Mvc
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

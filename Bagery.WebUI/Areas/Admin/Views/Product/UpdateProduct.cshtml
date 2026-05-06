@@ -1,0 +1,113 @@
+﻿@model UpdateProductCommand
+@{
+    ViewData["Title"] = "UpdateProduct";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Yeni Ürün Ekle</h6>
+            </div>
+            <div class="card-body">
+                <form enctype="multipart/form-data" method="post" id="createItemForm">
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="MainImageUrl" />
+                    <input type="hidden" asp-for="ImageUrl1" />
+                    <input type="hidden" asp-for="ImageUrl2" />
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Ürün Adı</label>
+                        <input class="form-control" type="text" placeholder="Ürün adı giriniz..." asp-for="ProductName" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="ProductName"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Ürün Açıklaması</label>
+                        <textarea class="form-control" placeholder="Ürün hakkında açıklama yazınız..." asp-for="Description" rows="4"></textarea>
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Description"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fadeIn animated bx bx-duplicate"></i> Kategori Seçiniz</label>
+                        <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-control" required>
+                            <option disabled selected>Kategori Seçiniz</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Ürün Fiyatı</label>
+                        <input class="form-control" type="number" placeholder="Fiyat giriniz..." asp-for="Price" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Price"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fadeIn animated bx bx-export"></i> Ana Görseli Seçin</label>
+                        <input class="form-control" type="file" asp-for="mainFile" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="mainFile"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fadeIn animated bx bx-export"></i> 1. Görseli Seçin</label>
+                        <input class="form-control" type="file" asp-for="File1" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fadeIn animated bx bx-export"></i> 2. Görseli Seçin</label>
+                        <input class="form-control" type="file" asp-for="File2" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File2"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Hazırlanış Açıklaması</label>
+                        <textarea class="form-control" placeholder="Ürünün hazırlanış detaylarını yazınız..." asp-for="PreperationDescription" rows="4"></textarea>
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="PreperationDescription"></span>
+                    </div>
+
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="button" onclick="confirmCreate()" class="btn btn-info text-white px-5">
+                            <i class="fadeIn animated bx bx-save"></i> Güncelle
+                        </button>
+                        <a href="/Admin/Product/Index" class="btn btn-secondary px-5">
+                            <i class="fadeIn animated bx bx-x"></i> İptal
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function confirmCreate() {
+        var form = document.getElementById("createItemForm");
+
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Güncellemek istediğinize emin misiniz?",
+                text: "Yeni öğe sistemimize eklenecektir.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Güncelle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kullanıcı onay verirse formu gönder
+                    form.submit();
+                }
+            });
+        } else {
+            form.reportValidity();
+        }
+    }
+</script>

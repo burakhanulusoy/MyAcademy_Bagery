@@ -1,0 +1,69 @@
+﻿@model CreateCategoryCommand
+@{
+    ViewData["Title"] = "CreateCategory";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Yeni Kategori Ekleyin</h6>
+            </div>
+            <div class="card-body">
+                <form  method="post" id="createItemForm">
+
+                    <!-- Başlık -->
+                    <div class="mb-3">
+                        <label class="form-label">Kategori</label>
+                        <input class="form-control" type="text" placeholder="Kategori Yazınız..." asp-for="CategoryName" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="CategoryName"></span>
+                    </div>
+
+                  
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="button" onclick="confirmCreate()" class="btn btn-info text-white px-5">
+                            <i class="fadeIn animated bx bx-save"></i> Kaydet
+                        </button>
+                        <a href="/Admin/Category/Index" class="btn btn-secondary px-5">
+                            <i class="fadeIn animated bx bx-x"></i> İptal
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function confirmCreate() {
+        // Formu DOM üzerinden seçiyoruz
+        var form = document.getElementById("createItemForm");
+
+        // .valid() yerine tarayıcının yerleşik validasyonunu kullanıyoruz (Kütüphane gerektirmez)
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Kaydetmek istediğinize emin misiniz?",
+                text: "Yeni öğe sistemimize eklenecektir.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Ekle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kullanıcı onay verirse formu gönder
+                    form.submit();
+                }
+            });
+        }
+    }
+</script>
+

@@ -10,6 +10,9 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="MediatorPattern\Commands\ProductVariantCommands\" />
+    <Folder Include="MediatorPattern\Handlers\ProductVariantHandlers\" />
+    <Folder Include="MediatorPattern\Queries\ProductVariantQueries\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +34,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.12" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="PagedList.Core.Mvc" Version="3.0.0" />
   </ItemGroup>
 
 </Project>
