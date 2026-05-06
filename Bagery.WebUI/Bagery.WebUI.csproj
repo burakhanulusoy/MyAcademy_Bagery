@@ -10,9 +10,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="MediatorPattern\Commands\ProductVariantCommands\" />
-    <Folder Include="MediatorPattern\Handlers\ProductVariantHandlers\" />
-    <Folder Include="MediatorPattern\Queries\ProductVariantQueries\" />
   </ItemGroup>
 
   <ItemGroup>
