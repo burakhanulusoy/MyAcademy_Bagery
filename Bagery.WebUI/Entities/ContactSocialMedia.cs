@@ -7,8 +7,9 @@ namespace Bagery.WebUI.Entities
         public string IconUrl { get; set; }
         public string SocialMediaName { get; set; }
         public string SocialMediaUrl  { get; set; }
-        public Contact Contact { get; set; }
         public Guid ContactId { get; set; }
+
+        public Contact Contact { get; set; }
 
 
     }

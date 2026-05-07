@@ -5,5 +5,7 @@ namespace Bagery.WebUI.Repositories.ContactSocialMediaRepositories
 {
     public interface IContactSocialMediaRepository : IGenericRepository<ContactSocialMedia>
     {
+        Task<List<ContactSocialMedia>> GetContactSocialMediaWithContactAsync();
+
     }
 }

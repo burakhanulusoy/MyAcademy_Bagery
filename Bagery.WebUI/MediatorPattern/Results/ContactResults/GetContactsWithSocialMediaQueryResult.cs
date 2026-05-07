@@ -1,5 +1,4 @@
-﻿using Bagery.WebUI.Entities;
-using Bagery.WebUI.MediatorPattern.Results.ContactSocialMediaResults;
+﻿using Bagery.WebUI.MediatorPattern.Results.ContactSocialMediaResults;
 
 namespace Bagery.WebUI.MediatorPattern.Results.ContactResults
 {

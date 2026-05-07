@@ -13,7 +13,7 @@ namespace Bagery.WebUI.Repositories.ContactRepositories
 
         public Task<List<Contact>> GetContactWithContactSocialMedia()
         {
-            return _table.Include(x => x.ContactSocialMedias).AsNoTracking().ToListAsync();
+            return _table.Include(x => x.ContactSocialMedias).OrderByDescending(x=>x.CreatedAt).AsNoTracking().ToListAsync();
 
         }
     }

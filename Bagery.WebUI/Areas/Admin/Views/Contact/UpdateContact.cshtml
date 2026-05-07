@@ -1,0 +1,170 @@
+﻿@model UpdateContactCommand
+@{
+    ViewData["Title"] = "UpdateContact";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
+                <h5 class="mb-0 text-primary fw-bold">İletişim Bilgisini Güncelle</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" id="createItemForm">
+
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="row">
+                        <div class="col-md-6 border-end pe-md-4">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Açılış Saati</label>
+                                    <input class="form-control" type="time" asp-for="OpeningHour" required />
+                                    <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="OpeningHour"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Kapanış Saati</label>
+                                    <input class="form-control" type="time" asp-for="ClosingHour" required />
+                                    <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="ClosingHour"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">E-posta Adresi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class='bx bx-envelope'></i></span>
+                                    <input class="form-control" type="email" placeholder="ornek@bagery.com" asp-for="Email" required />
+                                </div>
+                                <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="Email"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Telefon Numarası</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class='bx bx-phone'></i></span>
+                                    <input class="form-control" type="tel" placeholder="0555 555 55 55" asp-for="PhoneNumber" required />
+                                </div>
+                                <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="PhoneNumber"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Açık Adres</label>
+                                <textarea class="form-control" placeholder="Şube adresini detaylı yazınız..." asp-for="Address" rows="3" required></textarea>
+                                <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="Address"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ps-md-4">
+                            <label class="form-label fw-semibold text-primary">
+                                <i class='bx bx-map-pin'></i> Haritadan Konum Seçin
+                            </label>
+                            <p class="text-muted small mb-2">Müşterilerinize göstermek istediğiniz konumu harita üzerinde tıklayarak işaretleyin.</p>
+
+                            <div id="map" style="height: 300px; width: 100%; border-radius: 8px; border: 2px solid #e9ecef; cursor: crosshair;"></div>
+
+                            <div class="mt-3">
+                                <label class="form-label fw-semibold small text-muted">Oluşturulan Google Maps URL (Otomatik)</label>
+                                <input class="form-control bg-light" type="text" asp-for="MapUrl" id="MapUrl" readonly required placeholder="Haritadan bir yer seçtiğinizde otomatik dolacak..." />
+                                <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="MapUrl"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-end gap-3">
+                        <a href="/Admin/Contact/Index" class="btn btn-outline-secondary px-4 d-flex align-items-center gap-1">
+                            <i class="bx bx-x fs-5"></i> İptal
+                        </a>
+                        <button type="button" onclick="confirmCreate()" class="btn btn-primary px-5 d-flex align-items-center gap-1 shadow-sm">
+                            <i class="bx bx-save fs-5"></i> Güncelle
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // --- HARİTA AYARLARI ---
+
+    // Haritayı başlat (Türkiye merkezli başlatıyoruz: Enlem 39.0, Boylam 35.0, Zoom: 6)
+    var map = L.map('map').setView([39.0, 35.0], 6);
+
+    // Ücretsiz OpenStreetMap katmanını ekle
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var marker;
+
+    // Haritaya tıklandığında çalışacak olay
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        // Varsa eski markeri sil, yeni yere ekle
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lng]).addTo(map);
+
+        // Tıklanan koordinatlardan bir Google Maps Embed (Iframe) linki oluştur
+        var googleEmbedUrl = "https://maps.google.com/maps?q=" + lat + "," + lng + "&z=15&output=embed";
+
+        // C# modeline gidecek olan input'un değerini güncelle
+        document.getElementById('MapUrl').value = googleEmbedUrl;
+    });
+
+    // --- FORM KAYDETME AYARLARI ---
+
+    function confirmCreate() {
+        var form = document.getElementById("createItemForm");
+        var mapUrlInput = document.getElementById("MapUrl").value;
+
+        // Tarayıcı validasyonu
+        if (!form.checkValidity()) {
+            form.reportValidity(); // Hatalı alanları kullanıcıya göster
+            return;
+        }
+
+        // Kullanıcı haritadan seçim yapmamışsa uyar
+        if (!mapUrlInput) {
+            Swal.fire({
+                icon: "warning",
+                title: "Konum Seçilmedi",
+                text: "Lütfen kaydetmeden önce harita üzerinden bir şube konumu seçiniz."
+            });
+            return;
+        }
+
+        // Onay Penceresi
+        Swal.fire({
+            title: "Kaydetmek istediğinize emin misiniz?",
+            text: "İletişim bilgisini sistemimizde güncellenecektir.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#0d6efd",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, Güncelle!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>

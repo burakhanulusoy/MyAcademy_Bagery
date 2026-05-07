@@ -1,0 +1,208 @@
+﻿@model List<GetContactsWithSocialMediaQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0; 
+}
+
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <!-- Breadcrumb Alanı -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">İletişim Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">İletişim ve Sosyal Medya Listesi</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <a href="/Admin/Contact/CreateContact" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+                    <i class="bx bx-plus-circle fs-5"></i> Yeni İletişim Bilgisi Ekle
+                </a>
+            </div>
+        </div>
+
+        <!-- Ana Kart -->
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-body p-4">
+
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0 text-primary fw-bold">Sistemdeki İletişim Kayıtları</h5>
+                    <form class="position-relative w-25">
+                        <div class="position-absolute top-50 translate-middle-y search-icon px-3"><ion-icon name="search-sharp"></ion-icon></div>
+                        <input class="form-control ps-5 rounded-pill" type="text" placeholder="Adres veya e-posta ara...">
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover mb-0">
+                        <thead class="table-light text-secondary">
+                            <tr>
+                                <th width="10%">Durum</th>
+                                <th width="20%">İletişim Bilgileri</th>
+                                <th width="25%">Adres ve Saatler</th>
+                                <th width="30%">Sosyal Medya Hesapları</th>
+                                <th width="15%" class="text-end">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                count++;
+                                // İlk kaydı 'Sitede Aktif' olarak vurguluyoruz
+                                string rowClass = count == 1 ? "bg-primary bg-opacity-10" : "";
+
+                                <tr class="@rowClass">
+                                    <!-- Durum -->
+                                    <td>
+                                        @if (count == 1)
+                                        {
+                                            <span class="badge bg-success rounded-pill px-3 py-2 shadow-sm d-inline-flex align-items-center gap-1">
+                                                <i class="bx bx-check-double fs-6"></i> Sitede Aktif
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary rounded-pill px-3 py-2 opacity-75">Geçmiş Kayıt</span>
+                                        }
+                                    </td>
+
+                                    <!-- İletişim Bilgileri -->
+                                    <td>
+                                        <div class="d-flex flex-column gap-1">
+                                            <div class="fw-bold text-dark"><i class="bx bx-envelope text-primary me-1"></i> @item.Email</div>
+                                            <div class="text-muted small"><i class="bx bx-phone-call text-success me-1"></i> @item.PhoneNumber</div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Adres ve Saatler -->
+                                    <td>
+                                        <div class="text-wrap" style="max-width: 250px; font-size: 0.9rem;">
+                                            <i class="bx bx-map text-danger"></i> @item.Address
+                                        </div>
+                                        <div class="mt-2 small">
+                                            <span class="badge bg-light text-dark border"><i class="bx bx-time"></i> @item.OpeningHour - @item.ClosingHour</span>
+                                        </div>
+                                    </td>
+
+                                    <!-- Sosyal Medya Hesapları Çipleri -->
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            @if (item.ContactSocialMedias != null && item.ContactSocialMedias.Any())
+                                            {
+                                                foreach (var sm in item.ContactSocialMedias)
+                                                {
+                                                    <div class="badge bg-white text-dark border shadow-sm p-2 d-flex align-items-center gap-2 rounded-pill">
+                                                        <!-- İkon (Görseliniz yoksa varsayılan göster) -->
+                                                        <img src="@sm.IconUrl" alt="@sm.SocialMediaName" width="18" height="18" class="rounded-circle object-fit-cover" onerror="this.src='/images/default-social.png'" />
+
+                                                        <a href="@sm.SocialMediaUrl" target="_blank" class="text-dark text-decoration-none" title="Linki Test Et">@sm.SocialMediaName</a>
+
+                                                        <div class="ms-1 border-start ps-2 d-flex gap-1 align-items-center">
+                                                            <a href="/Admin/ContactSocialMedia/UpdateContactSocialMedia/@sm.Id" class="text-primary transition-zoom" title="Güncelle">
+                                                                <i class="bx bx-edit fs-6"></i>
+                                                            </a>
+                                                            <a href="javascript:void(0);" onclick="confirmDelete('/Admin/ContactSocialMedia/DeleteContactSocialMedia/@sm.Id')" class="text-danger transition-zoom" title="Sil">
+                                                                <i class="bx bx-trash fs-6"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small fst-italic mt-1">Sosyal medya eklenmemiş.</span>
+                                            }
+
+                                            <!-- Bu İletişime Yeni Sosyal Medya Ekle -->
+                                            <a href="/Admin/ContactSocialMedia/CreateContactSocialMedia?contactId=@item.Id" class="badge bg-light text-success border border-success border-dashed p-2 d-flex align-items-center gap-1 rounded-pill text-decoration-none action-hover" title="Yeni Sosyal Medya Ekle">
+                                                <i class="bx bx-plus fw-bold fs-6"></i> Hesap Ekle
+                                            </a>
+                                        </div>
+                                    </td>
+
+                                    <!-- Ana İletişim İşlemleri -->
+                                    <td class="text-end">
+                                        <div class="btn-group shadow-sm">
+                                            <a href="/Admin/Contact/UpdateContact/@item.Id" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+                                                <i class="bx bx-edit"></i> İletişimi Düzenle
+                                            </a>
+                                            <button onclick="confirmDelete('/Admin/Contact/DeleteContact/@item.Id')" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1">
+                                                <i class="bx bx-trash"></i> Sil
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Estetik İçin Ufak CSS Dokunuşları -->
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+    }
+
+    .action-hover:hover {
+        background-color: #198754 !important;
+        color: white !important;
+    }
+
+    .transition-zoom {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .transition-zoom:hover {
+            transform: scale(1.2);
+        }
+</style>
+
+<!-- Dinamik SweetAlert Scripti -->
+<script>
+    // Silme işlemini dinamikleştirdik. İster İletişim sil, ister Sosyal medya.
+    // Sadece URL göndermen yeterli.
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: "Silmek istediğinize emin misiniz?",
+            text: "Bu işlemi geri alamazsınız!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Evet, kalıcı olarak sil!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Başarı alerti
+                Swal.fire({
+                    title: "Silindi!",
+                    text: "Seçilen kayıt başarıyla silindi.",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true
+                }).then(() => {
+                    // Alert kapandıktan sonra parametre olarak gelen URL'ye git
+                    window.location.href = deleteUrl;
+                });
+            }
+        });
+    }
+</script>
+
+
+

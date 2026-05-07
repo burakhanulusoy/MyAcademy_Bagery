@@ -28,8 +28,10 @@ namespace Bagery.WebUI.Extensions
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IFileService, FileService>();
+
+            
             //services.AddScoped<IBannerRepository, BannerRepository>();
-            //services.AddScoped<IFileService, FileService>();
             //services.AddScoped<ICategoryRepository, CategoryRepository>();
             //services.AddScoped<IProductRepository, ProductRepository>();
             //services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
