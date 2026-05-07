@@ -1,0 +1,12 @@
+﻿namespace Bagery.WebUI.MediatorPattern.Results.PromotionResults
+{
+    public class GetPromotionsQueryResult
+    {
+        public Guid Id { get; set; }
+        public string ImageUrl { get; set; }
+        public decimal PromotionPrice { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string PromotionCode { get; set; }
+    }
+}
