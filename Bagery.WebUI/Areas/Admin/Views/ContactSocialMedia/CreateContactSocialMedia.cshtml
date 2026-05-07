@@ -1,0 +1,87 @@
+﻿@model CreateContactSocialMediaCommand
+
+@{
+    ViewData["Title"] = "CreateContactSocialMedia";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card shadow-sm border-0 radius-10 w-50 mx-auto mt-4">
+            <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0 text-center">
+                <h5 class="mb-0 text-success fw-bold"><i class="bx bx-plus-circle"></i> Yeni Sosyal Medya Hesabı Ekle</h5>
+                <p class="text-muted small mt-1">İletişim bilginize yeni bir sosyal medya platformu ekliyorsunuz.</p>
+            </div>
+
+            <div class="card-body p-4">
+                <form enctype="multipart/form-data" method="post" id="createItemForm" >
+
+                    <input type="hidden" name="ContactId" value="@ViewBag.ContactId" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Sosyal Medya Adı</label>
+                        <input class="form-control" type="text" placeholder="Örn: Instagram, LinkedIn, X..." asp-for="SocialMediaName"  />
+                        <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="SocialMediaName"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Bağlantı (URL)</label>
+                        <input class="form-control" type="url" placeholder="https://..." asp-for="SocialMediaUrl"  />
+                        <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="SocialMediaUrl"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Platform İkonu</label>
+                        <input class="form-control" type="file" asp-for="File"  />
+                        <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="File"></span>
+                        <small class="text-muted d-block mt-1"><i class="bx bx-info-circle"></i> Lütfen png veya svg formatında kare bir ikon yükleyin.</small>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-end gap-3">
+                        <a href="/Admin/Contact/Index" class="btn btn-outline-secondary px-4 d-flex align-items-center gap-1">
+                            <i class="bx bx-x fs-5"></i> İptal
+                        </a>
+                        <button type="button" onclick="confirmCreate()" class="btn btn-success px-5 d-flex align-items-center gap-1 shadow-sm">
+                            <i class="bx bx-save fs-5"></i> Kaydet
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function confirmCreate() {
+        // Formu DOM üzerinden seçiyoruz
+        var form = document.getElementById("createItemForm");
+
+        // Tarayıcının yerleşik validasyonunu kullanıyoruz
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Kaydetmek istediğinize emin misiniz?",
+                text: "Yeni sosyal medya hesabı sisteme eklenecektir.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#198754", // Buton rengiyle uyumlu Bootstrap Success rengi
+                cancelButtonColor: "#6c757d", // İptal butonuyla uyumlu Bootstrap Secondary rengi
+                confirmButtonText: "Evet, Ekle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kullanıcı onay verirse formu gönder
+                    form.submit();
+                }
+            });
+        } else {
+            // Eğer form kurallara uymuyorsa (boş alan vb.) varsayılan HTML5 hata mesajlarını göster
+            form.reportValidity();
+        }
+    }
+</script>

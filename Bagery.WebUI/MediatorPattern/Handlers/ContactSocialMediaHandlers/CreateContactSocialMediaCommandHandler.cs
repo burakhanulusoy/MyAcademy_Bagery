@@ -26,7 +26,7 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.ContactSocialMediaHandlers
 
             var mappedItem = request.Adapt<ContactSocialMedia>();
             mappedItem.IconUrl = await fileService.UploadFile(request.File);
-
+            
 
             await contactSocialMediaRepository.CreateAsync(mappedItem);
             await unitOfWork.SaveChangesAsync();

@@ -14,8 +14,7 @@ namespace Bagery.WebUI.Validators.ContactSocialMediaValidators
             RuleFor(x => x.SocialMediaUrl)
                 .NotEmpty().WithMessage("Sosyal medya bağlantı adresi (URL) boş bırakılamaz.");
 
-            RuleFor(x => x.File)
-                .NotNull().WithMessage("Lütfen bir ikon dosyası seçiniz.");
+          
 
 
         }

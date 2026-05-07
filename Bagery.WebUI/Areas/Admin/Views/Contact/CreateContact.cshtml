@@ -22,13 +22,13 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-semibold">Açılış Saati</label>
-                                    <input class="form-control" type="time" asp-for="OpeningHour" required />
+                                    <input class="form-control" type="time" asp-for="OpeningHour"  />
                                     <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="OpeningHour"></span>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-semibold">Kapanış Saati</label>
-                                    <input class="form-control" type="time" asp-for="ClosingHour" required />
+                                    <input class="form-control" type="time" asp-for="ClosingHour"  />
                                     <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="ClosingHour"></span>
                                 </div>
                             </div>
@@ -37,7 +37,7 @@
                                 <label class="form-label fw-semibold">E-posta Adresi</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class='bx bx-envelope'></i></span>
-                                    <input class="form-control" type="email" placeholder="ornek@bagery.com" asp-for="Email" required />
+                                    <input class="form-control" type="email" placeholder="ornek@bagery.com" asp-for="Email"  />
                                 </div>
                                 <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="Email"></span>
                             </div>
@@ -46,14 +46,14 @@
                                 <label class="form-label fw-semibold">Telefon Numarası</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class='bx bx-phone'></i></span>
-                                    <input class="form-control" type="tel" placeholder="0555 555 55 55" asp-for="PhoneNumber" required />
+                                    <input class="form-control" type="tel" placeholder="0555 555 55 55" asp-for="PhoneNumber"  />
                                 </div>
                                 <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="PhoneNumber"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Açık Adres</label>
-                                <textarea class="form-control" placeholder="Şube adresini detaylı yazınız..." asp-for="Address" rows="3" required></textarea>
+                                <textarea class="form-control" placeholder="Şube adresini detaylı yazınız..." asp-for="Address" rows="3" ></textarea>
                                 <span class="badge bg-danger text-wrap text-start mt-1" asp-validation-for="Address"></span>
                             </div>
                         </div>

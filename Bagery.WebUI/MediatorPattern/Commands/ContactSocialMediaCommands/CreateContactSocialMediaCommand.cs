@@ -8,7 +8,7 @@ namespace Bagery.WebUI.MediatorPattern.Commands.ContactSocialMediaCommands
         public string? SocialMediaName { get; set; }
         public string? SocialMediaUrl { get; set; }
         public IFormFile? File { get; set; }
-        public Guid ContactId { get; set; }
+        public Guid ContactId { get; set; } 
 
     }
 }
