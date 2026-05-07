@@ -1,0 +1,81 @@
+﻿@model CreateProductVariantCommand
+@{
+    ViewData["Title"] = "CreateVariantByProductId";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Ürünümüze Varyasyonunu Ekleyin</h6>
+            </div>
+            <div class="card-body">
+                <form method="post" id="createItemForm">
+
+                    <!-- Model Binder bu name'i yakalayıp Command'a dolduracak -->
+                    <input type="hidden" name="ProductId" value="@ViewBag.ProductId" />
+                    <input type="hidden" asp-for="IsAvailable" />
+
+                    <!-- Başlık -->
+                    <div class="mb-3">
+                        <label class="form-label">Varyasyon adı</label>
+                        <input class="form-control" type="text" placeholder="Kategori Yazınız..." asp-for="OptionName" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="OptionName"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Ekleenck Fiyat</label>
+                        <input class="form-control" type="text" placeholder="Kategori Yazınız..." asp-for="AdditionalPrice" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="AdditionalPrice"></span>
+                    </div>
+
+
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="button" onclick="confirmCreate()" class="btn btn-info text-white px-5">
+                            <i class="fadeIn animated bx bx-save"></i> Kaydet
+                        </button>
+                        <a href="/Admin/ProductVariant/GetVariantsByPorductId/@ViewBag.ProductId" class="btn btn-secondary px-5">
+                            <i class="fadeIn animated bx bx-x"></i> İptal
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function confirmCreate() {
+        // Formu DOM üzerinden seçiyoruz
+        var form = document.getElementById("createItemForm");
+
+        // .valid() yerine tarayıcının yerleşik validasyonunu kullanıyoruz (Kütüphane gerektirmez)
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Kaydetmek istediğinize emin misiniz?",
+                text: "Yeni öğe sistemimize eklenecektir.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Ekle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kullanıcı onay verirse formu gönder
+                    form.submit();
+                }
+            });
+        }
+    }
+</script>
+
+

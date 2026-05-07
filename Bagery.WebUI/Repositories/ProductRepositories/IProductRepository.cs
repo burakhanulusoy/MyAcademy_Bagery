@@ -8,5 +8,7 @@ namespace Bagery.WebUI.Repositories.ProductRepositories
         Task<List<Product>> GetProductsWithCategoryAsync();
         Task<Product> GetProductByIdWithProductVariants(Guid id);
 
+        Task<List<Product>> GetProductLast10WithCategory();
+
     }
 }

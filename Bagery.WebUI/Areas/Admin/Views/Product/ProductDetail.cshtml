@@ -31,7 +31,8 @@
                         <span class="visually-hidden">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">
-                        <a class="dropdown-item" href="/Admin/ProductVarian/CreateVariantById/@Model.Id">Ürüne Varyasyon Ekle</a>
+                        <a class="dropdown-item" href="/Admin/ProductVariant/CreateVariantByProductId/@Model.Id">Ürüne Varyasyon Ekle</a>
+                        <a class="dropdown-item" href="/Admin/ProductVariant/GetVariantsByPorductId/@Model.Id">Ürün Varyasyon Ayarları</a>
                     </div>
                 </div>
             </div>
@@ -59,7 +60,6 @@
                                                 <div class="item">
                                                     <img src="@Model.ImageUrl2" class="img-fluid" alt="">
                                                 </div>
-                                                
                                             </div>
                                             <div class="owl-thumbs d-flex justify-content-center" data-slider-id="1">
                                                 <button class="owl-thumb-item">
@@ -71,7 +71,6 @@
                                                 <button class="owl-thumb-item">
                                                     <img src="@Model.ImageUrl2" class="" alt="">
                                                 </button>
-                                                
                                             </div>
                                         </div>
                                     </div>
@@ -94,29 +93,45 @@
                                                 <h4 class="mb-0">$@Model.Price</h4>
                                             </div>
                                             <div class="mt-3">
-                                                <h6>Discription :</h6>
+                                                <h6>Ürün Açıklamamız</h6>
                                                 <p class="mb-0">@Model.Description</p>
                                             </div>
-                                            <dl class="row mt-3">
-                                                <dt class="col-sm-3">Urün ID</dt>
+
+                                            <dl class="row mt-4">
+                                                <dt class="col-sm-3">Ürün ID</dt>
                                                 <dd class="col-sm-9">#@Model.Id</dd>
-                                                <dt class="col-sm-3">Varyanları</dt>
 
-                                                @foreach(var item in Model.ProductVariants)
-                                                {
-                                                    if(item.IsAvailable)
-                                                    {
-                                                        <dd class="col-sm-9">@item.OptionName</dd>
-                                                    }
+                                                <dt class="col-sm-3">Ürün Kategorisi</dt>
+                                                <dd class="col-sm-9">#@Model.Category.CategoryName</dd>
 
-                                                }
-
+                                                <dt class="col-sm-3 mt-2">Varyantları</dt>
+                                                <dd class="col-sm-9 mt-2">
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        @foreach (var item in Model.ProductVariants)
+                                                        {
+                                                            if (item.IsAvailable)
+                                                            {
+                                                                <!-- Varyantları kutucuklar (badge) şeklinde gösteriyoruz -->
+                                                                <span class="badge border border-secondary text-secondary px-3 py-2">@item.OptionName</span>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </dd>
                                             </dl>
                                             <!--end row-->
-                                            <div class="d-flex gap-2 mt-3">
-                                                <a href="/Admin/Product/UpdateProduct/@Model.Id" class="btn btn-primary btn-ecomm">	<i class="bx bxs-cart-add"></i>Güncelle</a>
-                                                <a href="/Admin/Product/DeleteProduct/@Model.Id" class="btn btn-light btn-ecomm"><i class="bx bx-heart"></i>Ürünü Sil</a>
+
+                                            <div class="d-flex gap-2 mt-4">
+                                                <a href="/Admin/Product/UpdateProduct/@Model.Id" class="btn btn-success btn-ecomm d-flex align-items-center gap-1">
+                                                    <i class="fadeIn animated bx bx-bullseye fs-5"></i> Güncelle
+                                                </a>
+
+                                                <a href="javascript:void(0);"
+                                                   onclick="confirmDelete('@Model.Id')"
+                                                   class="btn btn-danger btn-ecomm d-flex align-items-center gap-1">
+                                                    <i class="fadeIn animated bx bx-circle fs-5"></i> Ürünü Sil
+                                                </a>
                                             </div>
+
                                             <hr />
                                             <div class="product-sharing">
                                                 <ul class="list-inline">
@@ -155,20 +170,7 @@
                                         </div>
                                     </a>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#more-info" role="tab" aria-selected="false">
-                                        <div class="d-flex align-items-center">
-                                            <div class="tab-title text-uppercase fw-500">More Info</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tags" role="tab" aria-selected="false">
-                                        <div class="d-flex align-items-center">
-                                            <div class="tab-title text-uppercase fw-500">Tags</div>
-                                        </div>
-                                    </a>
-                                </li>
+                               
                                 <li class="nav-item" role="presentation">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#reviews" role="tab" aria-selected="false">
                                         <div class="d-flex align-items-center">
@@ -182,27 +184,7 @@
                                     <p>@Model.PreperationDescription</p>
                                    
                                 </div>
-                                <div class="tab-pane fade" id="more-info" role="tabpanel">
-                                    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
-                                </div>
-                                <div class="tab-pane fade" id="tags" role="tabpanel">
-                                    <div class="tags-box w-50">
-                                        <a href="javascript:;" class="tag-link">Cloths</a>
-                                        <a href="javascript:;" class="tag-link">Electronis</a>
-                                        <a href="javascript:;" class="tag-link">Furniture</a>
-                                        <a href="javascript:;" class="tag-link">Sports</a>
-                                        <a href="javascript:;" class="tag-link">Men Wear</a>
-                                        <a href="javascript:;" class="tag-link">Women Wear</a>
-                                        <a href="javascript:;" class="tag-link">Laptops</a>
-                                        <a href="javascript:;" class="tag-link">Formal Shirts</a>
-                                        <a href="javascript:;" class="tag-link">Topwear</a>
-                                        <a href="javascript:;" class="tag-link">Headphones</a>
-                                        <a href="javascript:;" class="tag-link">Bottom Wear</a>
-                                        <a href="javascript:;" class="tag-link">Bags</a>
-                                        <a href="javascript:;" class="tag-link">Sofa</a>
-                                        <a href="javascript:;" class="tag-link">Shoes</a>
-                                    </div>
-                                </div>
+                              
                                 <div class="tab-pane fade show active" id="reviews" role="tabpanel">
                                     <div class="row">
                                         <div class="col col-lg-8">
@@ -271,39 +253,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col col-lg-4">
-                                            <div class="add-review">
-                                                <div class="form-body p-3 rounded border bg-light">
-                                                    <h5 class="mb-4">Write a Review</h5>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Your Name</label>
-                                                        <input type="text" class="form-control">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Your Email</label>
-                                                        <input type="text" class="form-control">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Rating</label>
-                                                        <select class="form-select">
-                                                            <option selected>Choose Rating</option>
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                            <option value="3">3</option>
-                                                            <option value="3">4</option>
-                                                            <option value="3">5</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Example textarea</label>
-                                                        <textarea class="form-control" rows="3"></textarea>
-                                                    </div>
-                                                    <div class="d-grid">
-                                                        <button type="button" class="btn btn-primary btn-ecomm">Submit a Review</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                       
                                     </div>
                                     <!--end row-->
                                 </div>
@@ -312,255 +262,15 @@
                         <!--end product more info-->
                         <!--start similar products-->
                         <div class="d-flex align-items-center mt-3">
-                            <h5 class="mb-0">Similar Products</h5>
+                            <h5 class="mb-0">Son Eklenen Ürünlerimiz </h5>
                             <div class="d-flex align-items-center gap-0 ms-auto">
                                 <a href="javascript:;" class="owl_prev_item fs-2"><i class='bx bx-chevron-left'></i></a>
                                 <a href="javascript:;" class="owl_next_item fs-2"><i class='bx bx-chevron-right'></i></a>
                             </div>
                         </div>
                         <hr />
-                        <div class="product-grid">
-                            <div class="similar-products owl-carousel owl-theme">
-                                <div class="item">
-                                    <div class="card product-card">
-                                        <a href="javascript:;" class="position-absolute end-0 top-0 m-3">
-                                            <div class="product-wishlist">
-                                                <i class="bx bx-heart"></i>
-                                            </div>
-                                        </a>
-                                        <img src="assets/images/similar-products/01.png" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <div class="product-info">
-                                                <a href="javascript:;">
-                                                    <p class="product-catergory font-13 mb-1">Catergory Name</p>
-                                                </a>
-                                                <a href="ecommerce-product-details.html">
-                                                    <h6 class="product-name mb-2">Product Short Name</h6>
-                                                </a>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="mb-1 product-price">
-                                                        <span class="me-1 text-decoration-line-through">$99.00</span>
-                                                        <span class="fs-5">$49.00</span>
-                                                    </div>
-                                                    <div class="cursor-pointer ms-auto">
-                                                        <span>5.0</span>  <i class="bx bxs-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="product-action mt-2">
-                                                    <div class="d-grid gap-2">
-                                                        <a href="javascript:;" class="btn btn-primary btn-ecomm"> <i class='bx bxs-cart-add'></i>Add to Cart</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <div class="card product-card">
-                                        <a href="javascript:;" class="position-absolute end-0 top-0 m-3">
-                                            <div class="product-wishlist">
-                                                <i class="bx bx-heart"></i>
-                                            </div>
-                                        </a>
-                                        <img src="assets/images/similar-products/02.png" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <div class="product-info">
-                                                <a href="javascript:;">
-                                                    <p class="product-catergory font-13 mb-1">Catergory Name</p>
-                                                </a>
-                                                <a href="ecommerce-product-details.html">
-                                                    <h6 class="product-name mb-2">Product Short Name</h6>
-                                                </a>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="mb-1 product-price">
-                                                        <span class="me-1 text-decoration-line-through">$99.00</span>
-                                                        <span class="fs-5">$49.00</span>
-                                                    </div>
-                                                    <div class="cursor-pointer ms-auto">
-                                                        <span>5.0</span>  <i class="bx bxs-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="product-action mt-2">
-                                                    <div class="d-grid gap-2">
-                                                        <a href="javascript:;" class="btn btn-primary btn-ecomm"> <i class='bx bxs-cart-add'></i>Add to Cart</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <div class="card product-card">
-                                        <a href="javascript:;" class="position-absolute end-0 top-0 m-3">
-                                            <div class="product-wishlist">
-                                                <i class="bx bx-heart"></i>
-                                            </div>
-                                        </a>
-                                        <img src="assets/images/similar-products/03.png" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <div class="product-info">
-                                                <a href="javascript:;">
-                                                    <p class="product-catergory font-13 mb-1">Catergory Name</p>
-                                                </a>
-                                                <a href="ecommerce-product-details.html">
-                                                    <h6 class="product-name mb-2">Product Short Name</h6>
-                                                </a>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="mb-1 product-price">
-                                                        <span class="me-1 text-decoration-line-through">$99.00</span>
-                                                        <span class="fs-5">$49.00</span>
-                                                    </div>
-                                                    <div class="cursor-pointer ms-auto">
-                                                        <span>4.9</span>  <i class="bx bxs-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="product-action mt-2">
-                                                    <div class="d-grid gap-2">
-                                                        <a href="javascript:;" class="btn btn-primary btn-ecomm"> <i class='bx bxs-cart-add'></i>Add to Cart</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <div class="card product-card">
-                                        <a href="javascript:;" class="position-absolute end-0 top-0 m-3">
-                                            <div class="product-wishlist">
-                                                <i class="bx bx-heart"></i>
-                                            </div>
-                                        </a>
-                                        <img src="assets/images/similar-products/04.png" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <div class="product-info">
-                                                <a href="javascript:;">
-                                                    <p class="product-catergory font-13 mb-1">Catergory Name</p>
-                                                </a>
-                                                <a href="ecommerce-product-details.html">
-                                                    <h6 class="product-name mb-2">Product Short Name</h6>
-                                                </a>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="mb-1 product-price">
-                                                        <span class="me-1 text-decoration-line-through">$99.00</span>
-                                                        <span class="fs-5">$49.00</span>
-                                                    </div>
-                                                    <div class="cursor-pointer ms-auto">
-                                                        <span>5.0</span>  <i class="bx bxs-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="product-action mt-2">
-                                                    <div class="d-grid gap-2">
-                                                        <a href="javascript:;" class="btn btn-primary btn-ecomm"> <i class='bx bxs-cart-add'></i>Add to Cart</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <div class="card product-card">
-                                        <a href="javascript:;" class="position-absolute end-0 top-0 m-3">
-                                            <div class="product-wishlist">
-                                                <i class="bx bx-heart"></i>
-                                            </div>
-                                        </a>
-                                        <img src="assets/images/similar-products/05.png" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <div class="product-info">
-                                                <a href="javascript:;">
-                                                    <p class="product-catergory font-13 mb-1">Catergory Name</p>
-                                                </a>
-                                                <a href="ecommerce-product-details.html">
-                                                    <h6 class="product-name mb-2">Product Short Name</h6>
-                                                </a>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="mb-1 product-price">
-                                                        <span class="me-1 text-decoration-line-through">$99.00</span>
-                                                        <span class="fs-5">$49.00</span>
-                                                    </div>
-                                                    <div class="cursor-pointer ms-auto">
-                                                        <span>3.9</span>  <i class="bx bxs-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="product-action mt-2">
-                                                    <div class="d-grid gap-2">
-                                                        <a href="javascript:;" class="btn btn-primary btn-ecomm"> <i class='bx bxs-cart-add'></i>Add to Cart</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <div class="card product-card">
-                                        <a href="javascript:;" class="position-absolute end-0 top-0 m-3">
-                                            <div class="product-wishlist">
-                                                <i class="bx bx-heart"></i>
-                                            </div>
-                                        </a>
-                                        <img src="assets/images/similar-products/06.png" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <div class="product-info">
-                                                <a href="javascript:;">
-                                                    <p class="product-catergory font-13 mb-1">Catergory Name</p>
-                                                </a>
-                                                <a href="ecommerce-product-details.html">
-                                                    <h6 class="product-name mb-2">Product Short Name</h6>
-                                                </a>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="mb-1 product-price">
-                                                        <span class="me-1 text-decoration-line-through">$99.00</span>
-                                                        <span class="fs-5">$49.00</span>
-                                                    </div>
-                                                    <div class="cursor-pointer ms-auto">
-                                                        <span>5.0</span>  <i class="bx bxs-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="product-action mt-2">
-                                                    <div class="d-grid gap-2">
-                                                        <a href="javascript:;" class="btn btn-primary btn-ecomm"> <i class='bx bxs-cart-add'></i>Add to Cart</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <div class="card product-card">
-                                        <a href="javascript:;" class="position-absolute end-0 top-0 m-3">
-                                            <div class="product-wishlist">
-                                                <i class="bx bx-heart"></i>
-                                            </div>
-                                        </a>
-                                        <img src="assets/images/similar-products/07.png" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <div class="product-info">
-                                                <a href="javascript:;">
-                                                    <p class="product-catergory font-13 mb-1">Catergory Name</p>
-                                                </a>
-                                                <a href="ecommerce-product-details.html">
-                                                    <h6 class="product-name mb-2">Product Short Name</h6>
-                                                </a>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="mb-1 product-price">
-                                                        <span class="me-1 text-decoration-line-through">$99.00</span>
-                                                        <span class="fs-5">$49.00</span>
-                                                    </div>
-                                                    <div class="cursor-pointer ms-auto">
-                                                        <span>5.0</span>  <i class="bx bxs-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="product-action mt-2">
-                                                    <div class="d-grid gap-2">
-                                                        <a href="javascript:;" class="btn btn-primary btn-ecomm"> <i class='bx bxs-cart-add'></i>Add to Cart</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+                        @await Component.InvokeAsync("GetLast10ProductViewComponents")
 
                         <!--end similar products-->
 
@@ -580,4 +290,21 @@
 
 
 
-
+<script>
+    function confirmDelete(productId) {
+        Swal.fire({
+            title: 'Ürünü Silmek İstediğinize Emin Misiniz?',
+            text: 'Bu işlem geri alınamaz!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Evet, Sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/Admin/Product/DeleteProduct/${productId}`;
+            }
+        });
+    }
+</script>

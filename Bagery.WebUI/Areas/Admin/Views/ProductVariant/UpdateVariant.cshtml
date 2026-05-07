@@ -1,0 +1,76 @@
+﻿@model UpdateProductVariantCommand
+@{
+    ViewData["Title"] = "UpdateVariant";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Ürünümüze Varyasyonunu Ekleyin</h6>
+            </div>
+            <div class="card-body">
+                <form method="post" id="createItemForm">
+                    <!-- İki gizli alanımız var artık -->
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ProductId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Varyasyon adı</label>
+                        <input class="form-control" type="text" placeholder="Varyasyon Adı Yazınız..." asp-for="OptionName" />
+                        <!-- ... -->
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Eklenecek Fiyat</label>
+                        <input class="form-control" type="text" placeholder="Fiyat Yazınız..." asp-for="AdditionalPrice" />
+                        <!-- ... -->
+                    </div>
+
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="button" onclick="confirmCreate()" class="btn btn-info text-white px-5">
+                            <i class="fadeIn animated bx bx-save"></i> Kaydet
+                        </button>
+                        <!-- İptal butonu artık doğru yere gidiyor -->
+                        <a href="/Admin/ProductVariant/GetVariantsByPorductId/@Model.ProductId" class="btn btn-secondary px-5">
+                            <i class="fadeIn animated bx bx-x"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function confirmCreate() {
+        // Formu DOM üzerinden seçiyoruz
+        var form = document.getElementById("createItemForm");
+
+        // .valid() yerine tarayıcının yerleşik validasyonunu kullanıyoruz (Kütüphane gerektirmez)
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Güncellemek istediğinize emin misiniz?",
+                text: "Yeni öğe sistemimizde güncellenecktir.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Güncelle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kullanıcı onay verirse formu gönder
+                    form.submit();
+                }
+            });
+        }
+    }
+</script>
+
+

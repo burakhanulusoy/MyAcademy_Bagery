@@ -3,6 +3,7 @@ using Bagery.WebUI.Interceptors;
 using Bagery.WebUI.Repositories.BannerRepositories;
 using Bagery.WebUI.Repositories.CategoryRepositories;
 using Bagery.WebUI.Repositories.ProductRepositories;
+using Bagery.WebUI.Repositories.ProductVariantRepositories;
 using Bagery.WebUI.Services;
 using Bagery.WebUI.UOW;
 using FluentValidation;
@@ -31,6 +32,7 @@ namespace Bagery.WebUI.Extensions
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
 
 
             services.AddMediatR(options =>

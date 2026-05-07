@@ -66,50 +66,52 @@
 
 									<div class="product-grid">
 										<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
-										
-											@foreach(var item in Model)
+
+
+											@foreach (var item in Model)
 											{
-												<div class="col">
-													<div class="card product-card">
+												<div class="col mb-4">
+													<div class="card product-card h-100 shadow-sm">
 														<a href="javascript:;" class="position-absolute end-0 top-0 m-3">
 															<div class="product-wishlist">
 																<i class="bx bx-heart"></i>
 															</div>
 														</a>
-														<img src="@item.MainImageUrl" class="card-img-top" alt="...">
+
+														<img src="@item.MainImageUrl" class="card-img-top" alt="@item.ProductName">
+
 														<div class="card-body">
 															<div class="product-info">
 																<a href="javascript:;">
 																	<p class="product-catergory font-13 mb-1">@item.Category.CategoryName</p>
 																</a>
-																<a href="ecommerce-product-details.html">
+																<a href="/Admin/Product/ProductDetail/@item.Id">
 																	<h6 class="product-name mb-2">@item.ProductName</h6>
 																</a>
-																<div class="d-flex align-items-center">
-																	<div class="mb-1 product-price">
-																		<span class="fs-5">$@item.Price</span>
+																<div class="d-flex align-items-center mb-3">
+																	<div class="product-price">
+																		<span class="fs-5 fw-bold text-dark">$@item.Price</span>
 																	</div>
-																	<div class="cursor-pointer ms-auto">
-																		<i class="bx bxs-star text-warning"></i>
-																		<i class="bx bxs-star text-warning"></i>
-																		<i class="bx bxs-star text-warning"></i>
-																		<i class="bx bxs-star text-warning"></i>
-																		<i class="bx bxs-star text-warning"></i>
+																	<div class="cursor-pointer ms-auto text-warning">
+																		<i class="bx bxs-star"></i>
+																		<i class="bx bxs-star"></i>
+																		<i class="bx bxs-star"></i>
+																		<i class="bx bxs-star"></i>
+																		<i class="bx bxs-star"></i>
 																	</div>
 																</div>
-																<div class="product-action mt-2">
+																<div class="product-action mt-auto">
 																	<div class="d-grid">
-																		<a href="#" class="btn btn-primary"><i class="fadeIn animated bx bx-meteor"></i>Ürünü İncele</a>
+																		<a href="/Admin/Product/ProductDetail/@item.Id" class="btn btn-primary">
+																			<i class="fadeIn animated bx bx-meteor"></i> Ürünü İncele
+																		</a>
 																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
 												</div>
-
 											}
-
-
 										</div>
 										<!--end row-->
 									</div>
@@ -140,4 +142,29 @@
 
 
 
+<style>
 
+	/* Ürün kartlarındaki resimleri standartlaştır */
+	.product-card .card-img-top {
+		width: 100%;
+		height: 250px; /* Burayı tasarımına göre 200px-300px arası ayarlayabilirsin */
+		object-fit: cover; /* Resmi bozmadan (stretch etmeden) alanı dolduracak şekilde kırpar */
+		background-color: #f8f9fa; /* Resim yüklenene kadar veya şeffafsa arkada duracak renk */
+	}
+
+	/* Kartların boyunu da eşitlemek istersen (İsimler uzun/kısa olabilir) */
+	.product-card {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+		.product-card .card-body {
+			flex: 1 1 auto;
+			display: flex;
+			flex-direction: column;
+			justify-content: 空间-between;
+		}
+
+
+</style>

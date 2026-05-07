@@ -1,14 +1,21 @@
 ﻿using Bagery.WebUI.MediatorPattern.Queries.ProductVariantQueries;
 using Bagery.WebUI.MediatorPattern.Results.ProductVariantResults;
+using Bagery.WebUI.Repositories.ProductVariantRepositories;
+using Mapster;
 using MediatR;
 
 namespace Bagery.WebUI.MediatorPattern.Handlers.ProductVariantHandlers
 {
-    public class GetProductVariantByIdQueryHandler : IRequestHandler<GetProductVariantByIdQuery, GetProductVariantByIdQueryResult>
+    public class GetProductVariantByIdQueryHandler(IProductVariantRepository _productVariantRepository) : IRequestHandler<GetProductVariantByIdQuery, GetProductVariantByIdQueryResult>
     {
-        public Task<GetProductVariantByIdQueryResult> Handle(GetProductVariantByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetProductVariantByIdQueryResult> Handle(GetProductVariantByIdQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+             
+              var item = await _productVariantRepository.GetByIdAsync(request.Id);
+              return item.Adapt<GetProductVariantByIdQueryResult>();
+
+
+
         }
     }
 }

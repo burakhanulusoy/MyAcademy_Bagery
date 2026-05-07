@@ -50,7 +50,7 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.ProductHandlers
                 {
                     await _fileService.DeleteFileAsync(request.MainImageUrl);
                 }
-                mappedItem.ImageUrl2 = await _fileService.UploadFile(request.mainFile);
+                mappedItem.MainImageUrl = await _fileService.UploadFile(request.mainFile);
             }
 
             _productRepository.Update(mappedItem);
