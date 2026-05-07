@@ -1,0 +1,126 @@
+﻿@model UpdateOurHistoryCommand
+@{
+    ViewData["Title"] = "UpdateOurHistory";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
+                <h5 class="mb-0 text-primary fw-bold"><i class="bx bx-edit"></i> Hikaye (Hakkımızda) Güncelle</h5>
+                <p class="text-muted small mt-1">Mevcut hikaye bilgileri üzerinde değişiklik yapıyorsunuz.</p>
+            </div>
+
+            <div class="card-body p-4">
+                <form enctype="multipart/form-data" method="post" id="updateItemForm">
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ImageUrl" />
+                    <input type="hidden" asp-for="MainImageUrl" />
+                    <input type="hidden" asp-for="SignatureUrl" />
+
+                    <div class="row">
+                        <div class="col-md-6 border-end pe-md-4">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Başlık</label>
+                                <input class="form-control" type="text" placeholder="Örn: Hikayemiz Nasıl Başladı?" asp-for="Title" />
+                                <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Title"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Hikaye İçeriği (Açıklama)</label>
+                                <textarea class="form-control" placeholder="Kurumun hikayesini detaylıca yazınız..." asp-for="Description" rows="12"></textarea>
+                                <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Description"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 ps-md-4">
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Ana Görsel (Main File) - <span class="text-secondary fw-normal">Opsiyonel</span></label>
+                                <input class="form-control" type="file" asp-for="MainFile" />
+                                <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="MainFile"></span>
+
+                                <div class="d-flex align-items-center gap-3 mt-2 bg-light p-2 rounded border border-dashed">
+                                    <img src="@Model.MainImageUrl" alt="Mevcut Ana Görsel" style="width: 80px; height: 50px; object-fit: cover;" class="rounded shadow-sm" onerror="this.style.display='none'" />
+                                    <small class="text-muted"><i class="bx bx-info-circle"></i> Sadece görseli değiştirmek istiyorsanız yeni bir dosya seçin.</small>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">İkincil Görsel (File) - <span class="text-secondary fw-normal">Opsiyonel</span></label>
+                                <input class="form-control" type="file" asp-for="File" />
+                                <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File"></span>
+
+                                <div class="d-flex align-items-center gap-3 mt-2 bg-light p-2 rounded border border-dashed">
+                                    <img src="@Model.ImageUrl" alt="Mevcut İkincil Görsel" style="width: 50px; height: 50px; object-fit: cover;" class="rounded shadow-sm" onerror="this.style.display='none'" />
+                                    <small class="text-muted"><i class="bx bx-info-circle"></i> Sadece görseli değiştirmek istiyorsanız yeni bir dosya seçin.</small>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">İmza Görseli (Signature File) - <span class="text-secondary fw-normal">Opsiyonel</span></label>
+                                <input class="form-control" type="file" asp-for="SignatureFile" />
+                                <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="SignatureFile"></span>
+
+                                <div class="d-flex align-items-center gap-3 mt-2 bg-light p-2 rounded border border-dashed">
+                                    <img src="@Model.SignatureUrl" alt="Mevcut İmza" style="max-width: 80px; height: 30px; object-fit: contain; filter: grayscale(100%);" onerror="this.style.display='none'" />
+                                    <small class="text-muted"><i class="bx bx-info-circle"></i> Sadece imzayı değiştirmek istiyorsanız yeni bir dosya seçin.</small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-end gap-3">
+                        <a href="/Admin/OurHistory/Index" class="btn btn-outline-secondary px-4 d-flex align-items-center gap-1">
+                            <i class="fadeIn animated bx bx-x fs-5"></i> İptal
+                        </a>
+                        <button type="button" onclick="confirmUpdate()" class="btn btn-primary px-5 d-flex align-items-center gap-1 shadow-sm">
+                            <i class="fadeIn animated bx bx-save fs-5"></i> Değişiklikleri Kaydet
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+    }
+</style>
+
+<script>
+    function confirmUpdate() {
+        var form = document.getElementById("updateItemForm");
+
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Güncellemek istediğinize emin misiniz?",
+                text: "Yaptığınız değişiklikler sisteme kaydedilecektir.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#0d6efd", // Primary mavi renk
+                cancelButtonColor: "#6c757d", // İptal gri renk
+                confirmButtonText: "Evet, Güncelle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        } else {
+            form.reportValidity();
+        }
+    }
+</script>

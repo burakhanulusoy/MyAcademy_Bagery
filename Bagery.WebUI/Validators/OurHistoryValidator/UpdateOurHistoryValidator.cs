@@ -1,8 +1,9 @@
-﻿using FluentValidation;
+﻿using Bagery.WebUI.MediatorPattern.Commands.OurHistoryCommands;
+using FluentValidation;
 
 namespace Bagery.WebUI.Validators.OurHistoryValidator
 {
-    public class UpdateOurHistoryValidator:AbstractValidator<UpdateOurHistoryValidator>
+    public class UpdateOurHistoryValidator:AbstractValidator<UpdateOurHistoryCommand>
     {
         public UpdateOurHistoryValidator()
         {

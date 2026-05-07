@@ -1,0 +1,285 @@
+﻿@model List<GetOurHistoriesQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3 fw-bold text-dark">Hakkımızda Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:;" class="text-primary"><ion-icon name="home-outline" class="fs-5 mt-1"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active text-muted" aria-current="page">Hikayemiz Listesi</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <a href="/Admin/OurHistory/CreateOurHistory" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm radius-10">
+                    <i class="bx bx-plus-circle fs-5"></i> Yeni Hikaye Ekle
+                </a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 radius-10 overflow-hidden">
+            <div class="card-body p-4">
+
+                <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+                    <div>
+                        <h5 class="mb-0 text-primary fw-bold"><i class="bx bx-book-open me-2"></i>Geçmişten Günümüze Hikayeler</h5>
+                        <p class="text-muted small mb-0 mt-1">Sitenizin hakkımızda sayfasında görünecek içerikleri buradan yönetin.</p>
+                    </div>
+                    <form class="position-relative w-25">
+                        <div class="position-absolute top-50 translate-middle-y search-icon px-3 text-muted"><ion-icon name="search-sharp"></ion-icon></div>
+                        <input class="form-control ps-5 radius-10 bg-light border-0" type="text" placeholder="Başlık ara...">
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover mb-0 custom-table">
+                        <thead class="bg-light">
+                            <tr>
+                                <th width="12%" class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 py-3">Durum</th>
+                                <th width="22%" class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 py-3">Ana Görsel</th>
+                                <th width="20%" class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 py-3">Medya Detayları</th>
+                                <th width="31%" class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 py-3">Başlık ve İçerik</th>
+                                <th width="15%" class="text-end text-uppercase text-secondary text-xs font-weight-bolder opacity-7 py-3">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    count++;
+                                    bool isActive = count == 1;
+                                    string rowClass = isActive ? "active-row bg-primary bg-opacity-10" : "";
+
+                                    <tr class="@rowClass">
+                                        <td class="py-3">
+                                            @if (isActive)
+                                            {
+                                                <span class="badge bg-gradient-success rounded-pill px-3 py-2 shadow-sm d-inline-flex align-items-center gap-1 border border-success">
+                                                    <span class="pulse-dot bg-white me-1"></span> Sitede Aktif
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-light text-secondary border rounded-pill px-3 py-2">
+                                                    <i class="bx bx-history me-1"></i> Geçmiş Kayıt
+                                                </span>
+                                            }
+                                        </td>
+
+                                        <td class="py-3">
+                                            <div class="img-wrapper rounded-3 shadow-sm border overflow-hidden" style="width: 160px; height: 100px;">
+                                                <img src="@item.MainImageUrl" class="w-100 h-100 image-zoom" style="object-fit: cover;" alt="Ana Görsel">
+                                            </div>
+                                        </td>
+
+                                        <td class="py-3">
+                                            <div class="d-flex flex-column gap-2">
+                                                <div class="d-flex align-items-center bg-white border border-dashed rounded-2 p-1 shadow-none" style="width: fit-content;">
+                                                    <img src="@item.ImageUrl" class="rounded" style="width: 40px; height: 40px; object-fit: cover;" alt="Alt Görsel">
+                                                    <span class="ms-2 small text-muted pe-2 fw-medium">İkincil</span>
+                                                </div>
+                                                <div class="d-flex align-items-center bg-white border border-dashed rounded-2 p-1 shadow-none" style="width: fit-content;">
+                                                    <div class="bg-light rounded p-1 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="bx bx-pen text-secondary fs-5"></i>
+                                                    </div>
+                                                    <img src="@item.SignatureUrl" class="ms-2 pe-2" style="max-width: 80px; height: 25px; object-fit: contain; filter: grayscale(100%); opacity: 0.8;" alt="İmza">
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="py-3">
+                                            <h6 class="fw-bold text-dark mb-1 fs-6">@item.Title</h6>
+                                            <p class="text-muted small mb-0 line-clamp-2" style="max-width: 350px;">
+                                                @item.Description
+                                            </p>
+                                        </td>
+
+                                        <td class="text-end py-3">
+                                            <div class="d-flex justify-content-end gap-2">
+                                                <a href="/Admin/OurHistory/UpdateOurHistory/@item.Id" class="btn btn-sm btn-light border text-primary action-btn" data-bs-toggle="tooltip" title="Düzenle">
+                                                    <i class="bx bx-edit fs-5"></i>
+                                                </a>
+                                                <button type="button" onclick="confirmDelete('/Admin/OurHistory/DeleteOurHistory/@item.Id')" class="btn btn-sm btn-light border text-danger action-btn" data-bs-toggle="tooltip" title="Sil">
+                                                    <i class="bx bx-trash fs-5"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="p-0 border-0">
+                                        <div class="text-center p-5 my-4 bg-light border border-dashed rounded-3 mx-3">
+                                            <div class="text-muted mb-3">
+                                                <i class="bx bx-folder-open" style="font-size: 4rem; opacity: 0.5;"></i>
+                                            </div>
+                                            <h5 class="text-dark fw-bold">Henüz Hikaye Eklenmemiş</h5>
+                                            <p class="text-muted small mb-4">Müşterilerinize kendinizi tanıtmak için hemen ilk hikayenizi oluşturun.</p>
+                                            <a href="/Admin/OurHistory/CreateOurHistory" class="btn btn-primary radius-10 shadow-sm px-4">
+                                                <i class="bx bx-plus me-1"></i> Yeni Ekle
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Tablo genel hatları */
+    .custom-table th {
+        border-bottom: 2px solid #e9ecef;
+        letter-spacing: 0.5px;
+    }
+
+    .custom-table td {
+        border-bottom: 1px solid #f1f3f5;
+        vertical-align: middle;
+    }
+
+    .custom-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Aktif satır sol kenar vurgusu */
+    .active-row td:first-child {
+        position: relative;
+    }
+
+        .active-row td:first-child::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #198754;
+        }
+
+    /* Görsel hover animasyonları */
+    .img-wrapper {
+        overflow: hidden;
+    }
+
+    .image-zoom {
+        transition: transform 0.4s ease;
+    }
+
+    .img-wrapper:hover .image-zoom {
+        transform: scale(1.1);
+    }
+
+    /* Buton hover efektleri */
+    .action-btn {
+        transition: all 0.2s;
+        background-color: #fff;
+    }
+
+        .action-btn:hover.text-primary {
+            background-color: #e7f1ff;
+            border-color: #0d6efd !important;
+        }
+
+        .action-btn:hover.text-danger {
+            background-color: #fdeaea;
+            border-color: #dc3545 !important;
+        }
+
+    /* Metin kırpma (Description için) */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Aktif butonu yanıp sönen nokta */
+    .pulse-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+        animation: pulse 1.5s infinite;
+    }
+    @@keyframes pulse {
+        0%
+
+    {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+
+    }
+</style>
+
+<script>
+    // Tooltipleri aktifleştir (Bootstrap 5 özelliği)
+    document.addEventListener("DOMContentLoaded", function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: "Silmek istediğinize emin misiniz?",
+            text: "Bu hikaye kaydını ve bağlı görselleri kalıcı olarak sileceksiniz!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#dc3545",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, kalıcı olarak sil!",
+            cancelButtonText: "İptal",
+            reverseButtons: true // İptal butonunu sağa, sil butonunu sola alır (Daha modern)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Siliniyor...",
+                    text: "Lütfen bekleyin.",
+                    icon: "info",
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        // Yönlendirme (Hafif bir gecikme ile)
+                        setTimeout(() => {
+                            window.location.href = deleteUrl;
+                        }, 500);
+                    }
+                });
+            }
+        });
+    }
+</script>
