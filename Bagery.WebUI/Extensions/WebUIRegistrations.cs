@@ -28,11 +28,27 @@ namespace Bagery.WebUI.Extensions
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IBannerRepository, BannerRepository>();
-            services.AddScoped<IFileService, FileService>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
+            //services.AddScoped<IBannerRepository, BannerRepository>();
+            //services.AddScoped<IFileService, FileService>();
+            //services.AddScoped<ICategoryRepository, CategoryRepository>();
+            //services.AddScoped<IProductRepository, ProductRepository>();
+            //services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
+
+
+            //Scrutor ile Registration
+
+            services.Scan(options => options.FromAssemblies(Assembly.GetExecutingAssembly())
+                    .AddClasses(x=>x.Where(t=>t.Name.EndsWith("Repository")))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime()
+                   
+            );
+
+
+
+
+
+
 
 
             services.AddMediatR(options =>
