@@ -1,0 +1,353 @@
+﻿@model RegisterUserCommand
+@{
+    ViewData["Title"] = "RegisterUser";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html class="light" lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kayıt Ol - BAKERY</title>
+    <!-- Google Fonts: Literata for Display/Headlines, Plus Jakarta Sans for Body/UI -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <!-- Tailwind CSS with custom config -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#e3e2e0",
+                      "error-container": "#ffdad6",
+                      "surface-dim": "#dbdad7",
+                      "tertiary-fixed": "#ffdcc5",
+                      "on-error": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#795950",
+                      "on-tertiary-fixed": "#301400",
+                      "primary-container": "#5d4037",
+                      "background": "#faf9f6",
+                      "surface-container": "#efeeeb",
+                      "surface-bright": "#faf9f6",
+                      "tertiary": "#4f2500",
+                      "inverse-surface": "#2f312f",
+                      "error": "#ba1a1a",
+                      "surface": "#faf9f6",
+                      "on-tertiary-container": "#ff9e52",
+                      "on-background": "#1a1c1a",
+                      "surface-container-high": "#e9e8e5",
+                      "secondary-container": "#fed4c8",
+                      "primary-fixed": "#ffdbd0",
+                      "primary-fixed-dim": "#e7bdb1",
+                      "on-surface": "#1a1c1a",
+                      "secondary": "#76574e",
+                      "surface-tint": "#77574d",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#5d4037",
+                      "on-secondary-fixed": "#2c160f",
+                      "on-primary-container": "#d4ada1",
+                      "surface-container-low": "#f4f3f1",
+                      "secondary-fixed-dim": "#e6beb2",
+                      "on-primary-fixed": "#2c160e",
+                      "on-secondary-fixed-variant": "#5d4037",
+                      "tertiary-fixed-dim": "#ffb783",
+                      "outline": "#827470",
+                      "inverse-on-surface": "#f2f1ee",
+                      "tertiary-container": "#713700",
+                      "on-primary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "inverse-primary": "#e7bdb1",
+                      "surface-variant": "#e3e2e0",
+                      "secondary-fixed": "#ffdbd0",
+                      "outline-variant": "#d4c3be",
+                      "primary": "#442a22",
+                      "on-surface-variant": "#504441",
+                      "on-secondary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1200px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "base": "8px",
+                      "section-gap": "80px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Literata"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display": [
+                              "Literata"
+                      ],
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Literata"
+                      ],
+                      "form-input": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "form-input": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        /* Ambient Coffee Shadows */
+        .shadow-bakery {
+            box-shadow: 0 20px 40px rgba(75, 54, 33, 0.15);
+        }
+        .shadow-bakery-inner {
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.15), 0 4px 10px rgba(75, 54, 33, 0.12);
+        }
+    </style>
+</head>
+<body class="text-on-surface min-h-screen flex flex-col lg:flex-row antialiased bg-surface">
+    <!-- Left Side: Full Height Image -->
+    <div class="hidden lg:block lg:w-1/2 relative min-h-screen">
+        <img alt="Artisanal Bakery Setting" class="absolute inset-0 w-full h-full object-cover" data-alt="A warm, high-end lifestyle photograph of freshly baked artisanal croissants and a steaming cup of coffee in a rustic ceramic mug, resting on a textured light-wood bakery table." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQUVIDkpq9J_c2ZTalj7HXVIz8Y3U3rdO-Mk9n_Z5gB9sJP70K8Oe-VQVF7Gzc4pAfBoEqbV1XdbsItB2JzNF2ujx2eENWYUBYQWYgC1yP1K562SI42V69XENGZguVq8KRWBfU4rOoStXCaX4c8aKITl9wL1_nEdlUYjNGMDDHcIelwRzAt5VHW64X_7tBSo3kVeNuK0xxazYr6u2m5Hv-2a4BuCnUzFSG5gLqna97EgyMygofePARJxvf1i-Ta9OTZSW95ONvxuem" />
+        <!-- Overlays for legibility and mood -->
+        <div class="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+    </div>
+    <!-- Right Side: Registration Form Container -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 md:p-16 lg:p-20 bg-surface">
+        <main class="w-full max-w-[520px]">
+            <header class="mb-8 text-center">
+                <h1 class="font-display text-display text-primary tracking-tight mb-2">BAKERY</h1>
+                <p class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface-variant">Aramıza Katılın</p>
+                <p class="font-body-md text-body-md text-outline mt-2">Taze kahve ve artizan lezzetler için hesabınızı oluşturun.</p>
+            </header>
+            <form method="post" class="flex flex-col gap-5">
+
+                <!-- Hata Bildirim Kutusu -->
+                <div asp-validation-summary="All" class="p-4 rounded-xl bg-error-container text-on-error-container border border-error/30 shadow-sm mb-6">
+                    <div class="flex items-center gap-2 mb-3 pb-2 font-bold text-error border-b border-error/20">
+                        <span class="material-symbols-outlined text-[22px]">error</span>
+                        <span class="text-[15px]">Lütfen aşağıdaki hataları düzeltin:</span>
+                    </div>
+                </div>
+                
+
+                <!-- Ad Soyad & Kullanıcı Adı -->
+                <div class="flex flex-col sm:flex-row gap-5">
+                    <div class="flex-1 flex flex-col gap-1.5">
+                        <label class="text-[14px] font-semibold text-on-surface-variant ml-1">Ad Soyad</label>
+                        <input asp-for="FullName" class="w-full rounded-lg bg-surface-container/80 border-2 border-transparent px-4 py-3 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-sm" placeholder="Örn. Ayşe Yılmaz" />
+                    </div>
+                    <div class="flex-1 flex flex-col gap-1.5">
+                        <label class="text-[14px] font-semibold text-on-surface-variant ml-1">Kullanıcı Adı</label>
+                        <input asp-for="UserName" class="w-full rounded-lg bg-surface-container/80 border-2 border-transparent px-4 py-3 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-sm" placeholder="ayseyilmaz" />
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[14px] font-semibold text-on-surface-variant ml-1">E-posta</label>
+                    <input asp-for="Email" class="w-full rounded-lg bg-surface-container/80 border-2 border-transparent px-4 py-3 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-sm" placeholder="merhaba@ornek.com" />
+                </div>
+
+                <!-- Telefon -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[14px] font-semibold text-on-surface-variant ml-1">Telefon Numarası</label>
+                    <input asp-for="PhoneNumber" class="w-full rounded-lg bg-surface-container/80 border-2 border-transparent px-4 py-3 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-sm" placeholder="5xx xxx xxxx" />
+                </div>
+
+                <!-- Şifre -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[14px] font-semibold text-on-surface-variant ml-1">Şifre</label>
+                    <input required asp-for="Password" type="password" class="w-full rounded-lg bg-surface-container/80 border-2 border-transparent px-4 py-3 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-sm" placeholder="••••••••" />
+                </div>
+
+                <!-- Şifre Tekrarı -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[14px] font-semibold text-on-surface-variant ml-1">Şifre Tekrarı</label>
+                    <input required asp-for="ConfirmPassword" type="password" class="w-full rounded-lg bg-surface-container/80 border-2 border-transparent px-4 py-3 focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-sm" placeholder="••••••••" />
+                </div>
+
+                <!-- Koşullar -->
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-start gap-3 mt-2">
+                        <input id="terms" type="checkbox" required class="mt-1 w-5 h-5 rounded border-outline text-primary focus:ring-primary bg-surface-container/80 cursor-pointer" />
+                        <label for="terms" class="text-sm text-on-surface-variant cursor-pointer">
+                            <span class="text-secondary font-medium hover:underline decoration-dashed">Kullanım Koşulları</span>'nı ve
+                            <span class="text-secondary font-medium hover:underline decoration-dashed">Gizlilik Politikası</span>'nı okudum.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Kayıt Butonu -->
+                <button class="w-full py-4 rounded-xl bg-primary text-on-primary font-bold text-center mt-4 shadow-bakery hover:bg-opacity-90 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group">
+                    Kayıt Ol
+                    <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </button>
+
+                <!-- Sosyal Login Separator -->
+                <div class="relative mt-2">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-outline-variant/60"></div></div>
+                    <div class="relative flex justify-center text-xs uppercase tracking-widest"><span class="px-3 bg-surface text-outline font-bold">veya</span></div>
+                </div>
+
+                <!-- Sosyal Butonlar -->
+                <div class="grid grid-cols-2 gap-4">
+                    <a  class="flex items-center justify-center gap-2 rounded-xl border border-outline-variant/60 bg-white px-4 py-3 text-sm font-bold hover:bg-surface-container transition-colors shadow-sm">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google"> Google
+                    </a>
+                    <a  class="flex items-center justify-center gap-2 rounded-xl border border-outline-variant/60 bg-white px-4 py-3 text-sm font-bold hover:bg-surface-container transition-colors shadow-sm">
+                        <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" class="w-5 h-5" alt="Facebook"> Facebook
+                    </a>
+                </div>
+            </form>
+            <footer class="mt-8 text-center">
+                <p class="font-body-md text-body-md text-on-surface-variant">
+                    Zaten bir hesabınız var mı?
+                    <a class="font-label-lg text-label-lg text-secondary font-bold hover:text-primary transition-colors underline decoration-dashed decoration-outline-variant hover:decoration-primary ml-1" href="/User/Login">
+                        Giriş Yap
+                    </a>
+                </p>
+            </footer>
+        </main>
+    </div>
+</body>
+</html>
+
+            <style>
+
+    /* --- ASP.NET Akıllı Hata Yönetimi --- */
+    /* Hata yoksa kutuyu tamamen gizler (If kullanmaya gerek kalmaz) */
+    .validation-summary-valid {
+        display: none !important;
+    }
+
+    /* Hata varsa kutuyu gösterir ve hafifçe sarsar */
+    .validation-summary-errors {
+        display: block;
+        animation: errorShake 0.4s ease-in-out;
+    }
+
+        /* ASP.NET'in ürettiği UL (Liste) yapısını özelleştirme */
+        .validation-summary-errors ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem; /* Hatalar arası boşluk */
+        }
+
+            /* Her bir hata satırının tasarımı */
+            .validation-summary-errors ul li {
+                display: flex;
+                align-items: flex-start;
+                font-size: 0.875rem; /* 14px */
+                font-weight: 500;
+                color: var(--color-on-error-container, #93000a);
+                line-height: 1.4;
+            }
+
+                /* Her hatanın başına şık bir ikon ekleme */
+                .validation-summary-errors ul li::before {
+                    content: "chevron_right";
+                    font-family: "Material Symbols Outlined";
+                    font-size: 1.125rem;
+                    margin-right: 0.375rem;
+                    color: var(--color-error, #ba1a1a);
+                    flex-shrink: 0;
+                }
+
+    /* Dikkat çekici sarsıntı efekti */
+    @@keyframes errorShake {
+        0%, 100%
+
+    {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    50% {
+        transform: translateX(4px);
+    }
+
+    75% {
+        transform: translateX(-4px);
+    }
+
+    }
+
+            </style>

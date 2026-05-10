@@ -1,0 +1,201 @@
+﻿@model LoginUserCommand
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Giriş Yap - BAKERY</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400..700&amp;family=Plus+Jakarta+Sans:wght@400..700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#5d4037",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed": "#301400",
+                      "tertiary-fixed": "#ffdcc5",
+                      "secondary-fixed": "#ffdbd0",
+                      "on-tertiary-container": "#ff9e52",
+                      "on-secondary-fixed-variant": "#5d4037",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-bright": "#faf9f6",
+                      "tertiary-fixed-dim": "#ffb783",
+                      "tertiary-container": "#713700",
+                      "secondary-container": "#fed4c8",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#504441",
+                      "surface-variant": "#e3e2e0",
+                      "primary-container": "#5d4037",
+                      "inverse-primary": "#e7bdb1",
+                      "tertiary": "#4f2500",
+                      "surface-container-highest": "#e3e2e0",
+                      "on-secondary-fixed": "#2c160f",
+                      "error": "#ba1a1a",
+                      "error-container": "#ffdad6",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f2f1ee",
+                      "outline-variant": "#d4c3be",
+                      "on-primary-container": "#d4ada1",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "surface": "#faf9f6",
+                      "on-surface": "#1a1c1a",
+                      "surface-dim": "#dbdad7",
+                      "surface-container-low": "#f4f3f1",
+                      "surface-container-high": "#e9e8e5",
+                      "secondary-fixed-dim": "#e6beb2",
+                      "on-primary-fixed": "#2c160e",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#77574d",
+                      "primary": "#442a22",
+                      "background": "#faf9f6",
+                      "surface-container": "#efeeeb",
+                      "outline": "#827470",
+                      "primary-fixed": "#ffdbd0",
+                      "primary-fixed-dim": "#e7bdb1",
+                      "on-secondary-container": "#795950",
+                      "on-error": "#ffffff",
+                      "secondary": "#76574e",
+                      "on-background": "#1a1c1a",
+                      "inverse-surface": "#2f312f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "container-max": "1200px",
+                      "base": "8px",
+                      "section-gap": "80px"
+              },
+              "fontFamily": {
+                      "body-md": ["Plus Jakarta Sans"],
+                      "label-lg": ["Plus Jakarta Sans"],
+                      "headline-lg-mobile": ["Literata"],
+                      "headline-lg": ["Literata"],
+                      "body-lg": ["Plus Jakarta Sans"],
+                      "form-input": ["Plus Jakarta Sans"],
+                      "display": ["Literata"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "form-input": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined', sans-serif;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex antialiased">
+    <!-- Left Column: Image -->
+    <div class="hidden md:block md:w-1/2 relative bg-surface-container-high">
+        <div class="absolute inset-0 bg-black/10 z-10"></div>
+        <img alt="Bakery Interior" class="w-full h-full object-cover" data-alt="A high-quality, professional photograph of a cozy bakery interior with warm, inviting lighting. Steam rises gracefully from a ceramic coffee cup resting on a wooden counter, surrounded by a delightful assortment of freshly baked pastries and artisanal breads. The scene is bathed in a soft, golden hour glow that highlights the tactile, skeuomorphic textures of the light wood surfaces and the rustic, artisanal warmth of the environment. The overall aesthetic is rich in deep coffee browns and creamy whites, perfectly aligning with a cozy, human-centric design style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGpClCL4ApT2C0yYVBQ8NpUJkR_CHMDGN0YnINskdfvRtmKdfOINDheV-EvSyLqrQhA__lTOmC2Mktf0Cbqs-6425FhMfUtlYYMohLGuotVZMggppoBWIRcKk7jSV2b3QO2F7nD0Djfb4w22XzOXDqnhinLALwZor3clWjU_3AQM6gEmiYTkPL8qDPICOHL2sTaRJBZGbCRPyk8NpoPndPOCfTCLTCh2I-ySKD81IfJiiVldANImUrXr7f3cY6_eOzPi1ph-I7Yr9i" />
+    </div>
+    <!-- Right Column: Login Form -->
+    <div class="w-full md:w-1/2 flex items-center justify-center p-margin-mobile md:p-gutter">
+        <div class="w-full max-w-md space-y-8 bg-surface-container-lowest p-8 rounded-xl shadow-[0_4px_20px_rgba(75,54,33,0.1)] border border-outline-variant/30 relative">
+            <!-- Subtle Wood Accent/Tray feel -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary rounded-t-xl opacity-80"></div>
+            <div class="text-center space-y-2">
+                <span class="material-symbols-outlined text-primary text-4xl mb-2" data-icon="bakery_dining" style="font-variation-settings: 'FILL' 1;">bakery_dining</span>
+                <h1 class="font-display text-display text-primary tracking-tight">Giriş Yap</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant">Hoş geldiniz! Lütfen bilgilerinizi girin.</p>
+            </div>
+            <form method="post" class="space-y-6">
+                <!-- Email Input -->
+                <div>
+                    <label class="block font-label-lg text-label-lg text-on-surface mb-2" >Email</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="mail">mail</span>
+                        <input class="w-full pl-10 pr-4 py-3 bg-surface-container-low border-outline-variant rounded-lg font-form-input text-form-input text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all hover:bg-surface-container-high placeholder-outline" asp-for="Email" placeholder="ornek@email.com" required="" type="email" />
+                    </div>
+                </div>
+                <!-- Password Input -->
+                <div>
+                    <label class="block font-label-lg text-label-lg text-on-surface mb-2" for="password">Şifre</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="lock">lock</span>
+                        <input class="w-full pl-10 pr-4 py-3 bg-surface-container-low border-outline-variant rounded-lg font-form-input text-form-input text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all hover:bg-surface-container-high placeholder-outline" asp-for="Password" placeholder="••••••••" required="" type="password" />
+                    </div>
+                </div>
+                <!-- Remember & Forgot Password -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input class="h-4 w-4 text-primary focus:ring-primary border-outline-variant rounded bg-surface-container-low" id="remember-me" name="remember-me" type="checkbox" />
+                        <label class="ml-2 block font-body-md text-body-md text-on-surface-variant" for="remember-me">
+                            Beni Hatırla
+                        </label>
+                    </div>
+                    <div class="text-sm">
+                        <a class="font-label-lg text-label-lg text-secondary hover:text-primary transition-colors" href="#">Şifremi Unuttum</a>
+                    </div>
+                </div>
+                <!-- Primary Action -->
+                <button class="w-full flex justify-center items-center py-3 px-6 border border-transparent rounded-lg shadow-sm font-label-lg text-label-lg text-on-primary bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200" >
+                    Giriş Yap
+                </button>
+
+                <span class="text-danger">@Html.ValidationSummary()</span>
+            </form>
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-dashed border-outline-variant"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-surface-container-lowest font-body-md text-body-md text-on-surface-variant">Veya şununla devam et</span>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 gap-4">
+                    <button class="w-full flex items-center justify-center px-4 py-3 border border-outline-variant rounded-lg shadow-sm bg-surface font-label-lg text-label-lg text-on-surface hover:bg-surface-container-low transition-colors" type="button">
+                        <img alt="Google logo" class="h-5 w-5 mr-2" data-alt="Google brand logo icon in full color, small size, used for social login button." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw8Liaa6_Bezq5R7ZW2vLn2ZNvV24-oQuibFwNFRPbkvAOtlQ__jXWVAIx-t0aWxRSNuEUXS3IHQs551ZZGaGWnnymHDUk4rVCssALTtWHzw1P9iDV4pS26qbKySlD4Qv-zDW7ZpJ9LuU356plOOPkOEA7cRYHUdxZ20SPiXkViZtQDthAH6U0GZstx05UM_lTCsAGP8NmOjwqWN6W-hswk0LnQQPC8Zpr9d7adNADgJwABV_VHYhVjsThBmo6J-NVKS1Z9XMDpUOr" />
+                        Google ile Devam Et
+                    </button>
+                    <button class="w-full flex items-center justify-center px-4 py-3 border border-outline-variant rounded-lg shadow-sm bg-surface font-label-lg text-label-lg text-on-surface hover:bg-surface-container-low transition-colors" type="button">
+                        <img alt="Facebook logo" class="h-5 w-5 mr-2" data-alt="Facebook brand logo icon in full color, small size, used for social login button." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTGVwm7fgxZoGKlo7LpH8Tk-OGu866Qoqq_IgtxNshhLxVGVXjjmGWazplfpRyXqQD_v7c8p0z_NBg3IIWqQzhQosqEp_eHk4Nq-S8eTIFeifF9s8QDUFzdPqsNKrB7con8b276Ap1sNsGpSnl5xlPU8k9Ug344chr8zSMpITCXl2ufpBiiy-KUZhyRRZifI1SR-CbKwQbs2oCQWH2JkFx8AzVL7qQk7l85kPhUMI8hXNFmUudwuv0OX50xVxVeR0g11Bx4DVzk4ji" />
+                        Facebook ile Devam Et
+                    </button>
+                </div>
+            </div>
+            <p class="mt-8 text-center font-body-md text-body-md text-on-surface-variant">
+                Henüz hesabınız yok mu?
+                <a class="font-label-lg text-label-lg text-primary hover:text-secondary hover:underline decoration-dashed transition-all" href="/User/RegisterUser">Kayıt Ol</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

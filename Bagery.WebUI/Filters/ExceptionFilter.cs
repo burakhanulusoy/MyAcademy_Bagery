@@ -23,10 +23,17 @@ namespace Bagery.WebUI.Filters
 
             else if (context.Exception is IdentityException exception)
             {
-                foreach (var error in exception.Errors)
+                if (exception.Errors != null && exception.Errors.Any())
                 {
-                    // Identity hataları genel hata olduğu için propertyName kısmına string.Empty veriyoruz
-                    context.ModelState.AddModelError(string.Empty, error.Description);
+                    foreach (var error in exception.Errors)
+                    {
+                        context.ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+                // 2. Durum: Sadece string olarak fırlattığın düz mesaj ("Şifreler uyuşmuyor" vs.)
+                else if (!string.IsNullOrEmpty(exception.Message))
+                {
+                    context.ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
             else

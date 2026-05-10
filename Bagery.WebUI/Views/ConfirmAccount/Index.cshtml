@@ -1,0 +1,189 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>E-posta Doğrulama - BAKERY</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#e6beb2",
+                        "surface-container-low": "#f4f3f1",
+                        "on-primary-container": "#d4ada1",
+                        "on-primary-fixed-variant": "#5d4037",
+                        "on-secondary-fixed": "#2c160f",
+                        "surface-tint": "#77574d",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#76574e",
+                        "primary": "#442a22",
+                        "on-surface-variant": "#504441",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#d4c3be",
+                        "secondary-fixed": "#ffdbd0",
+                        "surface-variant": "#e3e2e0",
+                        "inverse-primary": "#e7bdb1",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "tertiary-container": "#713700",
+                        "outline": "#827470",
+                        "inverse-on-surface": "#f2f1ee",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#2c160e",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "on-secondary-fixed-variant": "#5d4037",
+                        "background": "#faf9f6",
+                        "on-tertiary-fixed": "#301400",
+                        "primary-container": "#5d4037",
+                        "on-secondary-container": "#795950",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdcc5",
+                        "surface-dim": "#dbdad7",
+                        "surface-container-highest": "#e3e2e0",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#e7bdb1",
+                        "on-surface": "#1a1c1a",
+                        "primary-fixed": "#ffdbd0",
+                        "surface-container-high": "#e9e8e5",
+                        "secondary-container": "#fed4c8",
+                        "on-background": "#1a1c1a",
+                        "on-tertiary-container": "#ff9e52",
+                        "tertiary": "#4f2500",
+                        "inverse-surface": "#2f312f",
+                        "surface": "#faf9f6",
+                        "error": "#ba1a1a",
+                        "surface-container": "#efeeeb",
+                        "surface-bright": "#faf9f6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "80px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Literata"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display": ["Literata"],
+                        "form-input": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Literata"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "form-input": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .noise-bg {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg min-h-screen flex flex-col md:flex-row relative">
+    <div class="hidden md:block w-1/2 h-screen relative bg-surface-container-low overflow-hidden">
+        <img alt="Kahve ve hamur işi yakından görünümü" class="w-full h-full object-cover absolute inset-0 mix-blend-multiply opacity-90" data-alt="Seramik bir kupada dumanı tüten koyu kahvenin ve rustik, açık renkli ahşap bir masa üzerinde duran çıtır, altın rengi bir kruvasanın son derece detaylı, makro fotoğrafı. Işıklandırma yumuşak, pencereden süzülen sabah ışığı sıcak, rahatlatıcı gölgeler yaratıyor. Genel atmosfer davetkar, sakin ve zanaatkar hissiyatı veriyor, keten ve ahşap gibi dokunsal dokulara odaklanan butik bir mahalle fırını estetiğiyle uyumlu." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAhqre83OoWgOoSfuPnG-HjTBsXc9kPvLddMxO41S2MbksWulDW1ZcA8xP2Nlo1Y7y9lQo6MpHi_6IDGp6xjIRbMInFWoDd24r8H_NzBz_6ZOjU1O8_xC5qUddFknQSX3tFxa3XkaRmvaD5fRCcrXs4fBKGXpzKqXaw4_zpU-XlpOJvWYJ2Tvwpj3r-WKvtNUZRjG5qgSazDOePyH37jz0JrLc7ZSOTDTHOO-vzlgSZUctsha7CRn743iO61hD108lXBd1V_TjQ01u" />
+        <div class="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent"></div>
+        <div class="absolute bottom-12 left-12 max-w-sm">
+            <div class="font-display text-display text-surface-container-lowest mb-4">BAKERY</div>
+            <p class="font-body-lg text-body-lg text-surface-container-lowest/90">Özenle hazırlanan ve sizi bekleyen taptaze lezzetler.</p>
+        </div>
+    </div>
+    <div class="w-full md:w-1/2 h-screen flex items-center justify-center bg-surface relative noise-bg px-margin-mobile md:px-gutter">
+        <div class="max-w-md w-full relative z-10 flex flex-col space-y-8">
+
+            <div class="text-center md:text-left space-y-4">
+                <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight">E-postanızı doğrulayın</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant">
+                    <span class="font-bold text-primary">@ViewBag.Email</span> adresine 6 haneli yeni bir kod gönderdik. <br />
+                    Hesabınızı onaylamak için lütfen kodu aşağıya girin.
+                </p>
+            </div>
+
+            <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                @Html.ValidationSummary()
+            </div>
+
+
+            <form method="post" id="verificationForm" class="space-y-8">
+                <input type="hidden" name="Email" value="@ViewBag.Email" />
+
+                <input type="hidden" name="Code" id="fullCode" />
+
+                <div class="flex justify-between gap-2 md:gap-4" role="group">
+                    <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-lg text-primary bg-surface-container-lowest border-2 border-outline-variant rounded focus:border-primary focus:ring-0 focus:outline-none" maxlength="1" type="text" />
+                    <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-lg text-primary bg-surface-container-lowest border-2 border-outline-variant rounded focus:border-primary focus:ring-0 focus:outline-none" maxlength="1" type="text" />
+                    <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-lg text-primary bg-surface-container-lowest border-2 border-outline-variant rounded focus:border-primary focus:ring-0 focus:outline-none" maxlength="1" type="text" />
+                    <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-lg text-primary bg-surface-container-lowest border-2 border-outline-variant rounded focus:border-primary focus:ring-0 focus:outline-none" maxlength="1" type="text" />
+                    <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-lg text-primary bg-surface-container-lowest border-2 border-outline-variant rounded focus:border-primary focus:ring-0 focus:outline-none" maxlength="1" type="text" />
+                    <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-lg text-primary bg-surface-container-lowest border-2 border-outline-variant rounded focus:border-primary focus:ring-0 focus:outline-none" maxlength="1" type="text" />
+                </div>
+
+                <button type="submit" onclick="submitForm()" class="w-full py-4 bg-primary text-on-primary font-label-lg text-label-lg rounded hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+                    E-postayı Doğrula
+                    <span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+
+
+
+</html>
+
+
+<script>
+    // Form gönderilirken 6 kutudaki değeri alıp tek bir string (örn: "123456") yapar
+    function submitForm() {
+        let code = "";
+        const inputs = document.querySelectorAll('.otp-input');
+        inputs.forEach(input => {
+            code += input.value;
+        });
+        document.getElementById('fullCode').value = code;
+    }
+
+    // Kutular arası otomatik geçiş için ekstra UX güzelliği
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if(e.target.value.length === 1 && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+        });
+        input.addEventListener('keydown', (e) => {
+            if(e.key === 'Backspace' && !e.target.value && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+        });
+    });
+</script>

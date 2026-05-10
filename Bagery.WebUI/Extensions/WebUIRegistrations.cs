@@ -1,12 +1,16 @@
 ﻿using Bagery.WebUI.Context;
+using Bagery.WebUI.Entities;
+using Bagery.WebUI.IdentityValidations;
 using Bagery.WebUI.Interceptors;
 using Bagery.WebUI.Repositories.BannerRepositories;
 using Bagery.WebUI.Repositories.CategoryRepositories;
 using Bagery.WebUI.Repositories.ProductRepositories;
 using Bagery.WebUI.Repositories.ProductVariantRepositories;
 using Bagery.WebUI.Services;
+using Bagery.WebUI.Services.EmailServices;
 using Bagery.WebUI.UOW;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -29,6 +33,7 @@ namespace Bagery.WebUI.Extensions
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             
             //services.AddScoped<IBannerRepository, BannerRepository>();
@@ -47,12 +52,6 @@ namespace Bagery.WebUI.Extensions
             );
 
 
-
-
-
-
-
-
             services.AddMediatR(options =>
             {
                 options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
@@ -60,6 +59,24 @@ namespace Bagery.WebUI.Extensions
             });
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+
+            //identity settings
+            services.AddIdentity<AppUser, AppRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 1;//en az 1 farklı karakter
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15); // Hesap kilitlendiğinde 15 dakika kapalı kalır.
+                options.Lockout.MaxFailedAccessAttempts = 5; // 5 kez yanlış girerse kilitlenir.
+                options.Lockout.AllowedForNewUsers = true; // Yeni kullanıcılar için de geçerli olsun.
+
+            }).AddEntityFrameworkStores<AppDbContext>()
+            .AddErrorDescriber<CustomErrorDescriber>()
+            .AddDefaultTokenProviders();//teken uretem ıcın koyduk
+
+
+
 
 
 
