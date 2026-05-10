@@ -1,0 +1,182 @@
+﻿@model Bagery.WebUI.MediatorPattern.Results.UserResults.GetUserByIdQueryResult
+@{
+    ViewData["Title"] = "Kullanıcı Profili";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- start page content wrapper-->
+<div class="page-content-wrapper">
+    <!-- start page content-->
+    <div class="page-content">
+
+        <!--start breadcrumb-->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Sayfalar</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Kullanıcı Profili</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <a href="/Admin/User/Index" class="btn btn-outline-primary">
+                    <ion-icon name="arrow-back-outline"></ion-icon> Listeye Dön
+                </a>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+
+        <div class="row">
+            <div class="col-12 col-lg-8 col-xl-9">
+                <div class="card overflow-hidden radius-10">
+                    <div class="profile-cover bg-dark position-relative mb-4">
+                        <div class="user-profile-avatar shadow position-absolute top-50 start-0 translate-middle-x">
+                            <!-- Profil Fotoğrafı (Boşsa varsayılan resim gösterir) -->
+                            <img src="@(Model.ImageUrl ?? "https://images.unsplash.com/photo-1681398836231-d0b89bd571d6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0")" alt="User Avatar">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mt-5 d-flex align-items-start justify-content-between">
+                            <div class="">
+                                <!-- İsim, Meslek ve Adres Bilgileri -->
+                                <h3 class="mb-2">@Model.FullName</h3>
+                                <p class="mb-1 text-muted">@(Model.Job ?? "Meslek Belirtilmemiş")</p>
+                                <p>@(Model.Address ?? "Adres Belirtilmemiş")</p>
+                            </div>
+                            <div class="">
+                                <!-- Email varsa Mail Gönder butonu aktif olur -->
+                                <button type="button" onclick="confirmDelete('@Model.Id')" class="btn btn-outline-danger">
+                                    <ion-icon name="trash-outline"></ion-icon> Kullanıcıyı Sil
+                                </button>
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Email))
+                                {
+                                    <a href="mailto:@Model.Email" class="btn btn-primary">
+                                        <ion-icon name="mail-sharp" class="me-1"></ion-icon>Mail Gönder
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mb-2">Hakkımda</h4>
+                        <!-- Hakkımda Kısmı -->
+                        <p>@(string.IsNullOrWhiteSpace(Model.AboutMe) ? "Kullanıcı henüz kendisi hakkında bir bilgi girmemiş." : Model.AboutMe)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4 col-xl-3">
+                <div class="card radius-10">
+                    <div class="card-body">
+                        <h5 class="mb-3">Sosyal Medya</h5>
+
+                        <!-- Facebook -->
+                        <div class="d-flex align-items-center mb-2">
+                            <ion-icon name="logo-facebook" class="me-2 fs-5 text-primary"></ion-icon>
+                            @if (!string.IsNullOrWhiteSpace(Model.FacebookUrl))
+                            {
+                                <a href="@Model.FacebookUrl" target="_blank" class="text-decoration-none">Facebook</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Belirtilmemiş</span>
+                            }
+                        </div>
+
+                        <!-- Twitter -->
+                        <div class="d-flex align-items-center mb-2">
+                            <ion-icon name="logo-twitter" class="me-2 fs-5 text-info"></ion-icon>
+                            @if (!string.IsNullOrWhiteSpace(Model.TwitterUrl))
+                            {
+                                <a href="@Model.TwitterUrl" target="_blank" class="text-decoration-none">Twitter</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Belirtilmemiş</span>
+                            }
+                        </div>
+
+                        <!-- Instagram -->
+                        <div class="d-flex align-items-center mb-0">
+                            <ion-icon name="logo-instagram" class="me-2 fs-5 text-danger"></ion-icon>
+                            @if (!string.IsNullOrWhiteSpace(Model.InstagramUrl))
+                            {
+                                <a href="@Model.InstagramUrl" target="_blank" class="text-decoration-none">Instagram</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Belirtilmemiş</span>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div><!--end row-->
+    </div>
+    <!-- end page content-->
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmDelete(userId) {
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Bu kullanıcıyı silmek istediğinize emin misiniz?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Evet, Sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                // İşlemi arka planda (Fetch API ile) gönderiyoruz
+                fetch('/Admin/User/RemoveUser/' + userId, {
+                    method: 'GET' // Eğer Controller'da [HttpPost] kullanıyorsanız burayı 'POST' yapın.
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // İşlem başarılıysa tebrikler mesajını göster
+                        Swal.fire({
+                            title: 'Silindi!',
+                            text: 'Tebrikler, başarı ile silindi.',
+                            icon: 'success',
+                            confirmButtonText: 'Tamam'
+                        }).then(() => {
+                            // Kullanıcı "Tamam"a basınca listeye geri yönlendir
+                            window.location.href = '/Admin/User/Index';
+                        });
+                    } else {
+                        // İşlem başarısız olursa hata mesajı göster
+                        Swal.fire(
+                            'Hata!',
+                            'Silme işlemi sırasında bir hata oluştu.',
+                            'error'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                    Swal.fire(
+                        'Hata!',
+                        'Sunucuya ulaşılamadı.',
+                        'error'
+                    );
+                });
+
+            }
+        })
+    }
+</script>

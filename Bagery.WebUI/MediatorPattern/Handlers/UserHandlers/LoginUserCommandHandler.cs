@@ -19,7 +19,15 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
             if (user is null)
                 throw new IdentityException("Böyle bir kullanıcı bulunamadı.");
 
+            if(user.IsDeleted)
+            {
+                throw new IdentityException("Bu kullanıcın hesabı kapatıldı.");
+            }
+
+
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
+
+            
 
             if (result.IsLockedOut)
                 throw new IdentityException("Hesabınız kilitlendi.");

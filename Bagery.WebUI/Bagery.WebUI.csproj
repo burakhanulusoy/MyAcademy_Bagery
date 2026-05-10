@@ -10,8 +10,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="MediatorPattern\Queries\UserQueries\" />
-    <Folder Include="MediatorPattern\Results\UserResults\" />
   </ItemGroup>
 
   <ItemGroup>
