@@ -4,14 +4,16 @@ using Bagery.WebUI.MediatorPattern.Queries.ProductQueries;
 using Bagery.WebUI.MediatorPattern.Results.ProductResults;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PagedList.Core;
-using System.Threading.Tasks;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
+
 
     public class ProductController(IMediator _mediator) : Controller
     {

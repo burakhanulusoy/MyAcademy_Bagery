@@ -2,11 +2,14 @@
 using Bagery.WebUI.MediatorPattern.Queries.ContactQueries;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
+
     public class ContactController(IMediator _mediator) : Controller
     {
         public async Task<IActionResult> Index()

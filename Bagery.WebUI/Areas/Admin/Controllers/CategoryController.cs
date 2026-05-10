@@ -2,12 +2,14 @@
 using Bagery.WebUI.MediatorPattern.Queries.CategoryQueries;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
+    [Authorize]
 
     public class CategoryController(IMediator _mediator) : Controller
     {

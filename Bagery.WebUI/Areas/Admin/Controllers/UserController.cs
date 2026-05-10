@@ -1,15 +1,19 @@
-﻿using Bagery.WebUI.MediatorPattern.Commands.UserCommands;
+﻿using Bagery.WebUI.Entities;
+using Bagery.WebUI.MediatorPattern.Commands.UserCommands;
 using Bagery.WebUI.MediatorPattern.Queries.UserQueries;
 using Bagery.WebUI.MediatorPattern.Results.UserResults;
+using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using MimeKit.Encodings;
 using PagedList.Core;
-using System.Threading.Tasks;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
+
     public class UserController(IMediator _mediator) : Controller
     {
         public async Task<IActionResult> Index(string search, int page = 1, int pageSize = 10)
@@ -44,6 +48,26 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
         {
             await _mediator.Send(new RemoveUserCommand(id));
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> UpdateUser()
+        {
+            var user = await _mediator.Send(new GetUserByManagerQuery());
+            var mappedUser = user.Adapt<EditUserCommand>();
+            return View(mappedUser);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser(EditUserCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(command);
+            }
+
+            await _mediator.Send(command);
+
+            return RedirectToAction(nameof(UpdateUser));
+
         }
 
 

@@ -2,11 +2,14 @@
 using Bagery.WebUI.MediatorPattern.Queries.OurHistoryQueries;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
+
     public class OurHistoryController(IMediator mediator) : Controller
     {
         public async Task<IActionResult> Index()

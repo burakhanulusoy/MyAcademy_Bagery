@@ -2,12 +2,13 @@
 using Bagery.WebUI.MediatorPattern.Queries.BannerQueries;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class BannerController(IMediator _mediator) : Controller
     {
         public async Task<IActionResult> Index()

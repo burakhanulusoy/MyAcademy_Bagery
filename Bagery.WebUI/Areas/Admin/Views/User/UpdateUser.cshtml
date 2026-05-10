@@ -1,0 +1,99 @@
+﻿@model EditUserCommand
+@{
+    ViewData["Title"] = "UpdateUser";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card radius-10">
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+
+                            <h5 class="mb-3">Profil Düzenle</h5>
+                            <input type="hidden" asp-for="ImageUrl" />
+
+                            @* 1. PROFESYONEL DOKUNUŞ: Sadece genel hataları ("ModelOnly") burada göster. Kutuların altındaki hatalar buraya listelenmez! *@
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                            <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-center">
+                                <div class="user-change-photo shadow">
+                                    <img src="@(Model?.ImageUrl ?? "https://images.unsplash.com/photo-1707396172424-f3293f788364?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjZ8fHVzZXIlMjBhZG1pbnxlbnwwfHwwfHx8MA%3D%3D")" alt="Profil Fotoğrafı" id="previewImg">
+                                </div>
+                                <input type="file" asp-for="file" class="form-control form-control-sm" />
+                                @* Dosya boyutu vb. hatası olursa sadece burada çıkar *@
+                                <span asp-validation-for="file" class="text-danger"></span>
+                            </div>
+
+                            <h5 class="mb-0 mt-4">Kullanıcı Bilgileri</h5>
+                            <hr>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label class="form-label">Ad Soyad</label>
+                                    <input type="text" asp-for="FullName" class="form-control">
+                                    <span asp-validation-for="FullName" class="text-danger"></span>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Telefon</label>
+                                    <input type="text" asp-for="PhoneNumber" class="form-control">
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Doğrulama İçin Mevcut Şifreniz <span class="text-danger">*</span></label>
+                                    <input type="password" asp-for="Password" class="form-control" placeholder="Değişiklikleri onaylamak için şifrenizi girin">
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <h5 class="mb-0 mt-4">Sosyal Medya & İletişim</h5>
+                            <hr>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Meslek</label>
+                                    <input type="text" asp-for="Job" class="form-control">
+                                    <span asp-validation-for="Job" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Adres</label>
+                                    <input type="text" asp-for="Address" class="form-control">
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-4">
+                                    <label class="form-label">Facebook</label>
+                                    <input type="text" asp-for="FacebookUrl" class="form-control">
+                                    <span asp-validation-for="FacebookUrl" class="text-danger"></span>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Twitter</label>
+                                    <input type="text" asp-for="TwitterUrl" class="form-control">
+                                    <span asp-validation-for="TwitterUrl" class="text-danger"></span>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Instagram</label>
+                                    <input type="text" asp-for="InstagramUrl" class="form-control">
+                                    <span asp-validation-for="InstagramUrl" class="text-danger"></span>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Hakkımda</label>
+                                    <textarea asp-for="AboutMe" class="form-control" rows="4"></textarea>
+                                    <span asp-validation-for="AboutMe" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="text-start mt-4">
+                                @* 2. DOKUNUŞ: type="submit" olmazsa form enter'a basınca saçmalayabilir *@
+                                <button type="submit" class="btn btn-primary px-4">Değişiklikleri Kaydet</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

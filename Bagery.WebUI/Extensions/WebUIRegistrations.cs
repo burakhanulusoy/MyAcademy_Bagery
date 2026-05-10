@@ -10,6 +10,7 @@ using Bagery.WebUI.Services;
 using Bagery.WebUI.Services.EmailServices;
 using Bagery.WebUI.UOW;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -73,12 +74,17 @@ namespace Bagery.WebUI.Extensions
 
             }).AddEntityFrameworkStores<AppDbContext>()
             .AddErrorDescriber<CustomErrorDescriber>()
-            .AddDefaultTokenProviders();//teken uretem ıcın koyduk
+            .AddDefaultTokenProviders();//token üretmek için koyduk...
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/User/Login";
+                options.LogoutPath = "/User/Logout";
+                options.AccessDeniedPath = "/User/AccessDenied";
+            });
 
 
-
-
-
+            services.AddHttpContextAccessor();
 
         }
 

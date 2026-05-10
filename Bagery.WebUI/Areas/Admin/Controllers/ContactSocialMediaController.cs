@@ -1,14 +1,17 @@
-﻿using AspNetCoreGeneratedDocument;
-using Bagery.WebUI.MediatorPattern.Commands.ContactSocialMediaCommands;
+﻿using Bagery.WebUI.MediatorPattern.Commands.ContactSocialMediaCommands;
 using Bagery.WebUI.MediatorPattern.Queries.ContactSocialMediaQueries;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
+
+
+
     public class ContactSocialMediaController(IMediator mediator) : Controller
     {
         public IActionResult CreateContactSocialMedia(Guid Id)

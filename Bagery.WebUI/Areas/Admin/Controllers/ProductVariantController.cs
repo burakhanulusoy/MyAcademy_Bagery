@@ -3,11 +3,14 @@ using Bagery.WebUI.MediatorPattern.Queries.ProductQueries;
 using Bagery.WebUI.MediatorPattern.Queries.ProductVariantQueries;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
+
     public class ProductVariantController(IMediator _mediator) : Controller
     {
         public async Task<IActionResult> GetVariantsByPorductId(Guid id) //prodcut id

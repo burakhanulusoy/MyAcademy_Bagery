@@ -1,9 +1,8 @@
 ﻿using Bagery.WebUI.MediatorPattern.Queries.ProductQueries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace Bagery.WebUI.Components._AdminComponents.ForProductViewComponents
+namespace Bagery.WebUI.ViewComponents._AdminLoyoutComponents.ForProductViewComponents
 {
     public class GetLast10ProductViewComponents(IMediator mediator):ViewComponent
     {
