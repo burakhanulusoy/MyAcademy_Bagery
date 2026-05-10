@@ -1,14 +1,19 @@
 ﻿using Bagery.WebUI.MediatorPattern.Queries.TestimonialQueries;
 using Bagery.WebUI.MediatorPattern.Results.TestimonialResults;
+using Bagery.WebUI.Repositories.TestimonialRepositories;
+using Mapster;
 using MediatR;
 
 namespace Bagery.WebUI.MediatorPattern.Handlers.TestimonialHandlers
 {
-    public class GetTestimonialByIdQueryHandler : IRequestHandler<GetTestimonialByIdQuery, GetTestimonialByIdQueryResult>
+    public class GetTestimonialByIdQueryHandler(ITestimonialRepository _testimonialRepository) : IRequestHandler<GetTestimonialByIdQuery, GetTestimonialByIdQueryResult>
     {
-        public Task<GetTestimonialByIdQueryResult> Handle(GetTestimonialByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetTestimonialByIdQueryResult> Handle(GetTestimonialByIdQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var item = await _testimonialRepository.GetByIdAsync(request.Id);
+            return item.Adapt<GetTestimonialByIdQueryResult>();
+            
+
         }
     }
 }
