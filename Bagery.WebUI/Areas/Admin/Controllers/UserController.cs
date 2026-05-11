@@ -66,6 +66,8 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
 
             await _mediator.Send(command);
 
+            TempData["SuccessMessage"] = "Profil bilgileriniz başarıyla güncellendi.";
+
             return RedirectToAction(nameof(UpdateUser));
 
         }

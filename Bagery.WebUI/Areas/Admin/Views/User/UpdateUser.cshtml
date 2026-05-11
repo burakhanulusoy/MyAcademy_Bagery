@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
 <div class="page-content-wrapper">
     <div class="page-content">
 
@@ -11,20 +13,19 @@
             <div class="col-lg-8 mx-auto">
                 <div class="card radius-10">
                     <div class="card-body">
-                        <form method="post" enctype="multipart/form-data">
+                        <form id="updateProfileForm" method="post" enctype="multipart/form-data">
 
                             <h5 class="mb-3">Profil Düzenle</h5>
                             <input type="hidden" asp-for="ImageUrl" />
 
-                            @* 1. PROFESYONEL DOKUNUŞ: Sadece genel hataları ("ModelOnly") burada göster. Kutuların altındaki hatalar buraya listelenmez! *@
+                            @* 1. PROFESYONEL DOKUNUŞ: Sadece genel hataları ("ModelOnly") burada göster. *@
                             <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                             <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-center">
                                 <div class="user-change-photo shadow">
                                     <img src="@(Model?.ImageUrl ?? "https://images.unsplash.com/photo-1707396172424-f3293f788364?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjZ8fHVzZXIlMjBhZG1pbnxlbnwwfHwwfHx8MA%3D%3D")" alt="Profil Fotoğrafı" id="previewImg">
                                 </div>
-                                <input type="file" asp-for="file" class="form-control form-control-sm" />
-                                @* Dosya boyutu vb. hatası olursa sadece burada çıkar *@
+                                <input type="file" asp-for="file" id="fileInput" class="form-control form-control-sm" accept="image/*" />
                                 <span asp-validation-for="file" class="text-danger"></span>
                             </div>
 
@@ -86,7 +87,6 @@
                             </div>
 
                             <div class="text-start mt-4">
-                                @* 2. DOKUNUŞ: type="submit" olmazsa form enter'a basınca saçmalayabilir *@
                                 <button type="submit" class="btn btn-primary px-4">Değişiklikleri Kaydet</button>
                             </div>
 
@@ -97,3 +97,91 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // 1. ANLIK RESİM ÖNİZLEME VE GÜVENLİK KONTROLÜ
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Sadece resim dosyası mı kontrol et
+            if (!file.type.match('image.*')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Geçersiz Format',
+                    text: 'Lütfen sadece resim (JPG, PNG vb.) dosyası seçiniz.'
+                });
+                this.value = ''; // Inputu temizle
+                return;
+            }
+
+            // Dosya boyutu kontrolü (Örn: 2 MB limiti)
+            const maxSizeInMB = 2;
+            if (file.size > (maxSizeInMB * 1024 * 1024)) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Dosya Çok Büyük',
+                    text: `Seçtiğiniz resim ${maxSizeInMB}MB'dan daha küçük olmalıdır.`
+                });
+                this.value = ''; // Inputu temizle
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('previewImg').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 2. KAYDETMEDEN ÖNCE ONAY PENCERESİ VE YÜKLENİYOR ANİMASYONU
+    document.getElementById('updateProfileForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Formun hemen gitmesini durdur
+
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Profil bilgileriniz güncellenecektir. Onaylıyor musunuz?",
+            icon: 'question', // Uyarı yerine soru ikonu daha zarif durur
+            showCancelButton: true,
+            reverseButtons: true, // İptal butonunu sola, onay butonunu sağa alır (Modern UI)
+            confirmButtonColor: '#0d6efd',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Evet, Güncelle',
+            cancelButtonText: 'Vazgeç',
+            showLoaderOnConfirm: true, // Butona basınca dönen spinner çıkar
+            preConfirm: () => {
+                // Form submit edilmeden hemen önce spinner gösteriyoruz
+                Swal.showLoading();
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit(); // Kullanıcı onaylarsa formu gönder
+            }
+        });
+    });
+
+    // 3. BAŞARILI MESAJI (Tebrikler - Otomatik Kapanan Progress Bar)
+    @if (TempData["SuccessMessage"] != null)
+    {
+            <text>
+            document.addEventListener("DOMContentLoaded", function() {
+                Swal.fire({
+                    title: 'Tebrikler!',
+                    text: @Html.Raw(Json.Serialize(TempData["SuccessMessage"])),
+                    icon: 'success',
+                    timer: 3500, // 3.5 saniye sonra otomatik kapanır
+                    timerProgressBar: true, // Alta şık bir azalan çizgi ekler
+                    showConfirmButton: true,
+                    confirmButtonColor: '#198754',
+                    confirmButtonText: 'Tamam'
+                });
+            });
+            </text>
+    }
+</script>
+
+
+
+

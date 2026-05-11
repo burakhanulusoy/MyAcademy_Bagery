@@ -81,6 +81,14 @@ namespace Bagery.WebUI.Extensions
                 options.LoginPath = "/User/Login";
                 options.LogoutPath = "/User/Logout";
                 options.AccessDeniedPath = "/User/AccessDenied";
+
+                // Cookie'nin geçerlilik süresini belirler (Örn: 30 gün veya 60 dakika).
+                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+
+                // Kullanıcı sistemde aktifse (belirlenen sürenin yarısı geçtikten sonra bir istek yaparsa) 
+                // oturum süresini otomatik olarak baştan başlatır.
+                options.SlidingExpiration = true;
+
             });
 
 

@@ -43,7 +43,7 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
             }
 
             // 3. Her şey tamamsa şimdi gerçekten giriş yap (Cookie oluştur)
-            await _signInManager.SignInAsync(user,true);
+            await _signInManager.SignInAsync(user,request.RememberMe);
 
 
 
