@@ -1,0 +1,184 @@
+﻿@model List<GetTestimonialsQueryResult>
+
+
+@{
+    ViewData["Title"] = "Müşteri Yorumları";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <!-- Breadcrumb Alanı -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">Yorum Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Müşteri Yorumları (Testimonials)</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <a href="/Admin/Testimonial/CreateTestimonial" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm transition-hover">
+                    <i class="bx bx-plus-circle fs-5"></i> Yeni Yorum Ekle
+                </a>
+            </div>
+        </div>
+
+        <!-- Ana Kart -->
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-body p-4">
+
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0 text-primary fw-bold">Sistemdeki Yorumlar</h5>
+                    <form class="position-relative w-25">
+                        <div class="position-absolute top-50 translate-middle-y search-icon px-3">
+                            <ion-icon name="search-sharp"></ion-icon>
+                        </div>
+                        <input class="form-control ps-5 rounded-pill" type="text" placeholder="Kişi veya unvan ara...">
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover mb-0">
+                        <thead class="table-light text-secondary">
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="30%">Kişi Bilgisi</th>
+                                <th width="50%">Müşteri Yorumu</th>
+                                <th width="15%" class="text-end">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    count++;
+                                    // Dinamik Baş Harf (İsmin ilk harfini alır, boşsa varsayılan 'U' atar)
+                                    string initial = !string.IsNullOrWhiteSpace(item.FullName) ? item.FullName.Substring(0, 1).ToUpper() : "U";
+
+                                    <tr>
+                                        <!-- Sıra No -->
+                                        <td>
+                                            <span class="badge bg-light text-dark border shadow-sm">@count</span>
+                                        </td>
+
+                                        <!-- Kişi Bilgisi (Dinamik Avatar ile) -->
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="avatar-initial bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-5 shadow-sm">
+                                                    @initial
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-dark">@item.FullName</h6>
+                                                    <span class="badge bg-light text-secondary border mt-1">@item.Title</span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Yorum (Alıntı formatında) -->
+                                        <td>
+                                            <div class="fst-italic text-muted text-wrap pe-4" style="max-width: 450px; line-height: 1.5;">
+                                                <i class="bx bxs-quote-alt-left text-primary opacity-50 me-1 fs-5"></i>
+                                                @(item.Comment.Length > 90 ? item.Comment.Substring(0, 90) + "..." : item.Comment)
+                                                <i class="bx bxs-quote-alt-right text-primary opacity-50 ms-1 fs-5"></i>
+                                            </div>
+                                        </td>
+
+                                        <!-- İşlemler (Update & Delete) -->
+                                        <td class="text-end">
+                                            <div class="btn-group shadow-sm">
+                                                <a href="/Admin/Testimonial/UpdateTestimonial/@item.Id" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 transition-zoom" title="Düzenle">
+                                                    <i class="bx bx-edit fs-6"></i>
+                                                </a>
+                                                <button onclick="confirmDelete('/Admin/Testimonial/DeleteTestimonial/@item.Id')" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1 transition-zoom" title="Sil">
+                                                    <i class="bx bx-trash fs-6"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <i class="bx bx-message-square-detail fs-1 mb-2 opacity-50 text-primary"></i>
+                                            <h6 class="fw-semibold">Henüz hiç yorum eklenmemiş.</h6>
+                                            <p class="mb-0 small">Sistemde gösterilecek müşteri yorumlarını buradan ekleyebilirsiniz.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Estetik İçin CSS Dokunuşları -->
+<style>
+    .avatar-initial {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(45deg, #0d6efd, #0dcaf0) !important; /* Hoş bir mavi degrade */
+    }
+
+    .transition-zoom {
+        transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+    }
+
+        .transition-zoom:hover {
+            transform: scale(1.15);
+        }
+
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+
+        .transition-hover:hover {
+            transform: translateY(-2px);
+        }
+</style>
+
+<!-- Dinamik SweetAlert Scripti -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: "Yorumu silmek istiyor musunuz?",
+            text: "Bu müşteri yorumu kalıcı olarak silinecektir!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, Sil!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Silindi!",
+                    text: "Müşteri yorumu başarıyla silindi.",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = deleteUrl;
+                });
+            }
+        });
+    }
+</script>
+

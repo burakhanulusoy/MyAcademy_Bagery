@@ -15,6 +15,7 @@ namespace Bagery.WebUI.Validators.PromotionValidators
 
             RuleFor(x => x.Description)
                 .NotEmpty().WithMessage("Promosyon açıklaması boş geçilemez.")
+                .MinimumLength(25).WithMessage("Promosyon açıklamsı en az 25 karakter olmalıdır.")
                 .MaximumLength(500).WithMessage("Açıklama en fazla 500 karakter olmalıdır.");
 
             RuleFor(x => x.PromotionPrice)

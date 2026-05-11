@@ -1,0 +1,140 @@
+﻿@model UpdateTestimonialCommand
+
+@{
+    ViewData["Title"] = "Yorum Güncelle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-header bg-transparent border-bottom mt-2 pb-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bx bx-message-square-edit text-primary fs-4"></i>
+                    <h5 class="mb-0 text-primary fw-bold">Müşteri Yorumunu Düzenle</h5>
+                </div>
+                <span class="badge bg-light text-secondary border"><i class="bx bx-edit"></i> Güncelleme Modu</span>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="post" id="updateItemForm">
+
+                    <!-- Güncelleme işlemi için gerekli gizli alan -->
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="row">
+                        <!-- Ad Soyad -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Müşteri Adı Soyadı</label>
+                            <div class="input-group shadow-sm">
+                                <span class="input-group-text bg-white"><i class="bx bx-user text-muted"></i></span>
+                                <input class="form-control border-start-0" type="text" placeholder="Örn: Ahmet Yılmaz" asp-for="FullName" required />
+                            </div>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="FullName"></span>
+                        </div>
+
+                        <!-- Unvan / Meslek -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Unvanı veya Mesleği</label>
+                            <div class="input-group shadow-sm">
+                                <span class="input-group-text bg-white"><i class="bx bx-briefcase text-muted"></i></span>
+                                <input class="form-control border-start-0" type="text" placeholder="Örn: Yazılım Mühendisi vb." asp-for="Title" required />
+                            </div>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Title"></span>
+                        </div>
+
+                        <!-- Yorum (Comment) -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label fw-semibold">Müşteri Yorumu</label>
+                            <div class="position-relative shadow-sm">
+                                <textarea class="form-control p-3" placeholder="Müşterinin ilettiği yorumu buraya yazınız..." asp-for="Comment" rows="5" required></textarea>
+                            </div>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Comment"></span>
+                        </div>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-2 border-top pt-4">
+                        <button type="button" onclick="confirmUpdate()" class="btn btn-success text-white px-5 d-flex align-items-center gap-2 shadow-sm transition-hover">
+                            <i class="fadeIn animated bx bx-refresh fs-5"></i> Değişiklikleri Kaydet
+                        </button>
+                        <a href="/Admin/Testimonial/Index" class="btn btn-secondary px-5 d-flex align-items-center gap-2 shadow-sm transition-hover">
+                            <i class="fadeIn animated bx bx-x fs-5"></i> İptal
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+
+        .transition-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        }
+
+    .input-group-text {
+        border-right: none;
+    }
+
+    .form-control:focus {
+        border-color: #dee2e6;
+        box-shadow: none;
+    }
+
+        .form-control:focus + .input-group-text,
+        .input-group:focus-within .input-group-text {
+            border-color: #198754; /* Success rengine uygun focus efekti */
+        }
+
+    .input-group:focus-within .form-control {
+        border-color: #198754;
+    }
+</style>
+
+<!-- SweetAlert2 Scripti -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmUpdate() {
+        var form = document.getElementById("updateItemForm");
+
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Değişiklikleri Kaydet?",
+                text: "Müşteri yorumu bilgileri güncellenecektir. Onaylıyor musunuz?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#198754", // Success color
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, Güncelle!",
+                cancelButtonText: "Vazgeç"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: 'Güncelleniyor...',
+                        text: 'Lütfen bekleyiniz.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    form.submit();
+                }
+            });
+        } else {
+            form.reportValidity();
+        }
+    }
+</script>
