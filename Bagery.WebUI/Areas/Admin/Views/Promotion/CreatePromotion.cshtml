@@ -1,0 +1,125 @@
+﻿@model CreatePromotionCommand
+@{
+    ViewData["Title"] = "CreatePromotion";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-header bg-transparent border-bottom mt-2 pb-3">
+                <h5 class="mb-0 text-primary fw-bold">Yeni Promosyon (Kampanya) Ekle</h5>
+            </div>
+            <div class="card-body p-4">
+                <!-- action etiketi kaldırıldı, doğrudan aynı sayfaya post atacak -->
+                <form enctype="multipart/form-data" method="post" id="createItemForm">
+
+                    <div class="row">
+                        <!-- Başlık -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-semibold">Promosyon Başlığı</label>
+                            <input class="form-control" type="text" placeholder="Örn: Yaza Özel %50 İndirim!" asp-for="Title" required />
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Title"></span>
+                        </div>
+
+                        <!-- Açıklama -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-semibold">Açıklama <small class="text-muted">(Kullanıcılara gidecek e-posta içeriği)</small></label>
+                            <textarea class="form-control" placeholder="Kampanya detaylarını ve koşullarını buraya yazınız..." asp-for="Description" rows="4" required></textarea>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Description"></span>
+                        </div>
+
+                        <!-- Fiyat -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Promosyon Fiyatı (₺)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bx bx-lira"></i></span>
+                                <input class="form-control" type="number" step="0.01" placeholder="Örn: 150.00" asp-for="PromotionPrice" required />
+                            </div>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="PromotionPrice"></span>
+                        </div>
+
+                        <!-- Promosyon Kodu -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Promosyon / İndirim Kodu</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bx bxs-coupon"></i></span>
+                                <input class="form-control" type="text" placeholder="Örn: YAZ50" asp-for="PromotionCode" style="text-transform: uppercase;" required />
+                            </div>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="PromotionCode"></span>
+                        </div>
+
+                        <!-- Görsel -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label fw-semibold">Promosyon Görseli Seçin</label>
+                            <input class="form-control" type="file" asp-for="file" accept="image/*" required />
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="file"></span>
+                        </div>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-2 border-top pt-4">
+                        <button type="button" onclick="confirmCreate()" class="btn btn-primary text-white px-5 d-flex align-items-center gap-2 shadow-sm transition-hover">
+                            <i class="fadeIn animated bx bx-mail-send fs-5"></i> Kaydet ve E-Posta Gönder
+                        </button>
+                        <a href="/Admin/Promotion/Index" class="btn btn-secondary px-5 d-flex align-items-center gap-2 shadow-sm transition-hover">
+                            <i class="fadeIn animated bx bx-x fs-5"></i> İptal
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+
+        .transition-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        }
+</style>
+
+<!-- SweetAlert2 Scripti -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmCreate() {
+        var form = document.getElementById("createItemForm");
+
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Kaydet ve Bildir?",
+                text: "Bu promosyon sisteme eklenecek ve tüm kullanıcılara bilgilendirme e-postası gönderilecektir. Onaylıyor musunuz?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#0d6efd",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Kaydet ve Gönder!",
+                cancelButtonText: "Vazgeç"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'İşlem Yapılıyor...',
+                        html: 'Promosyon kaydediliyor ve e-postalar gönderiliyor.<br><b>Lütfen bu pencereyi kapatmayın.</b>',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    form.submit();
+                }
+            });
+        } else {
+            form.reportValidity();
+        }
+    }
+</script>

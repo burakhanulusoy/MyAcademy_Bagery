@@ -1,0 +1,150 @@
+﻿@model UpdatePromotionCommand
+
+
+@{
+    ViewData["Title"] = "Promosyon Güncelle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-header bg-transparent border-bottom mt-2 pb-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary fw-bold">Promosyonu Düzenle</h5>
+                <span class="badge bg-light text-secondary border"><i class="bx bx-edit"></i> Güncelleme Modu</span>
+            </div>
+
+            <div class="card-body p-4">
+                <form enctype="multipart/form-data" method="post" id="updateItemForm">
+
+                    <!-- Güncelleme işlemi için gerekli gizli alanlar -->
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ImageUrl" />
+
+                    <div class="row">
+                        <!-- Mevcut Görsel Önizleme -->
+                        <div class="col-md-12 mb-4 d-flex align-items-center gap-3 p-3 bg-light rounded border border-dashed">
+                            <div>
+                                <p class="mb-1 fw-semibold text-muted">Mevcut Görsel</p>
+                                <img src="@Model.ImageUrl" alt="Mevcut Görsel" class="rounded shadow-sm object-fit-cover" width="100" height="100" onerror="this.src='/images/default-image.png'" />
+                            </div>
+                            <div class="ms-3 text-muted small">
+                                <i class="bx bx-info-circle text-info"></i> Eğer görseli değiştirmek istemiyorsanız aşağıdaki dosya seçme alanını boş bırakabilirsiniz. Eski görseliniz korunacaktır.
+                            </div>
+                        </div>
+
+                        <!-- Başlık -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-semibold">Promosyon Başlığı</label>
+                            <input class="form-control" type="text" placeholder="Örn: Yaza Özel %50 İndirim!" asp-for="Title" required />
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Title"></span>
+                        </div>
+
+                        <!-- Açıklama -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-semibold">Açıklama</label>
+                            <textarea class="form-control" placeholder="Kampanya detaylarını buraya yazınız..." asp-for="Description" rows="4" required></textarea>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Description"></span>
+                        </div>
+
+                        <!-- Fiyat -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Promosyon Fiyatı (₺)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bx bx-lira"></i></span>
+                                <!-- Ondalıklı sayıları doğru okuması için type="text" kullanılabilir veya adım değeri step="any" yapılabilir -->
+                                <input class="form-control" type="number" step="any" placeholder="Örn: 150.00" asp-for="PromotionPrice" required />
+                            </div>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="PromotionPrice"></span>
+                        </div>
+
+                        <!-- Promosyon Kodu -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Promosyon / İndirim Kodu</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bx bxs-coupon"></i></span>
+                                <input class="form-control" type="text" placeholder="Örn: YAZ50" asp-for="PromotionCode" style="text-transform: uppercase;" required />
+                            </div>
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="PromotionCode"></span>
+                        </div>
+
+                        <!-- Yeni Görsel (Opsiyonel) -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label fw-semibold text-primary">Yeni Görsel Seçin <small class="text-muted fw-normal">(Değiştirmek isterseniz)</small></label>
+                            <input class="form-control" type="file" asp-for="file" accept="image/*" />
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="file"></span>
+                        </div>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-2 border-top pt-4">
+                        <button type="button" onclick="confirmUpdate()" class="btn btn-success text-white px-5 d-flex align-items-center gap-2 shadow-sm transition-hover">
+                            <i class="fadeIn animated bx bx-refresh fs-5"></i> Değişiklikleri Kaydet
+                        </button>
+                        <a href="/Admin/Promotion/Index" class="btn btn-secondary px-5 d-flex align-items-center gap-2 shadow-sm transition-hover">
+                            <i class="fadeIn animated bx bx-x fs-5"></i> İptal
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+    }
+
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+
+        .transition-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        }
+</style>
+
+<!-- SweetAlert2 Scripti -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmUpdate() {
+        var form = document.getElementById("updateItemForm");
+
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Değişiklikleri Kaydet?",
+                text: "Promosyon bilgileri güncellenecektir. Onaylıyor musunuz?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#198754", // Success color
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Evet, Güncelle!",
+                cancelButtonText: "Vazgeç"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: 'Güncelleniyor...',
+                        html: 'Lütfen bekleyiniz.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    form.submit();
+                }
+            });
+        } else {
+            form.reportValidity();
+        }
+    }
+</script>
+

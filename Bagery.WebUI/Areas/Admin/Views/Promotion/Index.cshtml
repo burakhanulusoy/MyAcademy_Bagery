@@ -1,0 +1,185 @@
+﻿@model List<GetPromotionsQueryResult>
+
+@{
+    ViewData["Title"] = "Promosyon Listesi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <!-- Breadcrumb Alanı -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">Promosyon Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Kampanya ve Promosyonlar</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <a href="/Admin/Promotion/CreatePromotion" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+                    <i class="bx bx-plus-circle fs-5"></i> Yeni Promosyon Ekle
+                </a>
+            </div>
+        </div>
+
+        <!-- Ana Kart -->
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-body p-4">
+
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0 text-primary fw-bold">Sistemdeki Promosyonlar</h5>
+                    <form class="position-relative w-25">
+                        <div class="position-absolute top-50 translate-middle-y search-icon px-3">
+                            <ion-icon name="search-sharp"></ion-icon>
+                        </div>
+                        <input class="form-control ps-5 rounded-pill" type="text" placeholder="Promosyon ara...">
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover mb-0">
+                        <thead class="table-light text-secondary">
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="30%">Promosyon Görsel & Başlık</th>
+                                <th width="25%">Açıklama</th>
+                                <th width="15%">Fiyat</th>
+                                <th width="15%">Promosyon Kodu</th>
+                                <th width="10%" class="text-end">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    count++;
+                                    <tr>
+                                        <!-- Sıra No -->
+                                        <td>
+                                            <span class="badge bg-light text-dark border">@count</span>
+                                        </td>
+
+                                        <!-- Görsel ve Başlık -->
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img src="@item.ImageUrl" alt="@item.Title" class="rounded object-fit-cover shadow-sm" width="60" height="60" onerror="this.src='/images/default-image.png'" />
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-dark">@item.Title</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Açıklama -->
+                                        <td>
+                                            <div class="text-muted small text-wrap" style="max-width: 250px;">
+                                                @(item.Description.Length > 60 ? item.Description.Substring(0, 60) + "..." : item.Description)
+                                            </div>
+                                        </td>
+
+                                        <!-- Promosyon Fiyatı -->
+                                        <td>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="bx bx-lira text-success fs-5"></i>
+                                                <span class="fw-bold text-success fs-6">@item.PromotionPrice.ToString("N2")</span>
+                                            </div>
+                                        </td>
+
+                                        <!-- Promosyon Kodu Çipi -->
+                                        <td>
+                                            <div class="badge bg-light text-danger border border-danger border-dashed p-2 px-3 d-inline-flex align-items-center gap-2 rounded-pill shadow-sm" title="Promosyon Kodu">
+                                                <i class="bx bxs-coupon fs-6"></i>
+                                                <span class="fw-bold fs-6 tracking-wide">@item.PromotionCode</span>
+                                            </div>
+                                        </td>
+
+                                        <!-- İşlemler (Update & Delete) -->
+                                        <td class="text-end">
+                                            <div class="btn-group shadow-sm">
+                                                <a href="/Admin/Promotion/UpdatePromotion/@item.Id" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 transition-zoom" title="Düzenle">
+                                                    <i class="bx bx-edit fs-6"></i>
+                                                </a>
+                                                <button onclick="confirmDelete('/Admin/Promotion/DeletePromotion/@item.Id')" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1 transition-zoom" title="Sil">
+                                                    <i class="bx bx-trash fs-6"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <i class="bx bx-box fs-1 mb-2 opacity-50"></i>
+                                            <p class="mb-0">Henüz hiçbir promosyon eklenmemiş.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Estetik İçin CSS Dokunuşları -->
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+    }
+
+    .tracking-wide {
+        letter-spacing: 2px;
+    }
+
+    .transition-zoom {
+        transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+    }
+
+        .transition-zoom:hover {
+            transform: scale(1.1);
+        }
+</style>
+
+<!-- Dinamik SweetAlert Scripti -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: "Promosyonu silmek istiyor musunuz?",
+            text: "Bu işlem geri alınamaz ve kampanya tamamen silinecektir!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, kalıcı olarak sil!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Silindi!",
+                    text: "Promosyon başarıyla silindi.",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = deleteUrl;
+                });
+            }
+        });
+    }
+</script>
