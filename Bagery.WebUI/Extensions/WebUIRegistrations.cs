@@ -83,7 +83,7 @@ namespace Bagery.WebUI.Extensions
                 options.AccessDeniedPath = "/User/AccessDenied";
 
                 // Cookie'nin geçerlilik süresini belirler (Örn: 30 gün veya 60 dakika).
-                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
                 // Kullanıcı sistemde aktifse (belirlenen sürenin yarısı geçtikten sonra bir istek yaparsa) 
                 // oturum süresini otomatik olarak baştan başlatır.

@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PagedList.Core;
+using System.Threading.Tasks;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
@@ -95,6 +96,20 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
 
         }
 
+
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordCommand command)
+        {
+            await _mediator.Send(command);
+            return RedirectToAction("Login","User",new {area=string.Empty});
+
+
+        }
 
 
     }

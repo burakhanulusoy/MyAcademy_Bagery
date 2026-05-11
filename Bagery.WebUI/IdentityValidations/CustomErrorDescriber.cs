@@ -64,11 +64,10 @@ namespace Bagery.WebUI.IdentityValidations
         {
             return new IdentityError
             {
-                Code = nameof(PasswordMismatch),
-                Description = "Girdiğiniz şifreler birbiriyle eşleşmiyor. Lütfen kontrol edip tekrar deneyin."
+                Code = "PasswordMismatch",
+                Description = "Girdiğiniz mevcut şifre yanlış. Lütfen kontrol edip tekrar deneyin."
             };
         }
-
 
 
 
