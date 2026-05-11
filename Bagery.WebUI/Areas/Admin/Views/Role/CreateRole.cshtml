@@ -1,0 +1,89 @@
+﻿@model CreateRoleCommand
+
+@{
+    ViewData["Title"] = "Yeni Rol Ekle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Rol Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="/Admin/Role/Index"><ion-icon name="shield-checkmark-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Yeni Rol Oluştur</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="card border-top border-0 border-4 border-info">
+            <div class="card-body p-5">
+                <div class="card-title d-flex align-items-center">
+                    <div><i class="bx bx-plus me-1 font-22 text-info"></i></div>
+                    <h5 class="mb-0 text-info">Yeni Sistem Rolü Ekle</h5>
+                </div>
+                <hr>
+
+                <!-- KANKA İSTEDİĞİN VALIDATION SUMMARY BURADA -->
+                <div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
+
+                <form method="post" id="createItemForm">
+
+                    <!-- Rol Adı -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Rol Adı</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bx bx-shield"></i></span>
+                            <input class="form-control" type="text" placeholder="Örn: Admin, Moderator, User..." asp-for="Name" required />
+                        </div>
+                        <!-- Sadece bu inputa özel hatalar -->
+                        <span class="text-danger fw-bold mt-1 d-block" asp-validation-for="Name"></span>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="button" onclick="confirmCreate()" class="btn btn-info text-white px-5 d-flex align-items-center gap-2">
+                            <i class="fadeIn animated bx bx-save"></i> Rolü Kaydet
+                        </button>
+                        <a href="/Admin/Role/Index" class="btn btn-secondary px-5 d-flex align-items-center gap-2">
+                            <i class="fadeIn animated bx bx-x"></i> İptal Et
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function confirmCreate() {
+        var form = document.getElementById("createItemForm");
+
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Yeni rol oluşturmak istediğinize emin misiniz?",
+                text: "Bu rol sisteme eklenecek ve kullanıcılara atanabilir hale gelecektir.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Oluştur!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        } else {
+            form.reportValidity();
+        }
+    }
+</script>

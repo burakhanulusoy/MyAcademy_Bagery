@@ -1,31 +1,106 @@
 ﻿@model AssignRoleUserCommand
 @{
-    ViewData["Title"] = "AssignRole";
+    ViewData["Title"] = "Rol Ata";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<form method="post">
-    
-    @for (int i = 0; i < Model.Roles.Count; i++)
-    {
+<div class="page-content-wrapper">
+    <div class="page-content">
 
-        <div class="form-check">
-
-            <input type="hidden" asp-for="@Model.Roles[i].RoleName" />
-            <input type="hidden" asp-for="@Model.Roles[i].RoleId" />
-            <input type="hidden" asp-for="@Model.Id" />
-            
-            <input type="checkbox" asp-for="@Model.Roles[i].RoleExist" class="form-check-input" />
-            <label class="form-check-label">@Model.Roles[i].RoleName</label>
-
-
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Kullanıcı Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <!-- Kullanıcı listesi sayfasına döneceğini varsaydım -->
+                            <a href="/Admin/User/Index"><ion-icon name="people-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Kullanıcıya Rol Ata</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
 
+        <div class="card border-top border-0 border-4 border-primary">
+            <div class="card-body p-5">
+                <div class="card-title d-flex align-items-center">
+                    <div><i class="bx bx-user-check me-1 font-22 text-primary"></i></div>
+                    <h5 class="mb-0 text-primary">Kullanıcı Yetkilendirme Paneli</h5>
+                </div>
+                <hr>
+
+                <!-- Validasyon Hataları Buraya Düşecek -->
+                <div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
+
+                <form method="post" id="assignRoleForm">
+
+                    <!-- KANKA DİKKAT: Kullanıcı ID'sini döngünün DIŞINA aldık! -->
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-4 mt-3">
+                        <label class="form-label fw-bold mb-3 text-secondary">
+                            Lütfen bu kullanıcı için aktif olmasını istediğiniz rolleri işaretleyiniz:
+                        </label>
+
+                        <!-- Checkboxları yan yana ve şık göstermek için Grid sistemi kullandık -->
+                        <div class="row">
+                            @for (int i = 0; i < Model.Roles.Count; i++)
+                            {
+                                <div class="col-md-4 col-sm-6 mb-3">
+                                    <div class="form-check form-switch form-check-primary d-flex align-items-center">
+
+                                        <!-- Rol adı ve ID'si arka planda post olmak zorunda -->
+                                        <input type="hidden" asp-for="@Model.Roles[i].RoleName" />
+                                        <input type="hidden" asp-for="@Model.Roles[i].RoleId" />
+
+                                        <!-- Checkbox (Switch tarzı daha modern duruyor) -->
+                                        <input type="checkbox" asp-for="@Model.Roles[i].RoleExist" class="form-check-input mt-0" style="cursor: pointer; width: 3em; height: 1.5em;" />
+
+                                        <!-- Etikete tıklandığında da checkbox seçilsin diye for-id eşleştirmesine gerek kalmadan şık tasarım -->
+                                        <label class="form-check-label ms-3 fw-bold fs-6" style="cursor: pointer;">
+                                            @Model.Roles[i].RoleName
+                                        </label>
+
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-5">
+                        <button type="button" onclick="confirmAssign()" class="btn btn-primary text-white px-5 d-flex align-items-center gap-2">
+                            <i class="fadeIn animated bx bx-save"></i> Yetkileri Kaydet
+                        </button>
+                        <a href="/Admin/User/Index" class="btn btn-secondary px-5 d-flex align-items-center gap-2">
+                            <i class="fadeIn animated bx bx-x"></i> İptal Et
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function confirmAssign() {
+        Swal.fire({
+            title: "Yetkileri kaydetmek istiyor musunuz?",
+            text: "Kullanıcının sistem üzerindeki hakları yaptığınız seçimlere göre güncellenecektir.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#0d6efd", // Bootstrap primary rengi
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Evet, Yetkilendir!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Her şey ok ise formu gönder
+                document.getElementById("assignRoleForm").submit();
+            }
+        });
     }
-
-    <button class="btn btn-success">Rol Ata</button>
-
-</form>
-
-
-
+</script>

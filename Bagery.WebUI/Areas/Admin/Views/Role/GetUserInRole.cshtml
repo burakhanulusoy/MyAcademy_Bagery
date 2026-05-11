@@ -1,0 +1,113 @@
+﻿@model List<GetUserByRolIdQueryResult>
+
+
+@{
+    ViewData["Title"] = "Role Ait Kullanıcılar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <!-- Breadcrumb Başlangıcı -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Rol Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="/Admin/Role/Index"><ion-icon name="home-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Role Ait Kullanıcılar</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <a href="/Admin/Role/Index" class="btn btn-outline-secondary">
+                    <i class="bx bx-arrow-back me-1"></i> Rol Listesine Dön
+                </a>
+            </div>
+        </div>
+        <!-- Breadcrumb Bitişi -->
+
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0">Bu Role Sahip Kullanıcılar</h5>
+                </div>
+
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover mb-0">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th>Kullanıcı</th>
+                                    <th>Meslek / Görev</th>
+                                    <th>İşlemler</th> <!-- YENİ SÜTUN EKLENDİ -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    count++;
+                                    <tr>
+                                        <td>@count</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="product-box border">
+                                                    <!-- Eğer resim yoksa varsayılan bir profil resmi göstersin -->
+                                                    <img src="@(!string.IsNullOrEmpty(item.Users.ImageUrl) ? item.Users.ImageUrl : "/images/default-avatar.png")"
+                                                         alt="Kullanıcı Resmi"
+                                                         class="rounded-circle" width="45" height="45" style="object-fit: cover;">
+                                                </div>
+                                                <div class="product-info">
+                                                    <h6 class="product-name mb-1">@item.Users.FullName</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.Users.Job))
+                                            {
+                                                <span class="badge bg-light text-dark border">@item.Users.Job</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted fst-italic">Belirtilmemiş</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <!-- KULLANICI PROFİLİNE GİT BUTONU -->
+                                            <div class="table-actions d-flex align-items-center gap-2 fs-6">
+                                                <!-- Href içindeki "/Admin/User/" kısmını kendi Controller ismine göre ayarla -->
+                                                <a href="/Admin/User/GetUserById/@item.Users.Id" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+                                                    <i class="fadeIn animated bx bx-user-pin"></i> Profile Git
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning border-0 bg-warning alert-dismissible fade show py-2">
+                        <div class="d-flex align-items-center">
+                            <div class="font-35 text-dark"><i class='bx bx-info-circle'></i></div>
+                            <div class="ms-3">
+                                <h6 class="mb-0 text-dark">Bilgi</h6>
+                                <div class="text-dark">Bu role atanmış herhangi bir kullanıcı bulunmuyor.</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
+</div>

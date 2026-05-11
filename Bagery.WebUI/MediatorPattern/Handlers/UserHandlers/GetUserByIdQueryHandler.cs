@@ -17,12 +17,11 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
                                                .Include(x => x.Comments)
                                                .Include(x => x.Blogs)
                                                .FirstOrDefaultAsync();
-          
 
-
-            return user.Adapt<GetUserByIdQueryResult>();
-
-
+            var roles = await _userManager.GetRolesAsync(user);
+            var result = user.Adapt<GetUserByIdQueryResult>();
+            result.Roles = roles;
+            return result;
         }
     }
 }

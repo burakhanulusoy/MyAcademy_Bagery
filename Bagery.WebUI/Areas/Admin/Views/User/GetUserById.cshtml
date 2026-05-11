@@ -42,19 +42,39 @@
                     <div class="card-body">
                         <div class="mt-5 d-flex align-items-start justify-content-between">
                             <div class="">
-                                <!-- İsim, Meslek ve Adres Bilgileri -->
+                                <!-- İsim Bilgisi -->
                                 <h3 class="mb-2">@Model.FullName</h3>
+
+                                <!-- EKLENEN KISIM: Rolleri Şık Badge'ler Halinde Gösterme -->
+                                <div class="mb-3">
+                                    @if (Model.Roles != null && Model.Roles.Any())
+                                    {
+                                        foreach (var role in Model.Roles)
+                                        {
+                                            <!-- Tasarımı bozmaması için Bootstrap badge kullanıyoruz -->
+                                            <span class="badge bg-primary text-white me-1 p-2">@role</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary text-white me-1 p-2">Rol Atanmamış</span>
+                                    }
+                                </div>
+                                <!-- EKLENEN KISIM SONU -->
+                                <!-- Meslek ve Adres Bilgileri -->
                                 <p class="mb-1 text-muted">@(Model.Job ?? "Meslek Belirtilmemiş")</p>
                                 <p>@(Model.Address ?? "Adres Belirtilmemiş")</p>
                             </div>
+
                             <div class="">
-                                <!-- Email varsa Mail Gönder butonu aktif olur -->
+                                <!-- İşlem Butonları (Sil, Rol Ata, Mail Gönder) Aynen Kalıyor -->
                                 <button type="button" onclick="confirmDelete('@Model.Id')" class="btn btn-outline-danger">
                                     <ion-icon name="trash-outline"></ion-icon> Kullanıcıyı Sil
                                 </button>
 
-                                <a href="/Admin/User/AssignRole/@Model.Id" class="btn btn-outline-danger">
-                                    <ion-icon name="trash-outline"></ion-icon> Kullanıcıyı Sil
+                                <!-- Rol Atama Linkiniz Zaten Var -->
+                                <a href="/Admin/User/AssignRole/@Model.Id" class="btn btn-outline-warning">
+                                    <ion-icon name="key-outline"></ion-icon> Rol İşlemleri
                                 </a>
 
                                 @if (!string.IsNullOrWhiteSpace(Model.Email))

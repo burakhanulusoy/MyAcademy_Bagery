@@ -1,0 +1,93 @@
+﻿@model UpdateRoleCommand
+
+@{
+    ViewData["Title"] = "Rol Güncelle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Rol Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="/Admin/Role/Index"><ion-icon name="shield-checkmark-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Rol Güncelle</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Güncelleme işlemi olduğu için border-warning kullandık -->
+        <div class="card border-top border-0 border-4 border-warning">
+            <div class="card-body p-5">
+                <div class="card-title d-flex align-items-center">
+                    <div><i class="bx bx-edit me-1 font-22 text-warning"></i></div>
+                    <h5 class="mb-0 text-warning">Mevcut Rolü Düzenle</h5>
+                </div>
+                <hr>
+
+                <!-- Hata mesajlarının düşeceği Validation Summary -->
+                <div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
+
+                <form method="post" id="updateItemForm">
+
+                    <!-- ID bilgisini gizli olarak post ediyoruz -->
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- Rol Adı -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Rol Adı</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bx bx-shield"></i></span>
+                            <input class="form-control" type="text" placeholder="Rol adını giriniz..." asp-for="Name" required />
+                        </div>
+                        <!-- Sadece bu inputa özel hatalar -->
+                        <span class="text-danger fw-bold mt-1 d-block" asp-validation-for="Name"></span>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="button" onclick="confirmUpdate()" class="btn btn-warning text-dark fw-bold px-5 d-flex align-items-center gap-2">
+                            <i class="fadeIn animated bx bx-refresh"></i> Değişiklikleri Kaydet
+                        </button>
+                        <a href="/Admin/Role/Index" class="btn btn-secondary px-5 d-flex align-items-center gap-2">
+                            <i class="fadeIn animated bx bx-x"></i> İptal Et
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function confirmUpdate() {
+        var form = document.getElementById("updateItemForm");
+
+        if (form.checkValidity()) {
+            Swal.fire({
+                title: "Değişiklikleri kaydetmek istediğinize emin misiniz?",
+                text: "Rol adı güncellenecektir. Bu role sahip olan kullanıcılar bu değişiklikten etkilenebilir.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#ffc107", // Buton rengini warning tonuna uyarladık
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Güncelle!",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        } else {
+            form.reportValidity();
+        }
+    }
+</script>

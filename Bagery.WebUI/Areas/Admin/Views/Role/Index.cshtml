@@ -1,324 +1,158 @@
-﻿@model List<GetBannersQueryResult>
-
-
+﻿@model List<GetRolesWithUserCountQueryResult>
 
 @{
-
-    ViewData["Title"] = "Index";
-
+    ViewData["Title"] = "Rol Listesi";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
     int count = 0;
-
-
-
-    // LİSTENİN EN SONUNDAKİ (YAYINDA OLAN) ELEMANI YAKALIYORUZ
-
-    var activeBanner = Model.LastOrDefault();
-
 }
 
-
-
-
-
 <div class="page-content-wrapper">
-
     <div class="page-content">
 
-
-
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-
-            <div class="breadcrumb-title pe-3">Sayfa Afişimiz</div>
-
+            <div class="breadcrumb-title pe-3">Rol Yönetimi</div>
             <div class="ps-3">
-
                 <nav aria-label="breadcrumb">
-
                     <ol class="breadcrumb mb-0 p-0 align-items-center">
-
                         <li class="breadcrumb-item">
-
                             <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
-
                         </li>
-
-                        <li class="breadcrumb-item active" aria-current="page">Gelişmiş Tablo Görünümü</li>
-
+                        <li class="breadcrumb-item active" aria-current="page">Roller ve Kullanıcı İstatistikleri</li>
                     </ol>
-
                 </nav>
-
             </div>
-
             <div class="ms-auto">
-
                 <div class="btn-group">
-
                     <button type="button" class="btn btn-outline-primary">Ayarlar</button>
-
                     <button type="button" class="btn btn-outline-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
-
                         <span class="visually-hidden">Toggle Dropdown</span>
-
                     </button>
-
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">
-
-                        <a class="dropdown-item" href="/Admin/Banner/CreateBanner">Yeni Afiş Ekle</a>
-
+                        <a class="dropdown-item" href="/Admin/Role/CreateRole">Yeni Rol Ekle</a>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
-
 
         <div class="card">
-
             <div class="card-body">
 
-
-
                 <div class="d-flex align-items-center justify-content-between mb-3">
-
-                    <h5 class="mb-0">Afiş Detayları</h5>
-
-
+                    <h5 class="mb-0">Rol Detayları</h5>
 
                     <div class="d-flex align-items-center gap-3">
-
                         <form class="position-relative">
-
                             <div class="position-absolute top-50 translate-middle-y search-icon px-3"><ion-icon name="search-sharp"></ion-icon></div>
-
-                            <input class="form-control ps-5" type="text" placeholder="Arayınız">
-
+                            <input class="form-control ps-5" type="text" placeholder="Rol Ara...">
                         </form>
 
-
-
-                        <a href="/Admin/Banner/CreateBanner" class="btn btn-success px-4 d-flex align-items-center gap-2">
-
+                        <a href="/Admin/Role/CreateRole" class="btn btn-success px-4 d-flex align-items-center gap-2">
                             <i class="bx bx-plus"></i> Yeni Ekle
-
                         </a>
-
                     </div>
-
                 </div>
-
-
 
                 <div class="table-responsive">
-
                     <table class="table align-middle table-hover mb-0">
-
                         <thead class="table-secondary">
-
                             <tr>
-
                                 <th>#</th>
-
-                                <th>Ana Fotoğrafı</th>
-
-                                <th>Başlık Vurgusu</th>
-
-                                <th>Açıklaması</th>
-
-                                <th>Arka Plan Fotoğrafı</th>
-
-                                <th>Durum</th> <!-- Durum sütunu eklendi -->
-
+                                <th>Rol Adı</th>
+                                <th>Kullanıcı Sayısı</th>
                                 <th>İşlemler</th>
-
                             </tr>
-
                         </thead>
-
                         <tbody>
-
                             @foreach (var item in Model)
-
                             {
-
                                 count++;
-
                                 <tr>
-
                                     <td>@count</td>
-
                                     <td>
-
-                                        <div class="d-flex align-items-center gap-3 cursor-pointer">
-
-                                            <!-- Ana Fotoğraf: Boyutlar büyütüldü ve köşeler hafif yuvarlatıldı -->
-
-                                            <img src="@item.ImageUrl" class="rounded shadow-sm" style="width: 120px; height: 80px; object-fit: cover;" alt="">
-
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="product-info">
+                                                <h6 class="product-name mb-1">@item.RoleName</h6>
+                                            </div>
                                         </div>
-
                                     </td>
-
-                                    <td>@item.Title</td>
-
-                                    <td>@item.Description</td>
-
                                     <td>
-
-                                        <div class="d-flex align-items-center gap-3 cursor-pointer">
-
-                                            <!-- Arka Plan Fotoğrafı -->
-
-                                            <img src="@item.BackgroundImageUrl" class="rounded shadow-sm" style="width: 120px; height: 80px; object-fit: cover;" alt="">
-
-                                        </div>
-
-                                    </td>
-
-                                    <td>
-
-                                        <!-- YAYINDA MI KONTROLÜ -->
-                                        @if (activeBanner != null && item.Id == activeBanner.Id)
-
+                                        <!-- KULLANICI SAYISI KONTROLÜ VE GÖRSELLEŞTİRME -->
+                                        @if (item.UserCount > 0)
                                         {
-
-                                            <span class="badge bg-success font-14">
-
-                                                <i class="bx bx-check-circle me-1"></i> Şu An Yayında
-
+                                            <span class="badge bg-primary font-14">
+                                                <i class="bx bx-user me-1"></i> @item.UserCount Kullanıcı
                                             </span>
-
                                         }
-
                                         else
-
                                         {
-
                                             <span class="badge bg-secondary">
-
-                                                Eski Kayıt
-
+                                                <i class="bx bx-user-x me-1"></i> Kullanıcı Yok
                                             </span>
-
                                         }
-
                                     </td>
-
                                     <td>
-
                                         <div class="table-actions d-flex align-items-center gap-2 fs-6">
 
-                                            <a href="/Admin/Banner/UpdateBanner/@item.Id" class="btn btn-sm btn-outline-primary">
+                                            <!-- YENİ EKLENEN KULLANICILARA BAK BUTONU -->
+                                            @if (item.UserCount > 0)
+                                            {
+                                                <a href="/Admin/Role/GetUserInRole/@item.RoleId" class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip" title="Kullanıcılara Bak">
+                                                    <i class="fadeIn animated bx bx-group"></i> Kullanıcılar
+                                                </a>
+                                            }
 
+                                            <a href="/Admin/Role/UpdateRole/@item.RoleId" class="btn btn-sm btn-outline-primary">
                                                 <i class="fadeIn animated bx bx-edit"></i> Güncelle
-
                                             </a>
-
-                                            <button onclick="deleteItem('@item.Id')" class="btn btn-sm btn-outline-danger">
-
+                                            <button onclick="deleteItem('@item.RoleId')" class="btn btn-sm btn-outline-danger">
                                                 <i class="fadeIn animated bx bx-trash"></i> Sil
-
                                             </button>
-
                                         </div>
-
                                     </td>
-
                                 </tr>
-
                             }
-
                         </tbody>
-
                     </table>
-
                 </div>
 
-
-
             </div>
-
         </div>
 
-
-
     </div>
-
     <!-- end page content-->
-
 </div>
 
-
-
-
-
 <script>
-
     function deleteItem(id) {
-
         Swal.fire({
-
-            title: "Silmek istediğinize emin misiniz?",
-
-            text: "Bu işlemi geri alamazsınız!",
-
+            title: "Rolü silmek istediğinize emin misiniz?",
+            text: "Bu rolü sildiğinizde, atanmış olan kullanıcıların yetkileri etkilenebilir. İşlem geri alınamaz!",
             icon: "warning",
-
             showCancelButton: true,
-
             confirmButtonColor: "#3085d6",
-
             cancelButtonColor: "#d33",
-
             confirmButtonText: "Evet, sil!",
-
             cancelButtonText: "İptal"
-
         }).then((result) => {
-
             if (result.isConfirmed) {
 
-
-
                 // Başarı mesajını ayarla ve bitmesini bekle
-
                 Swal.fire({
-
                     title: "Silindi!",
-
-                    text: "Öğeniz başarılı bir şekilde silindi.",
-
+                    text: "Rol başarılı bir şekilde sistemden kaldırıldı.",
                     icon: "success",
-
                     showConfirmButton: false, // Onay butonunu gizle
-
-                    timer: 2000, // Ekranda 2 saniye (2000ms) kalsın
-
+                    timer: 2000, // Ekranda 2 saniye kalsın
                     timerProgressBar: true // Şık bir geri sayım barı ekle
-
                 }).then(() => {
-
-                    // Alert süresi dolup kapandıktan SONRA yönlendirmeyi yap
-
-                    window.location.href = "/Admin/Banner/DeleteBanner/" + id;
-
+                    // Alert süresi dolup kapandıktan SONRA Controller'daki silme action'ına yönlendir
+                    window.location.href = "/Admin/Role/DeleteRole/" + id;
                 });
 
-
-
             }
-
         });
-
     }
-
 </script>
-
 
 
 
