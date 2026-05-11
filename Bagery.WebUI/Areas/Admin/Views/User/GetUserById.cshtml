@@ -53,6 +53,10 @@
                                     <ion-icon name="trash-outline"></ion-icon> Kullanıcıyı Sil
                                 </button>
 
+                                <a href="/Admin/User/AssignRole/@Model.Id" class="btn btn-outline-danger">
+                                    <ion-icon name="trash-outline"></ion-icon> Kullanıcıyı Sil
+                                </a>
+
                                 @if (!string.IsNullOrWhiteSpace(Model.Email))
                                 {
                                     <a href="mailto:@Model.Email" class="btn btn-primary">

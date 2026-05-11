@@ -1,0 +1,83 @@
+﻿@model GetUserForFobiaTemplateQueryResult
+@*
+  user infos
+*@
+
+
+<li class="nav-item dropdown dropdown-user-setting">
+    <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
+        <div class="user-setting">
+            <img src="@Model.ImageUrl" class="user-img" alt="">
+        </div>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+            <a class="dropdown-item" href="javascript:;">
+                <div class="d-flex flex-row align-items-center gap-2">
+                    <img src="@Model.ImageUrl" alt="" class="rounded-circle" width="54" height="54">
+                    <div class="">
+                        <h6 class="mb-0 dropdown-user-name">@Model.FullName</h6>
+                        <small class="mb-0 dropdown-user-designation text-secondary">@Model.Job</small>
+                    </div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li>
+            <a class="dropdown-item" href="/Admin/User/UpdateUser">
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </div>
+                    <div class="ms-3"><span>Profilim</span></div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="/Admin/User/PasswordChange">
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <ion-icon name="settings-outline"></ion-icon>
+                    </div>
+                    <div class="ms-3"><span>Şifre Değiştir</span></div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="/Admin/Static/Dashboard">
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <ion-icon name="speedometer-outline"></ion-icon>
+                    </div>
+                    <div class="ms-3"><span>Dashboard</span></div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="/Admin/Blog/Index">
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <ion-icon name="wallet-outline"></ion-icon>
+                    </div>
+                    <div class="ms-3"><span>Blog Yazıları</span></div>
+                </div>
+            </a>
+        </li>
+       
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li>
+            <a class="dropdown-item" href="/Login/Logout">
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                    </div>
+                    <div class="ms-3"><span>Çıkış Yap</span></div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</li>

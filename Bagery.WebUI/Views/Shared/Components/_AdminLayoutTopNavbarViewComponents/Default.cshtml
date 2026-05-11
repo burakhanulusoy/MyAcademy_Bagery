@@ -1,0 +1,67 @@
+﻿
+@*
+   admin topNavbar
+*@
+<li class="nav-item">
+    <a class="nav-link mobile-search-button" href="javascript:;">
+        <div class="">
+            <ion-icon name="search-outline"></ion-icon>
+        </div>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link dark-mode-icon" href="javascript:;">
+        <div class="mode-icon">
+            <ion-icon name="moon-outline"></ion-icon>
+        </div>
+    </a>
+</li>
+
+
+<li class="nav-item dropdown dropdown-large dropdown-apps">
+    <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
+        <div class="">
+            <ion-icon name="apps-outline"></ion-icon>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+        <div class="row row-cols-3 g-3 p-3">
+            <div class="col text-center">
+                <a href="/Admin/Product/Index" class="app-box mx-auto bg-gradient-purple text-white">
+                    <ion-icon name="cart-outline"></ion-icon>
+                </a>
+                <div class="app-title">Ürünler</div>
+            </div>
+            <div class="col text-center">
+                <a href="/Admin/User/Index" class="app-box mx-auto bg-gradient-info text-white">
+                    <ion-icon name="people-outline"></ion-icon>
+                </a>
+                <div class="app-title">Üyeler</div>
+            </div>
+            <div class="col text-center">
+                <a href="/Admin/Comment/Index" class="app-box mx-auto bg-gradient-success text-white">
+                    <ion-icon name="shield-checkmark-outline"></ion-icon>
+                </a>
+                <div class="app-title">Yorumlar</div>
+            </div>
+            <div class="col text-center">
+                <a href="/Admin/Promotion/Index" class="app-box mx-auto bg-gradient-danger text-white">
+                    <ion-icon name="videocam-outline"></ion-icon>
+                </a>
+                <div class="app-title">Promosyonlar</div>
+            </div>
+            <div class="col text-center">
+                <a href="/Admin/Blog/Index" class="app-box mx-auto bg-gradient-warning text-white">
+                    <ion-icon name="file-tray-outline"></ion-icon>
+                </a>
+                <div class="app-title">Bloglar</div>
+            </div>
+            <div class="col text-center">
+                <a href="/Admin/Static/Dashboard" class="app-box mx-auto bg-gradient-branding text-white">
+                    <ion-icon name="notifications-outline"></ion-icon>
+                </a>
+                <div class="app-title">İstatislikler</div>
+            </div>
+        </div>
+    </div>
+</li>

@@ -1,13 +1,13 @@
-﻿using Bagery.WebUI.Entities;
-using Bagery.WebUI.MediatorPattern.Commands.UserCommands;
+﻿using Bagery.WebUI.MediatorPattern.Commands.UserCommands;
 using Bagery.WebUI.MediatorPattern.Queries.UserQueries;
 using Bagery.WebUI.MediatorPattern.Results.UserResults;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PagedList.Core;
+using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
@@ -71,6 +71,32 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
             return RedirectToAction(nameof(UpdateUser));
 
         }
+
+
+        public async Task<IActionResult> AssignRole(Guid Id)
+        {
+            var roleList = await _mediator.Send(new GetUserRolesQuery(Id));
+
+            var command = new AssignRoleUserCommand
+            {
+                Id = Id,
+                Roles = roleList.Adapt<List<RoleAssignDto>>() 
+            };
+
+            return View(command);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignRole(AssignRoleUserCommand command)
+        {
+
+            await _mediator.Send(command);
+
+            return RedirectToAction("GetUserById", "User", new { id = command.Id });
+
+
+        }
+
 
 
     }
