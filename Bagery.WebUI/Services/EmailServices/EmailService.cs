@@ -45,5 +45,46 @@ namespace Bagery.WebUI.Services.EmailServices
                 await client.DisconnectAsync(true);
             }
         }
+
+        public async Task SendPasswordResetLinkAsync(string email, string resetLink, string name)
+        {
+            var emailConfirmCode = configuration["Email:Code"];
+            var adminEmail = configuration["Email:Admin"];
+
+            MimeMessage mimeMessage = new MimeMessage();
+            mimeMessage.From.Add(new MailboxAddress("Bagery Admin", adminEmail));
+            mimeMessage.To.Add(new MailboxAddress(name, email));
+            mimeMessage.Subject = "Bagery - Şifre Sıfırlama Talebi";
+
+            var bodyBuilder = new BodyBuilder();
+
+            // Şık bir buton içeren HTML tasarımı
+            bodyBuilder.HtmlBody = $@"
+                <div style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;'>
+                    <h3 style='color: #0056b3;'>Merhaba {name},</h3>
+                    <p>Bagery platformundaki hesabının şifresini sıfırlamak için bir talep aldık.</p>
+                    <p>Yeni şifreni belirlemek için aşağıdaki butona tıklayabilirsin:</p>
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='{resetLink}' style='background-color: #0056b3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>Şifremi Sıfırla</a>
+                    </div>
+                    <p>Eğer bu talebi sen yapmadıysan, bu e-postayı görmezden gelebilirsin. Hesabın güvendedir.</p>
+                    <br>
+                    <p>İyi günler dileriz,<br><strong>Bagery Ekibi</strong></p>
+                </div>";
+
+            mimeMessage.Body = bodyBuilder.ToMessageBody();
+
+            using var client = new SmtpClient();
+            try
+            {
+                await client.ConnectAsync("smtp.gmail.com", 587, false);
+                await client.AuthenticateAsync(adminEmail, emailConfirmCode);
+                await client.SendAsync(mimeMessage);
+            }
+            finally
+            {
+                await client.DisconnectAsync(true);
+            }
+        }
     }
 }
