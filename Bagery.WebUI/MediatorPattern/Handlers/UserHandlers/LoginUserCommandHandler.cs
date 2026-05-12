@@ -8,18 +8,17 @@ using Microsoft.AspNetCore.Identity;
 namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
 {
     public class LoginUserCommandHandler(UserManager<AppUser> _userManager
-        ,SignInManager<AppUser> _signInManager,
-        IEmailService _emailService ) : IRequestHandler<LoginUserCommand>
+        , SignInManager<AppUser> _signInManager,
+        IEmailService _emailService) : IRequestHandler<LoginUserCommand, IList<string>>
     {
-        public async Task Handle(LoginUserCommand request, CancellationToken cancellationToken)
+        public async Task<IList<string>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
-
             var user = await _userManager.FindByEmailAsync(request.Email);
 
             if (user is null)
                 throw new IdentityException("Böyle bir kullanıcı bulunamadı.");
 
-            if(user.IsDeleted)
+            if (user.IsDeleted)
             {
                 throw new IdentityException("Bu kullanıcın hesabı kapatıldı.");
             }
@@ -27,7 +26,7 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
 
-            
+
 
             if (result.IsLockedOut)
                 throw new IdentityException("Hesabınız kilitlendi.");
@@ -43,9 +42,11 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
             }
 
             // 3. Her şey tamamsa şimdi gerçekten giriş yap (Cookie oluştur)
-            await _signInManager.SignInAsync(user,request.RememberMe);
+            await _signInManager.SignInAsync(user, request.RememberMe);
 
+            var roles = await _userManager.GetRolesAsync(user);
 
+            return roles;
 
         }
     }

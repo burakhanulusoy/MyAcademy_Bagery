@@ -116,6 +116,15 @@
             direction: ltr;
             font-feature-settings: 'liga';
             -webkit-font-smoothing: antialiased;
+            .validation-summary-valid
+
+        {
+            display: none;
+        }
+
+        .validation-summary-errors {
+            display: block;
+        }
         }
     </style>
 </head>
@@ -169,7 +178,7 @@
                     Giriş Yap
                 </button>
 
-                <span class="text-danger">@Html.ValidationSummary()</span>
+                <div asp-validation-summary="All" class="mb-4 p-4 bg-error-container text-on-error-container border border-error/50 rounded-lg font-body-md text-sm [&>ul]:list-none [&>ul]:p-0 [&>ul]:m-0 [&>ul>li]:mt-1 [&>ul>li]:flex [&>ul>li]:items-center [&>ul>li]:before:content-['-'] [&>ul>li]:before:mr-2"></div>
             </form>
             <div class="mt-6">
                 <div class="relative">

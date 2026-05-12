@@ -25,6 +25,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStatusCodePagesWithReExecute("/User/PageNotFound", "?code={0}");
 app.UseRouting();
 
 app.UseAuthentication();

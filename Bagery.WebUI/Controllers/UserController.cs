@@ -1,6 +1,7 @@
 ﻿using Bagery.WebUI.Exceptions;
 using Bagery.WebUI.MediatorPattern.Commands.UserCommands;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -31,9 +32,24 @@ namespace Bagery.WebUI.Controllers
         {
             try
             {
-                await _mediator.Send(command);
+                var userRoles = await _mediator.Send(command);
 
-                return RedirectToAction("Index", "Banner", new { area = "Admin" });
+                if (userRoles.Contains("Admin"))
+                {
+                    return RedirectToAction("Index", "Banner", new { area = "Admin" });
+                }
+
+                if (userRoles.Contains("Writer"))
+                {
+                    return RedirectToAction("Dashboard", "Static", new { area = "Writer" });
+                }
+
+                if (userRoles.Contains("User"))
+                {
+                    return RedirectToAction("Index", "Static", new { area = "User" });
+                }
+
+                return RedirectToAction("Index", "Home");
             }
             catch (IdentityException ex)
             {
@@ -49,6 +65,31 @@ namespace Bagery.WebUI.Controllers
 
         }
 
+
+        public IActionResult BackToMainSite()
+        {
+            return RedirectToAction("Index", "Default", new { Area = string.Empty });
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _mediator.Send(new LogoutUserCommand());
+
+            return RedirectToAction("Index", "Default", new { Area = string.Empty });
+        }
+
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        [Route("User/PageNotFound")]
+        public IActionResult PageNotFound(int code)
+        {
+            // code parametresi buraya "404" olarak gelir. 
+            return View();
+        }
 
     }
 }

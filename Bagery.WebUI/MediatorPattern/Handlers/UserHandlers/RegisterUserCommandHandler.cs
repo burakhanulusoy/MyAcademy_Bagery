@@ -38,6 +38,12 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
                 throw new IdentityException(result.Errors);
             }
 
+            var roleResult = await _userManager.AddToRoleAsync(user, "User");//ikl herkes user oslun
+
+            if (!roleResult.Succeeded)
+            {
+                throw new IdentityException(roleResult.Errors);
+            }
 
             var sixDigitCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
             await _emailService.SendEmailFor2FactorAuthentication(user.Email,sixDigitCode,user.FullName);

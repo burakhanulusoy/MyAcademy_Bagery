@@ -1,0 +1,196 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html class="light" lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Yetkiniz Yok - Bakery</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                        "surface-dim": "#dbdad7",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#ffdad4",
+                        "background": "#faf9f6",
+                        "secondary-fixed-dim": "#e9c349",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#959680",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#1b1d0e",
+                        "on-secondary-fixed-variant": "#574500",
+                        "surface": "#faf9f6",
+                        "inverse-surface": "#2f312f",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e3e2e0",
+                        "on-primary-fixed-variant": "#5b403c",
+                        "inverse-on-surface": "#f2f1ee",
+                        "secondary-fixed": "#ffe088",
+                        "surface-container": "#efeeeb",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e3e2e0",
+                        "surface-container-low": "#f4f3f1",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#827472",
+                        "tertiary-fixed": "#e4e4cc",
+                        "on-secondary-fixed": "#241a00",
+                        "primary-container": "#3e2723",
+                        "on-surface": "#1a1c1a",
+                        "secondary-container": "#fed65b",
+                        "inverse-primary": "#e3beb8",
+                        "on-primary-container": "#ae8d87",
+                        "on-primary-fixed": "#2b1613",
+                        "outline-variant": "#d3c3c0",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#e3beb8",
+                        "on-background": "#1a1c1a",
+                        "primary": "#271310",
+                        "surface-bright": "#faf9f6",
+                        "surface-tint": "#745853",
+                        "surface-container-high": "#e9e8e5",
+                        "on-surface-variant": "#504442",
+                        "on-secondary-container": "#745c00",
+                        "on-tertiary-fixed-variant": "#474836",
+                        "secondary": "#735c00",
+                        "tertiary-fixed-dim": "#c8c8b0",
+                        "tertiary-container": "#2c2e1e",
+                        "tertiary": "#18190b"
+                },
+                "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                },
+                "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "margin-mobile": "16px",
+                        "unit": "8px",
+                        "container-max": "1200px"
+                },
+                "fontFamily": {
+                        "headline-md": [
+                                "Playfair Display"
+                        ],
+                        "body-md": [
+                                "Be Vietnam Pro"
+                        ],
+                        "headline-xl": [
+                                "Playfair Display"
+                        ],
+                        "body-lg": [
+                                "Be Vietnam Pro"
+                        ],
+                        "headline-lg-mobile": [
+                                "Playfair Display"
+                        ],
+                        "headline-lg": [
+                                "Playfair Display"
+                        ],
+                        "label-sm": [
+                                "Be Vietnam Pro"
+                        ]
+                },
+                "fontSize": {
+                        "headline-md": [
+                                "24px",
+                                {
+                                        "lineHeight": "1.3",
+                                        "fontWeight": "500"
+                                }
+                        ],
+                        "body-md": [
+                                "16px",
+                                {
+                                        "lineHeight": "1.5",
+                                        "fontWeight": "400"
+                                }
+                        ],
+                        "headline-xl": [
+                                "48px",
+                                {
+                                        "lineHeight": "1.1",
+                                        "letterSpacing": "-0.02em",
+                                        "fontWeight": "700"
+                                }
+                        ],
+                        "body-lg": [
+                                "18px",
+                                {
+                                        "lineHeight": "1.6",
+                                        "fontWeight": "400"
+                                }
+                        ],
+                        "headline-lg-mobile": [
+                                "28px",
+                                {
+                                        "lineHeight": "1.2",
+                                        "fontWeight": "600"
+                                }
+                        ],
+                        "headline-lg": [
+                                "36px",
+                                {
+                                        "lineHeight": "1.2",
+                                        "fontWeight": "600"
+                                }
+                        ],
+                        "label-sm": [
+                                "12px",
+                                {
+                                        "lineHeight": "1",
+                                        "letterSpacing": "0.05em",
+                                        "fontWeight": "600"
+                                }
+                        ]
+                }
+        },
+            },
+          }
+    </script>
+    <style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen relative flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuCGwqPgISp1VwyK0hqxl951pmBRNmd29KimYBr-LbiwvVUnssjRqNTOPqChmEBg4QaTT0VK4XFW0_wXMY5wpgvk13vXvB4Qoqd-alCiP4TU2Jz0MxHBmRR48sdpxoUCiCZjfAPHpbAKhu6SA30IN9zEDlLz2UM2kuLo4fX_maDgnOwusZmF98i6ELT_bU7BDQ6Z6n0zdkm2z7eaVswhGDAAx3hfTdZT4eaq34lajj_y1j6F5zW-aglAFca63XCpoMWpcALuiZ9onA4H');">
+    <!-- TopAppBar -->
+    <!-- Main Content Canvas -->
+    <main class="flex-grow flex items-center justify-center w-full">
+        <div class="max-w-2xl w-full px-margin-mobile text-center text-white space-y-8">
+            <div class="space-y-4">
+                <h1 class="font-headline-xl text-[120px] md:text-[180px] leading-none opacity-90">403</h1>
+                <h2 class="font-headline-lg text-3xl md:text-5xl">Yolunuzu mu kaybettiniz?</h2>
+                <p class="font-body-lg text-lg md:text-xl opacity-80 max-w-md mx-auto">
+                    Bu kapı sadece şeflerimize açılıyor. Sizi ana fırınımıza geri götürelim.
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a class="w-full sm:w-auto px-10 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full font-body-md hover:bg-white/20 transition-all duration-300" href="#">Geri Dön</a>
+                <a class="w-full sm:w-auto px-10 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full font-body-md hover:bg-white/20 transition-all duration-300" href="#">İletişim</a>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+</body>
+</html>
+
+
