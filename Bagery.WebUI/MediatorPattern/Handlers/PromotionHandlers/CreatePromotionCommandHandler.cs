@@ -42,10 +42,10 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.PromotionHandlers
             var usersInRole = await _userManager.GetUsersInRoleAsync("User");
 
             var emailList = usersInRole
-                .Where(u => !string.IsNullOrWhiteSpace(u.Email))
-                .Select(u => u.Email!)
-                .ToList();
-
+                                      .Where(u => !string.IsNullOrWhiteSpace(u.Email) && u.EmailConfirmed)
+                                      .Select(u => u.Email!)
+                                      .ToList();
+                                     
             if (emailList.Any() && !string.IsNullOrWhiteSpace(request.Description) && !string.IsNullOrWhiteSpace(request.PromotionCode))
             {
                 await _emailService.SendPromotionAsync(emailList, request.Description, request.PromotionCode);
