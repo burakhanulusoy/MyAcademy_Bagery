@@ -23,7 +23,7 @@ namespace Bagery.WebUI.Extensions
         public static void AddWebUiRegistration(this IServiceCollection services,IConfiguration configuration)
         {
 
-
+            //DATABASE
             services.AddDbContext<AppDbContext>(options =>
             {
 
