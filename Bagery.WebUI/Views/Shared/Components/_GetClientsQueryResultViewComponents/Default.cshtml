@@ -1,0 +1,22 @@
+﻿@model List<GetClientsQueryResult>
+@*
+   client component view
+*@
+
+
+<section class="clients-section bg-color-1">
+    <div class="auto-container">
+        <div class="auto-container">
+            <div class="clients-carousel owl-carousel owl-theme owl-nav-none owl-dots-none">
+         
+                @foreach(var item in Model)
+                {
+                    <figure class="clients-logo-box"><a href="#"><img src="@item.ClientImageUrl" alt="@item.Name"></a></figure>
+
+                }
+
+            
+            </div>
+        </div>
+    </div>
+</section>
