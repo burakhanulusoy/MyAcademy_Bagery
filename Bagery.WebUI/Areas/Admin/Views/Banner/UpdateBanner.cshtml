@@ -4,99 +4,92 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+    .form-control[type="file"]::file-selector-button {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: inherit;
+        border: 0;
+        border-inline-end: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 0.375rem 1rem;
+        margin-inline-end: 0.75rem;
+        transition: background-color 0.15s ease;
+    }
 
-
+        .form-control[type="file"]::file-selector-button:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+</style>
 
 <div class="page-content-wrapper">
     <div class="page-content">
-
         <div class="card">
             <div class="card-header">
-                <h6 class="mb-0">Yeni Banner Ekle</h6>
+                <h6 class="mb-0">Banner Güncelle</h6>
             </div>
             <div class="card-body">
                 <form enctype="multipart/form-data" method="post" id="updateItemForm">
-
-
-
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="ImageUrl" />
                     <input type="hidden" asp-for="BackgroundImageUrl" />
 
-
-                    <!-- Başlık -->
                     <div class="mb-3">
                         <label class="form-label">Başlık</label>
-                        <input class="form-control" type="text" placeholder="Başlık Yazınız..." asp-for="Title"  />
+                        <input class="form-control" type="text" placeholder="Başlık Yazınız..." asp-for="Title" />
                         <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Title"></span>
                     </div>
 
-                    <!-- Açıklama -->
                     <div class="mb-3">
                         <label class="form-label">Açıklama</label>
-                        <textarea class="form-control" placeholder="Açıklama Yazınız..." asp-for="Description" rows="4" ></textarea>
+                        <textarea class="form-control" placeholder="Açıklama Yazınız..." asp-for="Description" rows="4"></textarea>
                         <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Description"></span>
                     </div>
 
-                    <!-- Görsel 1 -->
                     <div class="mb-3">
                         <label class="form-label">1. Görseli Seçin</label>
-                        <input class="form-control" type="file" asp-for="File1"  />
+                        <input class="form-control" type="file" asp-for="File1" />
                         <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File1"></span>
                     </div>
 
-                    <!-- Görsel 2 -->
                     <div class="mb-3">
                         <label class="form-label">2. Görseli Seçin</label>
-                        <input class="form-control" type="file" asp-for="File2"  />
-                        <span class ="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File2"></span>
+                        <input class="form-control" type="file" asp-for="File2" />
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File2"></span>
                     </div>
 
-                    <!-- Butonlar -->
                     <div class="d-flex gap-3 mt-4">
-                        <button onclick="confirmUpdate()" class="btn btn-primary text-white px-5">
+                        <button type="button" onclick="confirmUpdate()" class="btn btn-primary px-5">
                             <i class="fadeIn animated bx bx-save"></i> Güncelle
                         </button>
-                        <a href="/Admin/Banner/Index" class="btn btn-secondary px-5">
+                        <a href="/Admin/Banner/Index" class="btn btn-outline-secondary px-5">
                             <i class="fadeIn animated bx bx-x"></i> İptal
                         </a>
                     </div>
-
                 </form>
             </div>
         </div>
-
     </div>
 </div>
 
-
-
-
-
-
-
 <script>
     function confirmUpdate() {
-        // Formu DOM üzerinden seçiyoruz
         var form = document.getElementById("updateItemForm");
-
-        // .valid() yerine tarayıcının yerleşik validasyonunu kullanıyoruz (Kütüphane gerektirmez)
-        if (form.checkValidity()) {
-            Swal.fire({
-                title: "Kaydetmek istediğinize emin misiniz?",
-                text: "Yeni öğe sistemimize eklenecektir.",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#28a745",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Evet, Güncelle!",
-                cancelButtonText: "İptal"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Kullanıcı onay verirse formu gönder
-                    form.submit();
-                }
-            });
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
         }
+        Swal.fire({
+            title: "Güncellemek istediğinize emin misiniz?",
+            text: "Mevcut kayıt güncellenecektir.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#0d6efd",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Evet, Güncelle!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
     }
 </script>

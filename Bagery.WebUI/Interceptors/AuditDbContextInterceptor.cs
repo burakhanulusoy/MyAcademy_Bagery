@@ -37,7 +37,6 @@ namespace Bagery.WebUI.Interceptors
                 if (entry.State is EntityState.Deleted)
                 {
                     entry.State = EntityState.Modified;
-
                     eventData.Context.Entry(baseEntity).Property(x => x.IsDeleted).CurrentValue =true;
                     eventData.Context.Entry(baseEntity).Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
                     eventData.Context.Entry(baseEntity).Property(x => x.CreatedAt).IsModified = false;

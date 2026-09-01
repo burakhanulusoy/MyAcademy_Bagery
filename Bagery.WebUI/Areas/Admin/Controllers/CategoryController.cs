@@ -9,7 +9,7 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
-    [Authorize]
+ //   [Authorize]
 
     public class CategoryController(IMediator _mediator) : Controller
     {

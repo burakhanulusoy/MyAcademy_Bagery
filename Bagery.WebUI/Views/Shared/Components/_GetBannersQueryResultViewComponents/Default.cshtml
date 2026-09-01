@@ -1,0 +1,37 @@
+﻿@model List<GetBannersQueryResult>
+@*
+    banner view component
+*@
+
+
+<section class="banner-section style-two">
+    <div class="banner-carousel owl-theme owl-carousel owl-dots-none nav-style-one">
+        
+        @foreach(var item in Model)
+        {
+            <div class="slide-item">
+                <div class="image-layer" style="background-image:url(@item.BackgroundImageUrl)"></div>
+                <div class="auto-container">
+                    <div class="row clearfix">
+                        <div class="col-lg-6 col-md-12 col-sm-12 content-column">
+                            <div class="content-box">
+                                <h1>@item.Title</h1>
+                                <p>@item.Description</p>
+                                <div class="btn-box">
+                                    <a href="#" class="banner-btn">Ürünleri İnceleyin</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 image-column">
+                            <div class="image-box">
+                                <figure class="image image-3"><img src="@item.ImageUrl" alt="Keşfedin"></figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+
+    </div>
+</section>
