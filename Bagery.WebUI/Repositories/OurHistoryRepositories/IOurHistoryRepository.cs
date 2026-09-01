@@ -5,5 +5,9 @@ namespace Bagery.WebUI.Repositories.OurHistoryRepositories
 {
     public interface IOurHistoryRepository : IGenericRepository<OurHistory>
     {
+
+        Task<OurHistory> GetOurHistoryLastAsync();
+
+
     }
 }

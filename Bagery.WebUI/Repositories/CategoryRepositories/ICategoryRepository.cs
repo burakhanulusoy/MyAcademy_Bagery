@@ -6,6 +6,6 @@ namespace Bagery.WebUI.Repositories.CategoryRepositories
     public interface ICategoryRepository:IGenericRepository<Category>
     {
         Task<List<Category>> GetCategoryWithProjectsAsync();
-
+        Task<List<Category>> GetCategoriesWithLastProductForSpecialMenuAsync();
     }
 }

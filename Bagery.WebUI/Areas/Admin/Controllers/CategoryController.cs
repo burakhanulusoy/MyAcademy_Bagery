@@ -1,5 +1,6 @@
 ﻿using Bagery.WebUI.MediatorPattern.Commands.CategoryCommands;
 using Bagery.WebUI.MediatorPattern.Queries.CategoryQueries;
+using Bagery.WebUI.MediatorPattern.Queries.ProductQueries;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +10,7 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
- //   [Authorize]
+   [Authorize(Roles ="Admin")]
 
     public class CategoryController(IMediator _mediator) : Controller
     {
@@ -53,9 +54,10 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> GetCategoryWithProjects()
+        public async Task<IActionResult> GetCategoryWithProjects(Guid id)
         {
-            var items=await  _mediator.Send(new GetCategoriesWithProductsQuery());
+            var items=await  _mediator.Send(new GetProductsByCategoryIdQuery(id));
+            
             return View(items);
         }
 

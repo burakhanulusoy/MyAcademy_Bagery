@@ -1,0 +1,51 @@
+﻿@model GetOurHistoryLastQueryResult
+
+
+@*
+   our history component view
+*@
+
+
+
+<section class="ourstory-style-three">
+    <div class="auto-container">
+      
+        
+            <div class="row align-items-center clearfix">
+                <div class="col-lg-6 col-md-12 col-sm-12 content-column">
+                    <div id="content_block_3">
+                        <div class="content-box">
+                            <div class="sec-title">
+                                <p>HİKÂYEMİZ</p>
+                                <h2>@Model.Title</h2>
+                            </div>
+                            <div class="text">
+                            <p>@Model.Description</p>
+                            </div>
+                        <figure class="signature"><img src="@Model.SignatureUrl" alt=""></figure>
+                            <div class="btn-box">
+                                <a href="#" class="theme-btn-one">İletişime Geçin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 image-column">
+                    <div id="image_block_1">
+                        <div class="image-box">
+                            <div class="bg-layer"
+                                 style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/shape/kahveARKAplan.png")');">
+                            </div>
+                        <figure class="image image-1"><img src="@Model.MainImageUrl" alt=""></figure>
+                        <figure class="image image-2 wow fadeInUp animated animated" data-wow-delay="00ms" data-wow-duration="1500ms"><img src="@Model.ImageUrl" alt="Keşfenin"></figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+
+    </div>
+</section>
+
+
+
+

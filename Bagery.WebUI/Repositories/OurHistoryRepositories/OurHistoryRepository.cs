@@ -1,6 +1,7 @@
 ﻿using Bagery.WebUI.Context;
 using Bagery.WebUI.Entities;
 using Bagery.WebUI.Repositories.GenericRepositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bagery.WebUI.Repositories.OurHistoryRepositories
 {
@@ -10,7 +11,9 @@ namespace Bagery.WebUI.Repositories.OurHistoryRepositories
         {
         }
 
-
-
+        public Task<OurHistory> GetOurHistoryLastAsync()
+        {
+            return _table.AsNoTracking().OrderBy(x => x.Id).FirstOrDefaultAsync();
+        }
     }
 }

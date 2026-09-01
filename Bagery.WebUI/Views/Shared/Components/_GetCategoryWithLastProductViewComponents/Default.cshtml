@@ -1,0 +1,77 @@
+﻿@model List<GetCategeoryWithLastProductForSpecialMenuQueryResult>
+@*
+    specific view for the GetCategoryWithLastProductViewComponents component
+*@
+
+@{
+    var items = Model?.Where(x => x.Product != null).ToList()
+                ?? new List<GetCategeoryWithLastProductForSpecialMenuQueryResult>();
+
+    var half = (int)Math.Ceiling(items.Count / 2.0);
+    var leftItems = items.Take(half).ToList();
+    var rightItems = items.Skip(half).ToList();
+}
+
+<section class="specialmenu-section sec-pad"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/arkaPlan.png")');">
+    <div class="auto-container">
+        <div class="sec-title centred">
+            <p>Kategorilerimiz</p>
+            <h2>Özel Menü</h2>
+        </div>
+        <div class="row clearfix">
+
+            <div class="col-lg-6 col-md-12 col-sm-12 content-column">
+                <div class="special-menu-box wow fadeInLeft animated" data-wow-delay="00ms" data-wow-duration="1500ms">
+                    <div class="bg-layer" style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/shape/Menu-Karti-Arka-Plan-602x482.png")');"></div>
+
+                    <div class="inner-box">
+                        <ul class="menu-list">
+                            @foreach (var item in leftItems)
+                            {
+                                <li>
+                                    <div class="single-menu">
+                                        <div class="text">
+                                            <h4>@item.Product.ProductName</h4>
+                                            <div class="line"></div>
+                                            <div class="price-box">
+                                                <span>@item.Product.Price.ToString("C")</span>
+                                            </div>
+                                        </div>
+                                        <p>@item.CategoryName</p>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 col-sm-12 content-column">
+                <div class="special-menu-box wow fadeInRight animated" data-wow-delay="00ms" data-wow-duration="1500ms">
+                    <div class="bg-layer" style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/shape/Menu-Karti-Arka-Plan-602x482.png")');"></div>
+                    <div class="inner-box">
+                        <ul class="menu-list">
+                            @foreach (var item in rightItems)
+                            {
+                                <li>
+                                    <div class="single-menu">
+                                        <div class="text">
+                                            <h4>@item.Product.ProductName</h4>
+                                            <div class="line"></div>
+                                            <div class="price-box">
+                                                <span>@item.Product.Price.ToString("C")</span>
+                                            </div>
+                                        </div>
+                                        <p>@item.CategoryName</p>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

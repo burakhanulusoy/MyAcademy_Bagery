@@ -60,6 +60,7 @@
                                 <th>#</th>
                                 <th>Kategori Adımız</th>
                                 <th>İşlemler</th>
+                              
                             </tr>
                         </thead>
                         <tbody>
@@ -78,8 +79,12 @@
                                             <button onclick="deleteItem('@item.Id')" class="btn btn-sm btn-outline-danger">
                                                 <i class="fadeIn animated bx bx-trash"></i> Sil
                                             </button>
+                                            <a href="/Admin/Category/GetCategoryWithProjects/@item.Id" class="btn btn-sm btn-outline-info">
+                                                <i class="bx bx-package"></i> Ürünler
+                                            </a>
                                         </div>
                                     </td>
+                                    
                                 </tr>
                             }
                         </tbody>

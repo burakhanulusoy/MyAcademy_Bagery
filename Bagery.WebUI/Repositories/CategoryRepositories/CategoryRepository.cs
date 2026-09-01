@@ -10,6 +10,14 @@ namespace Bagery.WebUI.Repositories.CategoryRepositories
         public CategoryRepository(AppDbContext _context) : base(_context)
         {
         }
+
+        public Task<List<Category>> GetCategoriesWithLastProductForSpecialMenuAsync()
+        {
+            return _table.AsNoTracking()
+                .Include(x => x.Products)
+                .ToListAsync();
+        }
+
         //eager loading
         public Task<List<Category>> GetCategoryWithProjectsAsync()
         {
