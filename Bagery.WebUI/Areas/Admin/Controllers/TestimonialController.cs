@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    // [Authorize]
+    [Authorize]
     public class TestimonialController(IMediator _mediator) : Controller
     {
         public async Task<IActionResult> Index()

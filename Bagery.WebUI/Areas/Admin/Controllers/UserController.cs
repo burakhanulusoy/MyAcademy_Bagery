@@ -3,13 +3,14 @@ using Bagery.WebUI.MediatorPattern.Queries.UserQueries;
 using Bagery.WebUI.MediatorPattern.Results.UserResults;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PagedList.Core;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    // [Authorize]
+    [Authorize]
 
     public class UserController(IMediator _mediator) : Controller
     {

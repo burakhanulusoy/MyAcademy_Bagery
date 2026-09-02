@@ -2,207 +2,410 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    int count = 0; 
+    int count = 0;
 }
 
+<style>
+    .ct-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+        .ct-head h5 {
+            margin: 0 0 3px;
+            font-weight: 600;
+        }
+
+        .ct-head p {
+            margin: 0;
+            font-size: 13px;
+            opacity: .6;
+        }
+
+    /* Kayıt kartı */
+    .ct-card {
+        position: relative;
+        border: 1px solid rgba(128,128,128,.18);
+        border-radius: 16px;
+        background: inherit;
+        margin-bottom: 18px;
+        overflow: hidden;
+        transition: border-color .2s ease;
+    }
+
+        .ct-card:hover {
+            border-color: rgba(128,128,128,.35);
+        }
+
+        .ct-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: rgba(128,128,128,.25);
+        }
+
+        .ct-card.is-active::before {
+            background: #4caf7d;
+        }
+
+    .ct-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 22px 24px;
+    }
+
+    .ct-fields {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 18px 28px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ct-field .lbl {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        opacity: .45;
+        margin-bottom: 5px;
+    }
+
+    .ct-field .val {
+        font-size: 14px;
+        word-break: break-word;
+        line-height: 1.45;
+    }
+
+    .ct-field a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+        .ct-field a:hover {
+            text-decoration: underline;
+        }
+
+    /* Durum rozeti */
+    .ct-state {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: .04em;
+        padding: 5px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(128,128,128,.3);
+        white-space: nowrap;
+    }
+
+        .ct-state.on {
+            border-color: rgba(76,175,125,.45);
+            color: #4caf7d;
+        }
+
+    .ct-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: .8;
+    }
+
+    .ct-state.on .ct-dot {
+        box-shadow: 0 0 0 3px rgba(76,175,125,.18);
+    }
+
+    /* Sosyal medya bölümü */
+    .ct-social {
+        padding: 18px 24px 20px;
+        border-top: 1px dashed rgba(128,128,128,.22);
+    }
+
+    .ct-social-lbl {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        opacity: .45;
+        margin-bottom: 12px;
+    }
+
+    .ct-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .ct-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 6px 8px 6px 10px;
+        border: 1px solid rgba(128,128,128,.25);
+        border-radius: 999px;
+        font-size: 13px;
+        transition: border-color .2s ease, background-color .2s ease;
+    }
+
+        .ct-chip:hover {
+            border-color: rgba(128,128,128,.5);
+            background: rgba(128,128,128,.06);
+        }
+
+        .ct-chip img {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .ct-chip > a.name {
+            color: inherit;
+            text-decoration: none;
+        }
+
+            .ct-chip > a.name:hover {
+                text-decoration: underline;
+            }
+
+        .ct-chip .tools {
+            display: flex;
+            gap: 2px;
+            padding-left: 8px;
+            margin-left: 1px;
+            border-left: 1px solid rgba(128,128,128,.25);
+        }
+
+            .ct-chip .tools a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                opacity: .55;
+                transition: opacity .15s ease, background-color .15s ease;
+            }
+
+                .ct-chip .tools a:hover {
+                    opacity: 1;
+                    background: rgba(128,128,128,.15);
+                }
+
+        .ct-chip.add {
+            border-style: dashed;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            opacity: .7;
+            padding: 6px 14px;
+        }
+
+            .ct-chip.add:hover {
+                opacity: 1;
+                border-color: rgba(76,175,125,.6);
+                color: #4caf7d;
+            }
+
+    .ct-empty-social {
+        font-size: 13px;
+        opacity: .5;
+        font-style: italic;
+    }
+
+    /* Aksiyonlar */
+    .ct-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+        .ct-actions .btn {
+            border-radius: 9px;
+            font-size: 13px;
+            padding: 7px 14px;
+        }
+
+    /* Boş durum */
+    .ct-empty {
+        text-align: center;
+        padding: 70px 20px;
+        border: 1px dashed rgba(128,128,128,.3);
+        border-radius: 16px;
+    }
+
+        .ct-empty ion-icon {
+            font-size: 42px;
+            opacity: .3;
+            margin-bottom: 12px;
+        }
+</style>
 
 <div class="page-content-wrapper">
     <div class="page-content">
 
-        <!-- Breadcrumb Alanı -->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
-            <div class="breadcrumb-title pe-3">İletişim Yönetimi</div>
-            <div class="ps-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0 align-items-center">
-                        <li class="breadcrumb-item">
-                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">İletişim ve Sosyal Medya Listesi</li>
-                    </ol>
-                </nav>
+        <div class="ct-head">
+            <div>
+                <h5>İletişim Bilgileri</h5>
+                <p>Sitede görünen iletişim kaydı ve bağlı sosyal medya hesapları.</p>
             </div>
-            <div class="ms-auto">
-                <a href="/Admin/Contact/CreateContact" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
-                    <i class="bx bx-plus-circle fs-5"></i> Yeni İletişim Bilgisi Ekle
-                </a>
-            </div>
+            <a href="/Admin/Contact/CreateContact" class="btn btn-primary d-inline-flex align-items-center gap-2">
+                <ion-icon name="add-outline"></ion-icon> Yeni Kayıt
+            </a>
         </div>
 
-        <!-- Ana Kart -->
-        <div class="card shadow-sm border-0 radius-10">
-            <div class="card-body p-4">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                count++;
+                var isActive = count == 1;
 
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h5 class="mb-0 text-primary fw-bold">Sistemdeki İletişim Kayıtları</h5>
-                    <form class="position-relative w-25">
-                        <div class="position-absolute top-50 translate-middle-y search-icon px-3"><ion-icon name="search-sharp"></ion-icon></div>
-                        <input class="form-control ps-5 rounded-pill" type="text" placeholder="Adres veya e-posta ara...">
-                    </form>
-                </div>
+                <div class="ct-card @(isActive ? "is-active" : "")">
 
-                <div class="table-responsive">
-                    <table class="table align-middle table-hover mb-0">
-                        <thead class="table-light text-secondary">
-                            <tr>
-                                <th width="10%">Durum</th>
-                                <th width="20%">İletişim Bilgileri</th>
-                                <th width="25%">Adres ve Saatler</th>
-                                <th width="30%">Sosyal Medya Hesapları</th>
-                                <th width="15%" class="text-end">İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
+                    <div class="ct-top">
+                        <div class="ct-fields">
+
+                            <div class="ct-field">
+                                <div class="lbl"><ion-icon name="mail-outline"></ion-icon> E-posta</div>
+                                <div class="val">
+                                    @if (!string.IsNullOrWhiteSpace(item.Email))
+                                    {
+                                        <a href="mailto:@item.Email">@item.Email</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="opacity-50">—</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="ct-field">
+                                <div class="lbl"><ion-icon name="call-outline"></ion-icon> Telefon</div>
+                                <div class="val">
+                                    @if (!string.IsNullOrWhiteSpace(item.PhoneNumber))
+                                    {
+                                        <a href="tel:@item.PhoneNumber">@item.PhoneNumber</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="opacity-50">—</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="ct-field">
+                                <div class="lbl"><ion-icon name="time-outline"></ion-icon> Çalışma Saatleri</div>
+                                <div class="val">@item.OpeningHour <span class="opacity-50">—</span> @item.ClosingHour</div>
+                            </div>
+
+                            <div class="ct-field" style="grid-column: 1 / -1;">
+                                <div class="lbl"><ion-icon name="location-outline"></ion-icon> Adres</div>
+                                <div class="val">@(string.IsNullOrWhiteSpace(item.Address) ? "—" : item.Address)</div>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex flex-column align-items-end gap-3">
+                            <span class="ct-state @(isActive ? "on" : "")">
+                                <span class="ct-dot"></span>
+                                @(isActive ? "Sitede Aktif" : "Pasif Kayıt")
+                            </span>
+                            <div class="ct-actions">
+                                <a href="/Admin/Contact/UpdateContact/@item.Id" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                                    <ion-icon name="create-outline"></ion-icon> Düzenle
+                                </a>
+                                <button onclick="confirmDelete('/Admin/Contact/DeleteContact/@item.Id')"
+                                        class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+                                    <ion-icon name="trash-outline"></ion-icon> Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ct-social">
+                        <div class="ct-social-lbl">Sosyal Medya Hesapları</div>
+                        <div class="ct-chips">
+
+                            @if (item.ContactSocialMedias != null && item.ContactSocialMedias.Any())
                             {
-                                count++;
-                                // İlk kaydı 'Sitede Aktif' olarak vurguluyoruz
-                                string rowClass = count == 1 ? "bg-primary bg-opacity-10" : "";
-
-                                <tr class="@rowClass">
-                                    <!-- Durum -->
-                                    <td>
-                                        @if (count == 1)
-                                        {
-                                            <span class="badge bg-success rounded-pill px-3 py-2 shadow-sm d-inline-flex align-items-center gap-1">
-                                                <i class="bx bx-check-double fs-6"></i> Sitede Aktif
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-secondary rounded-pill px-3 py-2 opacity-75">Geçmiş Kayıt</span>
-                                        }
-                                    </td>
-
-                                    <!-- İletişim Bilgileri -->
-                                    <td>
-                                        <div class="d-flex flex-column gap-1">
-                                            <div class="fw-bold text-dark"><i class="bx bx-envelope text-primary me-1"></i> @item.Email</div>
-                                            <div class="text-muted small"><i class="bx bx-phone-call text-success me-1"></i> @item.PhoneNumber</div>
-                                        </div>
-                                    </td>
-
-                                    <!-- Adres ve Saatler -->
-                                    <td>
-                                        <div class="text-wrap" style="max-width: 250px; font-size: 0.9rem;">
-                                            <i class="bx bx-map text-danger"></i> @item.Address
-                                        </div>
-                                        <div class="mt-2 small">
-                                            <span class="badge bg-light text-dark border"><i class="bx bx-time"></i> @item.OpeningHour - @item.ClosingHour</span>
-                                        </div>
-                                    </td>
-
-                                    <!-- Sosyal Medya Hesapları Çipleri -->
-                                    <td>
-                                        <div class="d-flex flex-wrap gap-2">
-                                            @if (item.ContactSocialMedias != null && item.ContactSocialMedias.Any())
-                                            {
-                                                foreach (var sm in item.ContactSocialMedias)
-                                                {
-                                                    <div class="badge bg-white text-dark border shadow-sm p-2 d-flex align-items-center gap-2 rounded-pill">
-                                                        <!-- İkon (Görseliniz yoksa varsayılan göster) -->
-                                                        <img src="@sm.IconUrl" alt="@sm.SocialMediaName" width="18" height="18" class="rounded-circle object-fit-cover" onerror="this.src='/images/default-social.png'" />
-
-                                                        <a href="@sm.SocialMediaUrl" target="_blank" class="text-dark text-decoration-none" title="Linki Test Et">@sm.SocialMediaName</a>
-
-                                                        <div class="ms-1 border-start ps-2 d-flex gap-1 align-items-center">
-                                                            <a href="/Admin/ContactSocialMedia/UpdateContactSocialMedia/@sm.Id" class="text-primary transition-zoom" title="Güncelle">
-                                                                <i class="bx bx-edit fs-6"></i>
-                                                            </a>
-                                                            <a href="javascript:void(0);" onclick="confirmDelete('/Admin/ContactSocialMedia/DeleteContactSocialMedia/@sm.Id')" class="text-danger transition-zoom" title="Sil">
-                                                                <i class="bx bx-trash fs-6"></i>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted small fst-italic mt-1">Sosyal medya eklenmemiş.</span>
-                                            }
-
-                                            <!-- Bu İletişime Yeni Sosyal Medya Ekle -->
-                                            <a href="/Admin/ContactSocialMedia/CreateContactSocialMedia/@item.Id" class="badge bg-light text-success border border-success border-dashed p-2 d-flex align-items-center gap-1 rounded-pill text-decoration-none action-hover" title="Yeni Sosyal Medya Ekle">
-                                                <i class="bx bx-plus fw-bold fs-6"></i> Hesap Ekle
+                                foreach (var sm in item.ContactSocialMedias)
+                                {
+                                    <div class="ct-chip">
+                                        <img src="@sm.IconUrl" alt="@sm.SocialMediaName"
+                                             onerror="this.src='/images/default-social.png'" />
+                                        <a href="@sm.SocialMediaUrl" target="_blank" rel="noopener"
+                                           class="name" title="Linki aç">@sm.SocialMediaName</a>
+                                        <div class="tools">
+                                            <a href="/Admin/ContactSocialMedia/UpdateContactSocialMedia/@sm.Id" title="Güncelle">
+                                                <ion-icon name="create-outline"></ion-icon>
+                                            </a>
+                                            <a href="javascript:void(0);" class="text-danger"
+                                               onclick="confirmDelete('/Admin/ContactSocialMedia/DeleteContactSocialMedia/@sm.Id')" title="Sil">
+                                                <ion-icon name="close-outline"></ion-icon>
                                             </a>
                                         </div>
-                                    </td>
-
-                                    <!-- Ana İletişim İşlemleri -->
-                                    <td class="text-end">
-                                        <div class="btn-group shadow-sm">
-                                            <a href="/Admin/Contact/UpdateContact/@item.Id" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
-                                                <i class="bx bx-edit"></i> İletişimi Düzenle
-                                            </a>
-                                            <button onclick="confirmDelete('/Admin/Contact/DeleteContact/@item.Id')" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1">
-                                                <i class="bx bx-trash"></i> Sil
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                }
                             }
-                        </tbody>
-                    </table>
-                </div>
+                            else
+                            {
+                                <span class="ct-empty-social">Henüz hesap eklenmemiş.</span>
+                            }
 
+                            <a href="/Admin/ContactSocialMedia/CreateContactSocialMedia/@item.Id" class="ct-chip add">
+                                <ion-icon name="add-outline"></ion-icon> Hesap Ekle
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="ct-empty">
+                <ion-icon name="call-outline"></ion-icon>
+                <p class="mb-3 opacity-75">Henüz iletişim kaydı eklenmemiş.</p>
+                <a href="/Admin/Contact/CreateContact" class="btn btn-primary btn-sm">İlk kaydı oluştur</a>
             </div>
-        </div>
+        }
 
     </div>
 </div>
 
-<!-- Estetik İçin Ufak CSS Dokunuşları -->
-<style>
-    .border-dashed {
-        border-style: dashed !important;
-    }
-
-    .action-hover:hover {
-        background-color: #198754 !important;
-        color: white !important;
-    }
-
-    .transition-zoom {
-        transition: transform 0.2s ease-in-out;
-    }
-
-        .transition-zoom:hover {
-            transform: scale(1.2);
-        }
-</style>
-
-<!-- Dinamik SweetAlert Scripti -->
 <script>
-    // Silme işlemini dinamikleştirdik. İster İletişim sil, ister Sosyal medya.
-    // Sadece URL göndermen yeterli.
     function confirmDelete(deleteUrl) {
         Swal.fire({
             title: "Silmek istediğinize emin misiniz?",
-            text: "Bu işlemi geri alamazsınız!",
+            text: "Bu işlem geri alınamaz.",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Evet, kalıcı olarak sil!",
+            reverseButtons: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, sil",
             cancelButtonText: "İptal"
         }).then((result) => {
             if (result.isConfirmed) {
-                // Başarı alerti
-                Swal.fire({
-                    title: "Silindi!",
-                    text: "Seçilen kayıt başarıyla silindi.",
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    timerProgressBar: true
-                }).then(() => {
-                    // Alert kapandıktan sonra parametre olarak gelen URL'ye git
-                    window.location.href = deleteUrl;
-                });
+                Swal.showLoading();
+                window.location.href = deleteUrl;
             }
         });
     }
 </script>
-
-
-

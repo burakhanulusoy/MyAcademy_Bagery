@@ -10,6 +10,8 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="MediatorPattern\Queries\ContactMessageQueries\" />
+    <Folder Include="MediatorPattern\Results\ContactMessageResults\" />
   </ItemGroup>
 
   <ItemGroup>

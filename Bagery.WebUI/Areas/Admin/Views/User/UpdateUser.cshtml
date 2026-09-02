@@ -3,91 +3,326 @@
     ViewData["Title"] = "UpdateUser";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<style>
+    .pf-card {
+        border: 1px solid rgba(128,128,128,.18);
+        border-radius: 16px;
+        overflow: hidden;
+        background: inherit;
+    }
+
+    .pf-head {
+        padding: 24px 28px;
+        border-bottom: 1px solid rgba(128,128,128,.15);
+    }
+
+        .pf-head h5 {
+            margin: 0 0 4px;
+            font-weight: 600;
+        }
+
+        .pf-head p {
+            margin: 0;
+            font-size: 13px;
+            opacity: .6;
+        }
+
+    .pf-body {
+        padding: 28px;
+    }
+
+    /* Bölüm başlığı */
+    .pf-section {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 32px 0 18px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        opacity: .55;
+    }
+
+        .pf-section::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(128,128,128,.2);
+        }
+
+        .pf-section:first-of-type {
+            margin-top: 8px;
+        }
+
+    /* Avatar yükleme alanı */
+    .pf-avatar-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        border: 1px dashed rgba(128,128,128,.3);
+        border-radius: 14px;
+        transition: border-color .2s ease, background-color .2s ease;
+    }
+
+        .pf-avatar-row.dragover {
+            border-color: rgba(128,128,128,.6);
+            background: rgba(128,128,128,.06);
+        }
+
+    .pf-avatar {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 2px solid rgba(128,128,128,.2);
+    }
+
+    .pf-avatar-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+        .pf-avatar-info strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .pf-avatar-info small {
+            opacity: .6;
+        }
+
+    .pf-file-btn {
+        border: 1px solid rgba(128,128,128,.35);
+        background: transparent;
+        color: inherit;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 13px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: border-color .2s ease, background-color .2s ease;
+    }
+
+        .pf-file-btn:hover {
+            border-color: rgba(128,128,128,.6);
+            background: rgba(128,128,128,.08);
+        }
+
+    #fileInput {
+        display: none;
+    }
+
+    /* Form alanları */
+    .pf-body .form-label {
+        font-size: 12.5px;
+        font-weight: 500;
+        opacity: .75;
+        margin-bottom: 6px;
+    }
+
+    .pf-body .form-control {
+        border-radius: 10px;
+        border: 1px solid rgba(128,128,128,.25);
+        background: transparent;
+        color: inherit;
+        padding: 11px 14px;
+        font-size: 14px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .pf-body .form-control:focus {
+            border-color: rgba(128,128,128,.55);
+            box-shadow: 0 0 0 4px rgba(128,128,128,.10);
+            background: transparent;
+            color: inherit;
+        }
+
+        .pf-body .form-control::placeholder {
+            opacity: .45;
+        }
+
+    .pf-body textarea.form-control {
+        resize: vertical;
+    }
+
+    /* Şifre alanı vurgusu */
+    .pf-confirm {
+        border: 1px solid rgba(128,128,128,.25);
+        border-left: 3px solid rgba(220,53,69,.55);
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-top: 4px;
+    }
+
+        .pf-confirm .form-label {
+            margin-bottom: 8px;
+        }
+
+        .pf-confirm small {
+            display: block;
+            margin-top: 6px;
+            opacity: .55;
+            font-size: 12px;
+        }
+
+    /* Alt aksiyon çubuğu */
+    .pf-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 32px;
+        padding-top: 22px;
+        border-top: 1px solid rgba(128,128,128,.15);
+    }
+
+        .pf-actions .btn {
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-weight: 500;
+        }
+
+    .pf-icon-input {
+        position: relative;
+    }
+
+        .pf-icon-input ion-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+            opacity: .45;
+            pointer-events: none;
+        }
+
+        .pf-icon-input .form-control {
+            padding-left: 40px;
+        }
+</style>
 
 <div class="page-content-wrapper">
     <div class="page-content">
-
         <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="card radius-10">
-                    <div class="card-body">
+            <div class="col-lg-9 col-xl-8 mx-auto">
+                <div class="pf-card">
+
+                    <div class="pf-head">
+                        <h5>Profil Düzenle</h5>
+                        <p>Hesap bilgilerinizi ve genel görünümünüzü buradan güncelleyebilirsiniz.</p>
+                    </div>
+
+                    <div class="pf-body">
                         <form id="updateProfileForm" method="post" enctype="multipart/form-data">
 
-                            <h5 class="mb-3">Profil Düzenle</h5>
                             <input type="hidden" asp-for="ImageUrl" />
 
-                            @* 1. PROFESYONEL DOKUNUŞ: Sadece genel hataları ("ModelOnly") burada göster. *@
-                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded-3 small"></div>
 
-                            <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-center">
-                                <div class="user-change-photo shadow">
-                                    <img src="@(Model?.ImageUrl ?? "https://images.unsplash.com/photo-1707396172424-f3293f788364?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjZ8fHVzZXIlMjBhZG1pbnxlbnwwfHwwfHx8MA%3D%3D")" alt="Profil Fotoğrafı" id="previewImg">
+                            <div class="pf-avatar-row" id="dropZone">
+                                <img src="@(Model?.ImageUrl ?? "https://ui-avatars.com/api/?size=128&background=random&name=" + Uri.EscapeDataString(Model?.FullName ?? "?"))"
+                                     alt="Profil Fotoğrafı" id="previewImg" class="pf-avatar">
+                                <div class="pf-avatar-info">
+                                    <strong>Profil Fotoğrafı</strong>
+                                    <small>JPG veya PNG, en fazla 2 MB. Sürükleyip bırakabilirsiniz.</small>
+                                    <button type="button" class="pf-file-btn" id="pickFileBtn">Dosya Seç</button>
+                                    <input type="file" asp-for="file" id="fileInput" accept="image/*" />
+                                    <span asp-validation-for="file" class="text-danger d-block mt-1 small"></span>
                                 </div>
-                                <input type="file" asp-for="file" id="fileInput" class="form-control form-control-sm" accept="image/*" />
-                                <span asp-validation-for="file" class="text-danger"></span>
                             </div>
 
-                            <h5 class="mb-0 mt-4">Kullanıcı Bilgileri</h5>
-                            <hr>
+                            <div class="pf-section">Kullanıcı Bilgileri</div>
+
                             <div class="row g-3">
-                                <div class="col-6">
+                                <div class="col-md-6">
                                     <label class="form-label">Ad Soyad</label>
-                                    <input type="text" asp-for="FullName" class="form-control">
-                                    <span asp-validation-for="FullName" class="text-danger"></span>
+                                    <div class="pf-icon-input">
+                                        <ion-icon name="person-outline"></ion-icon>
+                                        <input type="text" asp-for="FullName" class="form-control" placeholder="Ad Soyad">
+                                    </div>
+                                    <span asp-validation-for="FullName" class="text-danger small"></span>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-md-6">
                                     <label class="form-label">Telefon</label>
-                                    <input type="text" asp-for="PhoneNumber" class="form-control">
-                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    <div class="pf-icon-input">
+                                        <ion-icon name="call-outline"></ion-icon>
+                                        <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="5xx xxx xx xx">
+                                    </div>
+                                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label">Doğrulama İçin Mevcut Şifreniz <span class="text-danger">*</span></label>
-                                    <input type="password" asp-for="Password" class="form-control" placeholder="Değişiklikleri onaylamak için şifrenizi girin">
-                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                <div class="col-md-6">
+                                    <label class="form-label">Meslek</label>
+                                    <div class="pf-icon-input">
+                                        <ion-icon name="briefcase-outline"></ion-icon>
+                                        <input type="text" asp-for="Job" class="form-control" placeholder="Örn. Yazılım Geliştirici">
+                                    </div>
+                                    <span asp-validation-for="Job" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Adres</label>
+                                    <div class="pf-icon-input">
+                                        <ion-icon name="location-outline"></ion-icon>
+                                        <input type="text" asp-for="Address" class="form-control" placeholder="Şehir, ülke">
+                                    </div>
+                                    <span asp-validation-for="Address" class="text-danger small"></span>
                                 </div>
                             </div>
 
-                            <h5 class="mb-0 mt-4">Sosyal Medya & İletişim</h5>
-                            <hr>
+                            <div class="pf-section">Sosyal Medya</div>
+
                             <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="form-label">Meslek</label>
-                                    <input type="text" asp-for="Job" class="form-control">
-                                    <span asp-validation-for="Job" class="text-danger"></span>
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label">Adres</label>
-                                    <input type="text" asp-for="Address" class="form-control">
-                                    <span asp-validation-for="Address" class="text-danger"></span>
-                                </div>
-
-                                <div class="col-4">
+                                <div class="col-md-4">
                                     <label class="form-label">Facebook</label>
-                                    <input type="text" asp-for="FacebookUrl" class="form-control">
-                                    <span asp-validation-for="FacebookUrl" class="text-danger"></span>
+                                    <div class="pf-icon-input">
+                                        <ion-icon name="logo-facebook"></ion-icon>
+                                        <input type="text" asp-for="FacebookUrl" class="form-control" placeholder="facebook.com/...">
+                                    </div>
+                                    <span asp-validation-for="FacebookUrl" class="text-danger small"></span>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-md-4">
                                     <label class="form-label">Twitter</label>
-                                    <input type="text" asp-for="TwitterUrl" class="form-control">
-                                    <span asp-validation-for="TwitterUrl" class="text-danger"></span>
+                                    <div class="pf-icon-input">
+                                        <ion-icon name="logo-twitter"></ion-icon>
+                                        <input type="text" asp-for="TwitterUrl" class="form-control" placeholder="twitter.com/...">
+                                    </div>
+                                    <span asp-validation-for="TwitterUrl" class="text-danger small"></span>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-md-4">
                                     <label class="form-label">Instagram</label>
-                                    <input type="text" asp-for="InstagramUrl" class="form-control">
-                                    <span asp-validation-for="InstagramUrl" class="text-danger"></span>
+                                    <div class="pf-icon-input">
+                                        <ion-icon name="logo-instagram"></ion-icon>
+                                        <input type="text" asp-for="InstagramUrl" class="form-control" placeholder="instagram.com/...">
+                                    </div>
+                                    <span asp-validation-for="InstagramUrl" class="text-danger small"></span>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Hakkımda</label>
-                                    <textarea asp-for="AboutMe" class="form-control" rows="4"></textarea>
-                                    <span asp-validation-for="AboutMe" class="text-danger"></span>
+                                    <textarea asp-for="AboutMe" class="form-control" rows="4"
+                                              placeholder="Kendinizden kısaca bahsedin..."></textarea>
+                                    <span asp-validation-for="AboutMe" class="text-danger small"></span>
                                 </div>
                             </div>
 
-                            <div class="text-start mt-4">
-                                <button type="submit" class="btn btn-primary px-4">Değişiklikleri Kaydet</button>
+                            <div class="pf-section">Doğrulama</div>
+
+                            <div class="pf-confirm">
+                                <label class="form-label mb-0">
+                                    Mevcut Şifreniz <span class="text-danger">*</span>
+                                </label>
+                                <input type="password" asp-for="Password" class="form-control mt-2"
+                                       placeholder="Değişiklikleri onaylamak için şifrenizi girin">
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                                <small>Güvenliğiniz için profil değişiklikleri şifre doğrulaması gerektirir.</small>
+                            </div>
+
+                            <div class="pf-actions">
+                                <a asp-controller="User" asp-action="Index" class="btn btn-link text-decoration-none">Vazgeç</a>
+                                <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
                             </div>
 
                         </form>
@@ -99,70 +334,77 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
+    const fileInput  = document.getElementById('fileInput');
+    const pickBtn    = document.getElementById('pickFileBtn');
+    const dropZone   = document.getElementById('dropZone');
+    const previewImg = document.getElementById('previewImg');
+
+    pickBtn.addEventListener('click', () => fileInput.click());
+
     // 1. ANLIK RESİM ÖNİZLEME VE GÜVENLİK KONTROLÜ
-    document.getElementById('fileInput').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            // Sadece resim dosyası mı kontrol et
-            if (!file.type.match('image.*')) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Geçersiz Format',
-                    text: 'Lütfen sadece resim (JPG, PNG vb.) dosyası seçiniz.'
-                });
-                this.value = ''; // Inputu temizle
-                return;
-            }
+    function handleFile(file) {
+        if (!file) return false;
 
-            // Dosya boyutu kontrolü (Örn: 2 MB limiti)
-            const maxSizeInMB = 2;
-            if (file.size > (maxSizeInMB * 1024 * 1024)) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Dosya Çok Büyük',
-                    text: `Seçtiğiniz resim ${maxSizeInMB}MB'dan daha küçük olmalıdır.`
-                });
-                this.value = ''; // Inputu temizle
-                return;
-            }
+        if (!file.type.match('image.*')) {
+            Swal.fire({ icon: 'error', title: 'Geçersiz Format', text: 'Lütfen sadece resim (JPG, PNG vb.) dosyası seçiniz.' });
+            fileInput.value = '';
+            return false;
+        }
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('previewImg').src = e.target.result;
-            }
-            reader.readAsDataURL(file);
+        const maxSizeInMB = 2;
+        if (file.size > (maxSizeInMB * 1024 * 1024)) {
+            Swal.fire({ icon: 'warning', title: 'Dosya Çok Büyük', text: `Seçtiğiniz resim ${maxSizeInMB}MB'dan daha küçük olmalıdır.` });
+            fileInput.value = '';
+            return false;
+        }
+
+        const reader = new FileReader();
+        reader.onload = e => previewImg.src = e.target.result;
+        reader.readAsDataURL(file);
+        return true;
+    }
+
+    fileInput.addEventListener('change', function () {
+        handleFile(this.files[0]);
+    });
+
+    ['dragenter', 'dragover'].forEach(ev =>
+        dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('dragover'); }));
+
+    ['dragleave', 'drop'].forEach(ev =>
+        dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('dragover'); }));
+
+    dropZone.addEventListener('drop', function (e) {
+        const file = e.dataTransfer.files[0];
+        if (handleFile(file)) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            fileInput.files = dt.files;
         }
     });
 
     // 2. KAYDETMEDEN ÖNCE ONAY PENCERESİ VE YÜKLENİYOR ANİMASYONU
     document.getElementById('updateProfileForm').addEventListener('submit', function (event) {
-        event.preventDefault(); // Formun hemen gitmesini durdur
-
+        event.preventDefault();
         Swal.fire({
             title: 'Emin misiniz?',
             text: "Profil bilgileriniz güncellenecektir. Onaylıyor musunuz?",
-            icon: 'question', // Uyarı yerine soru ikonu daha zarif durur
+            icon: 'question',
             showCancelButton: true,
-            reverseButtons: true, // İptal butonunu sola, onay butonunu sağa alır (Modern UI)
+            reverseButtons: true,
             confirmButtonColor: '#0d6efd',
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'Evet, Güncelle',
             cancelButtonText: 'Vazgeç',
-            showLoaderOnConfirm: true, // Butona basınca dönen spinner çıkar
-            preConfirm: () => {
-                // Form submit edilmeden hemen önce spinner gösteriyoruz
-                Swal.showLoading();
-            }
+            showLoaderOnConfirm: true,
+            preConfirm: () => { Swal.showLoading(); }
         }).then((result) => {
-            if (result.isConfirmed) {
-                this.submit(); // Kullanıcı onaylarsa formu gönder
-            }
+            if (result.isConfirmed) this.submit();
         });
     });
 
-    // 3. BAŞARILI MESAJI (Tebrikler - Otomatik Kapanan Progress Bar)
+    // 3. BAŞARILI MESAJI
     @if (TempData["SuccessMessage"] != null)
     {
             <text>
@@ -171,8 +413,8 @@
                     title: 'Tebrikler!',
                     text: @Html.Raw(Json.Serialize(TempData["SuccessMessage"])),
                     icon: 'success',
-                    timer: 3500, // 3.5 saniye sonra otomatik kapanır
-                    timerProgressBar: true, // Alta şık bir azalan çizgi ekler
+                    timer: 3500,
+                    timerProgressBar: true,
                     showConfirmButton: true,
                     confirmButtonColor: '#198754',
                     confirmButtonText: 'Tamam'
@@ -181,7 +423,3 @@
             </text>
     }
 </script>
-
-
-
-

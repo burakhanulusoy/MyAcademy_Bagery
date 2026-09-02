@@ -1,135 +1,117 @@
 ﻿@model PagedList<GetUsersQueryResult>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Kullanıcılar";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var customOption = PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext;
     customOption.LinkToPreviousPageFormat = "« Önceki";
     customOption.LinkToNextPageFormat = "Sonraki »";
+    var placeholder = "https://ui-avatars.com/api/?background=random&name=";
 }
 
 <div class="page-content-wrapper">
     <div class="page-content">
 
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
-            <div class="breadcrumb-title pe-3">Sisteme Kayıtlı Kullanıcılar</div>
-            <div class="ps-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0 align-items-center">
-                        <li class="breadcrumb-item">
-                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Üyelerimiz</li>
-                    </ol>
-                </nav>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <h5 class="mb-1">Kullanıcılar</h5>
+                <p class="mb-0 text-muted small">Sisteme kayıtlı @Model.TotalItemCount kişi</p>
+            </div>
+            <div class="input-group" style="max-width: 320px;">
+                <span class="input-group-text"><ion-icon name="search-outline"></ion-icon></span>
+                <input type="text" id="globalSearchInput" class="form-control"
+                       placeholder="İsim veya e-posta ara..."
+                       value="@ViewData["CurrentSearch"]">
             </div>
         </div>
 
-        <!-- Arama Kutusu -->
-        <div class="row mb-4">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent"><ion-icon name="search-outline"></ion-icon></span>
-                    <input type="text" id="globalSearchInput" class="form-control border-start-0"
-                           placeholder="Kullanıcı adı veya mail ile ara..."
-                           value="@ViewData["CurrentSearch"]">
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            @if (Model.Any())
-            {
-                @foreach (var user in Model)
-                {
-                    <div class="col-12 mb-4">
-                        <div class="card overflow-hidden radius-10">
-                            <div class="profile-cover bg-dark position-relative mb-4">
-                                <div class="user-profile-avatar shadow position-absolute top-50 start-0 translate-middle-x">
-                                    <img src="@(user.ImageUrl ?? "https://images.unsplash.com/photo-1681398836231-d0b89bd571d6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0")" alt="User Avatar">
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="mt-5 d-flex align-items-start justify-content-between">
-                                    <div class="">
-                                        <h3 class="mb-2">@user.FullName</h3>
-                                        <p class="mb-1 text-muted">@(user.Job ?? "Belirtilmemiş")</p>
-                                        <p class="mb-2">@(user.Address ?? "Belirtilmemiş")</p>
-
-                                        <div class="">
-
-                                            @if (!string.IsNullOrWhiteSpace(user.Email))
-                                            {
-                                                <a href="mailto:@user.Email" class="badge rounded-pill bg-primary" title="Mail Gönder">@user.Email</a>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge rounded-pill bg-secondary">Belirtilmemiş</span>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <a href="/Admin/User/GetUserById/@user.Id" class="btn btn-primary">
-                                            <ion-icon name="send-sharp" class="me-1"></ion-icon>Profili İncele
+        <div class="card radius-10">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;"></th>
+                            <th>Ad Soyad</th>
+                            <th>E-posta</th>
+                            <th>Meslek</th>
+                            <th class="text-end">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@(string.IsNullOrWhiteSpace(user.ImageUrl) ? placeholder + Uri.EscapeDataString(user.FullName ?? "?") : user.ImageUrl)"
+                                             class="rounded-circle" width="40" height="40"
+                                             style="object-fit: cover;" alt="">
+                                    </td>
+                                    <td>
+                                        <span class="fw-semibold">@user.FullName</span>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(user.Email))
+                                        {
+                                            <a href="mailto:@user.Email" class="text-decoration-none">@user.Email</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">—</span>
+                                        }
+                                    </td>
+                                    <td class="text-muted">@(string.IsNullOrWhiteSpace(user.Job) ? "—" : user.Job)</td>
+                                    <td class="text-end">
+                                        <a href="/Admin/User/GetUserById/@user.Id" class="btn btn-sm btn-outline-primary">
+                                            İncele
                                         </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
-            else
-            {
-                <!-- Arama sonucu boş dönerse gösterilecek mesaj -->
-                <div class="col-12 text-center mt-4">
-                    <p class="text-muted">Arama kriterlerinize uygun kullanıcı bulunamadı.</p>
-                </div>
-            }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-5">
+                                    Arama kriterlerine uygun kullanıcı bulunamadı.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="d-flex justify-content-center mt-3">
-            <!-- asp-route-search parametresi eklendi. Böylece arama yaptıktan sonra 2. sayfaya geçince arama sıfırlanmaz. -->
-            <pager asp-action="Index" asp-controller="User" asp-area="Admin" list="@Model" options="@customOption" asp-route-search="@ViewData["CurrentSearch"]"></pager>
+        <div class="d-flex justify-content-center mt-4">
+            <pager asp-action="Index" asp-controller="User" asp-area="Admin"
+                   list="@Model" options="@customOption"
+                   asp-route-search="@ViewData["CurrentSearch"]"></pager>
         </div>
 
     </div>
 </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let typingTimer;
-            const doneTypingInterval = 500; // Kullanıcı yazmayı bıraktıktan yarım saniye sonra arar
-            const searchInput = document.getElementById("globalSearchInput");
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("globalSearchInput");
+        const current = '@Html.Raw(ViewData["CurrentSearch"] ?? "")';
+        let timer;
 
-            // Kullanıcı klavyeden elini çektiğinde sayacı başlat
-            searchInput.addEventListener('keyup', function () {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(performSearch, doneTypingInterval);
-            });
-
-            // Kullanıcı yazmaya devam ediyorsa sayacı iptal et
-            searchInput.addEventListener('keydown', function () {
-                clearTimeout(typingTimer);
-            });
-
-            function performSearch() {
-                const searchTerm = searchInput.value.trim();
-                const currentSearch = '@Html.Raw(ViewData["CurrentSearch"] ?? "")';
-
-                // Eğer kutudaki yazı, zaten yapılmış arama ile aynıysa sayfayı boşuna yenileme
-                if (searchTerm !== currentSearch) {
-                    // Sayfayı yeni arama parametresiyle Controller'a yönlendir (Admin area içinde olduğun için url yolu önemli)
-                    window.location.href = '@Url.Action("Index", "User", new { area = "Admin" })?search=' + encodeURIComponent(searchTerm);
+        input.addEventListener('keyup', function () {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                const term = input.value.trim();
+                if (term !== current) {
+                    window.location.href = '@Url.Action("Index", "User", new { area = "Admin" })?search=' + encodeURIComponent(term);
                 }
-            }
-
-            // İmleci arama kutusunun sonuna konumlandır (kullanıcı deneyimi için)
-            if (searchInput.value.length > 0) {
-                searchInput.focus();
-                var val = searchInput.value;
-                searchInput.value = '';
-                searchInput.value = val;
-            }
+            }, 500);
         });
-    </script>
+
+        if (input.value.length > 0) {
+            input.focus();
+            const v = input.value;
+            input.value = '';
+            input.value = v;
+        }
+    });
+</script>

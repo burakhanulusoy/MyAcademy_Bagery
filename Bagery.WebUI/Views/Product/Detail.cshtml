@@ -1,0 +1,372 @@
+﻿@model GetProductByIdQueryResult
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_WebUILayout.cshtml";
+}
+
+<style>
+    .single-product .product-image .image {
+        margin: 0;
+        background: #fff;
+    }
+
+        .single-product .product-image .image img {
+            width: 100%;
+            height: 520px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+    .single-product .slider-pager .thumb-box li {
+        margin-bottom: 20px;
+    }
+
+        .single-product .slider-pager .thumb-box li figure {
+            margin: 0;
+            background: #fff;
+        }
+
+        .single-product .slider-pager .thumb-box li img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+    .single-product .tags.list li {
+        margin-right: 10px;
+    }
+
+    .single-product .product-details-content:before,
+    .single-product .product-details-content:after {
+        display: none !important;
+    }
+
+</style>
+
+
+<section class="page-title centred"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
+    <div class="auto-container">
+        <div class="content-box">
+            <div class="title">
+                <h1>Ürün Detayı</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<!--End Page Title-->
+<!-- single-product -->
+<section class="single-product">
+
+    
+
+    <div class="product-details-content"
+         style="background-color: red; background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/clients/urunArka.png")'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <div class="auto-container">
+            <div class="row clearfix">
+                <div class="col-lg-6 col-md-12 col-sm-12 image-column">
+                    <div class="bxslider">
+                        <div class="slider-content">
+                            <div class="slider-pager">
+                                <ul class="thumb-box">
+                                    <li>
+                                        <a class="active" data-slide-index="0" href="#"><figure><img src="@Model.MainImageUrl" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                    <li>
+                                        <a data-slide-index="1" href="#"><figure><img src="@Model.ImageUrl1" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                    <li>
+                                        <a data-slide-index="2" href="#"><figure><img src="@Model.ImageUrl2" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="product-image">
+                                <figure class="image"><a href="@Model.MainImageUrl" class="lightbox-image" data-fancybox="gallery"><img src="@Model.MainImageUrl" alt="@Model.ProductName"></a></figure>
+                            </div>
+                        </div>
+                        <div class="slider-content">
+                            <div class="slider-pager">
+                                <ul class="thumb-box">
+                                    <li>
+                                        <a data-slide-index="0" href="#"><figure><img src="@Model.MainImageUrl" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                    <li>
+                                        <a class="active" data-slide-index="1" href="#"><figure><img src="@Model.ImageUrl1" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                    <li>
+                                        <a data-slide-index="2" href="#"><figure><img src="@Model.ImageUrl2" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="product-image">
+                                <figure class="image"><a href="@Model.ImageUrl1" class="lightbox-image" data-fancybox="gallery"><img src="@Model.ImageUrl1" alt="@Model.ProductName"></a></figure>
+                            </div>
+                        </div>
+                        <div class="slider-content">
+                            <div class="slider-pager">
+                                <ul class="thumb-box">
+                                    <li>
+                                        <a data-slide-index="0" href="#"><figure><img src="@Model.MainImageUrl" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                    <li>
+                                        <a data-slide-index="1" href="#"><figure><img src="@Model.ImageUrl1" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                    <li>
+                                        <a class="active" data-slide-index="2" href="#"><figure><img src="@Model.ImageUrl2" alt="@Model.ProductName"></figure></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="product-image">
+                                <figure class="image"><a href="@Model.ImageUrl2" class="lightbox-image" data-fancybox="gallery"><img src="@Model.ImageUrl2" alt="@Model.ProductName"></a></figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 content-column">
+                    <div class="product-details">
+                        <h2>@Model.ProductName</h2>
+                        <h3>@Model.Price ₺</h3>
+                        <div class="customer-rating clearfix">
+                            <ul class="rating pull-left">
+                                <li><i class="icon-Star"></i></li>
+                                <li><i class="icon-Star"></i></li>
+                                <li><i class="icon-Star"></i></li>
+                                <li><i class="icon-Star"></i></li>
+                                <li><i class="icon-Star"></i></li>
+                            </ul>
+                            <div class="review pull-left">
+                                <a href="#">( 1 Değerlendirme )</a>
+                            </div>
+                        </div>
+                        <div class="text">
+                            <p>@Model.Description</p>
+                        </div>
+                        <div class="addto-cart-box">
+                            <ul class="clearfix">
+                                <li><input type="text" name="quantity" placeholder="1"></li>
+                                <li><a href="#"><i class="far fa-heart"></i></a></li>
+                                <li><button type="button" class="theme-btn-one" data-product-id="@Model.Id">Sepete Ekle</button></li>
+                            </ul>
+                        </div>
+                        <div class="other-links">
+                            <ul class="category list">
+                                <li>Kategori:</li>
+                                <li><a href="#">@Model.Category.CategoryName</a></li>
+                            </ul>
+                            <ul class="tags list">
+                                <li>Seçenekler:</li>
+                                @foreach (var variant in Model.ProductVariants)
+                                {
+                                    <li>
+                                        <a href="#">
+                                            @variant.OptionName
+                                            @if (variant.AdditionalPrice > 0)
+                                            {
+                                                <text>(+@variant.AdditionalPrice ₺)</text>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="product-discription">
+        <div class="auto-container">
+            <div class="tabs-box">
+                <div class="tab-btn-box">
+                    <ul class="tab-btns tab-buttons clearfix">
+                        <li class="tab-btn active-btn" data-tab="#tab-1">Ürün Hazırlanışı</li>
+                        <li class="tab-btn" data-tab="#tab-2">Reviews (2)</li>
+                    </ul>
+                </div>
+                <div class="tabs-content">
+                    <div class="tab active-tab" id="tab-1">
+                        <div class="content-box">
+                            <h3>Ürünümüz</h3>
+                             <p>@Model.PreperationDescription</p> 
+                        </div>
+                    </div>
+                    <div class="tab" id="tab-2">
+                        <div class="row clearfix">
+                            <div class="col-lg-6 col-md-6 col-sm-12 review-block">
+                                <div class="customer-review">
+                                    <h3>Reviews</h3>
+                                    <div class="single-review">
+                                        <figure class="image-box"><img src="assets/images/resource/shop/review-1.png" alt=""></figure>
+                                        <div class="inner">
+                                            <ul class="rating">
+                                                <li><i class="icon-Star"></i></li>
+                                                <li><i class="icon-Star"></i></li>
+                                                <li><i class="icon-Star"></i></li>
+                                                <li><i class="icon-Star"></i></li>
+                                                <li><i class="icon-Star"></i></li>
+                                            </ul>
+                                            <h5>Eileen Alene<span> - May 2, 2020</span></h5>
+                                            <p>Excepteur sint occaecat cupidatat non proident sunt in culpa  qui officia deserunt mollit anim  est laborum. Sed perspiciatis unde omnis natus.</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-review">
+                                        <figure class="image-box"><img src="assets/images/resource/shop/review-2.png" alt=""></figure>
+                                        <div class="inner">
+                                            <ul class="rating">
+                                                <li><i class="icon-Star"></i></li>
+                                                <li><i class="icon-Star"></i></li>
+                                                <li><i class="icon-Star"></i></li>
+                                                <li><i class="icon-Star"></i></li>
+                                                <li><i class="icon-Star"></i></li>
+                                            </ul>
+                                            <h5>Jhon Matter<span> - May 1, 2020</span></h5>
+                                            <p>Excepteur sint occaecat cupidatat non proident sunt in culpa  qui officia deserunt mollit anim  est laborum. Sed perspiciatis unde omnis natus.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 comment-column">
+                                <div class="customer-comments">
+                                    <h3>Be First To Rate It</h3>
+                                    <div class="rating-box clearfix">
+                                        <p>Your Rating</p>
+                                        <ul class="rating clearfix">
+                                            <li><i class="icon-Star"></i></li>
+                                            <li><i class="icon-Star"></i></li>
+                                            <li><i class="icon-Star"></i></li>
+                                            <li><i class="icon-Star"></i></li>
+                                            <li><i class="icon-Star"></i></li>
+                                        </ul>
+                                    </div>
+                                    <form action="single-shop-1.html" method="post" class="comment-form">
+                                        <div class="row clearfix">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                                                <label>Your Review</label>
+                                                <textarea name="message"></textarea>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                                <label>Your Name</label>
+                                                <input type="text" name="name" required="">
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                                <label>Your Email</label>
+                                                <input type="email" name="email" required="">
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 form-group message-btn">
+                                                <button type="submit" class="theme-btn-one">Submit Now</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @* en çok siapriş alan 4 ürün *@
+    <div class="related-product" style="background-image: url(assets/images/background/shop-2.jpg);">
+        <div class="auto-container">
+            <div class="top-title centred">
+                <h2>Related Products</h2>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-3 col-md-6 col-sm-12 shop-block">
+                    <div class="shop-block-one">
+                        <div class="inner-box">
+                            <figure class="image-box">
+                                <img src="assets/images/resource/shop/shop-1.jpg" alt="">
+                            </figure>
+                            <div class="lower-content">
+                                <span class="price-box">$100</span>
+                                <h3><a href="shop-details.html">Vanilla Ice Cream</a></h3>
+                                <ul class="rating clearfix">
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                </ul>
+                                <div class="cart-btn"><a href="shop-details.html" class="theme-btn-two">Add to cart</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 shop-block">
+                    <div class="shop-block-one">
+                        <div class="inner-box">
+                            <figure class="image-box">
+                                <img src="assets/images/resource/shop/shop-2.jpg" alt="">
+                            </figure>
+                            <div class="lower-content">
+                                <span class="price-box">$70</span>
+                                <h3><a href="shop-details.html">Slice Super Cake</a></h3>
+                                <ul class="rating clearfix">
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                </ul>
+                                <div class="cart-btn"><a href="shop-details.html" class="theme-btn-two">Add to cart</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 shop-block">
+                    <div class="shop-block-one">
+                        <div class="inner-box">
+                            <figure class="image-box">
+                                <img src="assets/images/resource/shop/shop-3.jpg" alt="">
+                            </figure>
+                            <div class="lower-content">
+                                <span class="price-box">$80</span>
+                                <h3><a href="shop-details.html">Cone Ice Cream</a></h3>
+                                <ul class="rating clearfix">
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                </ul>
+                                <div class="cart-btn"><a href="shop-details.html" class="theme-btn-two">Add to cart</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 shop-block">
+                    <div class="shop-block-one">
+                        <div class="inner-box">
+                            <figure class="image-box">
+                                <img src="assets/images/resource/shop/shop-4.jpg" alt="">
+                            </figure>
+                            <div class="lower-content">
+                                <span class="price-box">$120</span>
+                                <h3><a href="shop-details.html">Quality Ice Cream</a></h3>
+                                <ul class="rating clearfix">
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                    <li><i class="icon-Star"></i></li>
+                                </ul>
+                                <div class="cart-btn"><a href="shop-details.html" class="theme-btn-two">Add to cart</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

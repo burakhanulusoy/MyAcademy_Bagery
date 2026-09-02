@@ -56,6 +56,7 @@ namespace Bagery.WebUI.Context
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<ContactSocialMedia> ContactSocialMedias { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
         public DbSet<OurHistory> OurHistories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Promotion> Promotions { get; set; }

@@ -1,0 +1,106 @@
+﻿@model List<GetProductsWithRequiredValuesQueryResult>
+
+@*
+    All product view component
+*@
+
+<style>
+    .products-showcase .shop-block-one {
+        width: 100%;
+    }
+
+        .products-showcase .shop-block-one .inner-box {
+            position: relative;
+            width: 100%;
+            max-width: 370px;
+            margin: 0 auto;
+            min-height: 620px;
+            background: #ffffff;
+            padding: 0; /* kartta padding YOK */
+            box-shadow: 0 0 20px rgba(0,0,0,.05);
+        }
+
+        /* Resim alanı kartın tam genişliği, 370 yüksekliğinde */
+        .products-showcase .shop-block-one .image-box {
+            display: flex !important;
+            width: 100% !important;
+            height: 370px !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            padding: 15px !important; /* resmin kenara yapışmaması için minik nefes */
+            overflow: hidden !important;
+            background: #ffffff !important;
+            box-sizing: border-box !important;
+        }
+
+            .products-showcase .shop-block-one .image-box img {
+                display: block !important;
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                max-height: none !important;
+                margin: 0 !important;
+                object-fit: cover !important; /* alanı doldurur, boşluk bırakmaz */
+                object-position: center !important;
+            }
+
+        .products-showcase .shop-block-one .lower-content {
+            padding: 25px 30px 35px;
+            text-align: center;
+        }
+</style>
+<section class="shop-section products-showcase">
+    <div class="auto-container">
+
+        <div class="sec-title">
+            <p>LEZZETLERİMİZ</p>
+            <h2>
+                Her Biri Özenle Hazırlanan <br />
+                Eşsiz Lezzetler
+            </h2>
+        </div>
+
+        <div class="three-item-carousel owl-carousel owl-theme owl-dots-none nav-style-one centred">
+            @foreach (var item in Model)
+            {
+                <div class="shop-block-one">
+                    <div class="inner-box">
+
+                        <figure class="image-box">
+                            <img src="@item.MainImageUrl"
+                                 alt="@item.ProductName"
+                                 loading="lazy" />
+                        </figure>
+
+                        <div class="lower-content">
+                            <span class="price-box">@(item.Price) ₺</span>
+
+                            <h3>
+                                <a href="/Product/Detail/@item.Id">
+                                    @item.ProductName
+                                </a>
+                            </h3>
+
+                            <ul class="rating clearfix">
+                                <li><i class="icon-Star"></i></li>
+                                <li><i class="icon-Star"></i></li>
+                                <li><i class="icon-Star"></i></li>
+                                <li><i class="icon-Star"></i></li>
+                                <li><i class="icon-Star"></i></li>
+                            </ul>
+
+                            <div class="cart-btn">
+                                <a href="/Product/Detail/@item.Id" class="theme-btn-two">
+                                    Ürünü İnceleyin
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+</section>
