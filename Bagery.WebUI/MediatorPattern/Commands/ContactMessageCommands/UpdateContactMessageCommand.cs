@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using Bagery.WebUI.Enums;
+using MediatR;
 
 namespace Bagery.WebUI.MediatorPattern.Commands.ContactMessageCommands;
 
-public record UpdateContactMessageCommand(Guid Id,string NameSurname, string Email, string PhoneNumber, string Subject, string Message):IRequest;
+public record UpdateContactMessageCommand(Guid Id, ContactMessageStatus MessageStatus) : IRequest;

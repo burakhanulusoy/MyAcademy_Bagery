@@ -11,6 +11,11 @@ namespace Bagery.WebUI.Repositories.ContactRepositories
         {
         }
 
+        public Task<Contact> GetContactLastAsync()
+        {
+            return _table.Include(c=>c.ContactSocialMedias).OrderBy(x => x.CreatedAt).AsNoTracking().FirstOrDefaultAsync();
+        }
+
         public Task<List<Contact>> GetContactWithContactSocialMedia()
         {
             return _table.Include(x => x.ContactSocialMedias).OrderByDescending(x=>x.CreatedAt).AsNoTracking().ToListAsync();

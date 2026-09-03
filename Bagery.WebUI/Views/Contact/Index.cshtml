@@ -1,0 +1,309 @@
+﻿@model GetContactLastQueryResult
+@{
+    ViewData["Title"] = "İletişim";
+    Layout = "~/Views/Shared/_WebUILayout.cshtml";
+}
+
+<style>
+    .social-links li a img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+    }
+
+    .form-desc {
+        margin-bottom: 25px;
+        color: #777;
+    }
+
+    .code-area {
+        margin-top: 25px;
+        padding: 30px;
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+    }
+
+        .code-area h4 {
+            margin-bottom: 10px;
+        }
+
+        .code-area p {
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+    #codeInput {
+        width: 220px;
+        text-align: center;
+        letter-spacing: 10px;
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .contact-result {
+        margin-top: 20px;
+        font-weight: 600;
+    }
+
+        .contact-result.success {
+            color: #28a745;
+        }
+
+        .contact-result.error {
+            color: #d9534f;
+        }
+</style>
+
+<!--Page Title-->
+<section class="page-title centred"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
+    <div class="auto-container">
+        <div class="content-box">
+            <div class="title">
+                <h1>Bizimle İletişime Geçin</h1>
+            </div>
+            <ul class="bread-crumb clearfix">
+                <li><a href="/Default/Index">Ana Sayfa</a></li>
+                <li>İletişim</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--End Page Title-->
+<!-- contact-section -->
+<section class="contact-section alternet-2 sec-pad"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/banner/deneme.png")');">
+    <div class="auto-container">
+        <div class="row clearfix">
+
+            <div class="col-lg-4 col-md-6 col-sm-12 info-column">
+                <div class="contact-info-inner">
+
+                    <div class="single-box">
+                        <h3>Açılış Saatlerimiz</h3>
+                        <ul class="list clearfix">
+                            <li>Hafta İçi &amp; Cumartesi: @Model.OpeningHour – @Model.ClosingHour</li>
+                            <li>Pazar: 08:00 – 23:00</li>
+                        </ul>
+                    </div>
+
+                    <div class="single-box">
+                        <h3>İletişim Bilgilerimiz</h3>
+                        <ul class="list clearfix">
+                            @{
+                                var addressParts = (Model.Address ?? "").Split(',', 2);
+                            }
+                            <li>
+                                @addressParts[0]
+                                @if (addressParts.Length > 1)
+                                {
+                                    <br />
+                                    @addressParts[1].Trim()
+                                }
+                            </li>
+                            <li><a href="mailto:@Model.Email">@Model.Email</a></li>
+                            <li><a href="tel:@Model.PhoneNumber">@Model.PhoneNumber</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="single-box">
+                        <h3>Bizi Takip Edin</h3>
+                        <ul class="social-links clearfix">
+                            @if (Model.ContactSocialMedias != null)
+                            {
+                                foreach (var item in Model.ContactSocialMedias)
+                                {
+                                    <li>
+                                        <a href="@item.SocialMediaUrl" target="_blank" rel="noopener">
+                                            @if (item.IconUrl != null && (item.IconUrl.StartsWith("http") || item.IconUrl.Contains("/")))
+                                            {
+                                                <img src="@item.IconUrl" alt="sosyal medya" />
+                                            }
+                                            else
+                                            {
+                                                <i class="@item.IconUrl"></i>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-8 col-md-6 col-sm-12 form-column">
+                <div class="form-inner">
+                    <h3>Bize Mesaj Bırakın</h3>
+                    <p class="form-desc">
+                        Sorularınız, önerileriniz veya sipariş talepleriniz için formu doldurun.
+                        En kısa sürede size dönüş yapalım.
+                    </p>
+
+                    <form id="contactForm" class="default-form">
+                        <div class="row clearfix">
+                            <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                <input type="text" name="NameSurname" placeholder="Adınız Soyadınız *" required />
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                <input type="email" name="Email" placeholder="E-posta Adresiniz *" required />
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12 form-group">
+                                <input type="text" name="PhoneNumber" placeholder="Telefon Numaranız (5xxxxxxxxx)" />
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12 form-group">
+                                <input type="text" name="Subject" placeholder="Konu" required />
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                                <textarea name="Message" placeholder="Mesajınız..." required></textarea>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 form-group message-btn">
+                                <button class="theme-btn-one" type="submit" id="submitBtn">Mesajı Gönder</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="codeArea" class="code-area" style="display:none;">
+                        <h4>E-posta Adresinizi Doğrulayın</h4>
+                        <p>
+                            <strong id="targetEmail"></strong> adresine 6 haneli bir doğrulama kodu gönderdik.
+                            Kod 5 dakika boyunca geçerlidir.
+                        </p>
+                        <div class="form-group">
+                            <input type="text" id="codeInput" maxlength="6" inputmode="numeric"
+                                   autocomplete="one-time-code" placeholder="• • • • • •" />
+                        </div>
+                        <button class="theme-btn-one" type="button" id="verifyBtn">Doğrula ve Gönder</button>
+                    </div>
+
+                    <div id="contactResult" class="contact-result"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- contact-section end -->
+<!-- google-map-section -->
+<section class="google-map-section">
+    <div class="map-inner">
+        @if (!string.IsNullOrEmpty(Model.MapUrl))
+        {
+            <iframe src="@Model.MapUrl" width="100%" height="450"
+                    style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+        }
+    </div>
+</section>
+<!-- google-map-section end -->
+
+<script>
+    let verifyEmail = "";
+
+    const resultBox = document.getElementById("contactResult");
+    const contactForm = document.getElementById("contactForm");
+    const codeArea = document.getElementById("codeArea");
+    const submitBtn = document.getElementById("submitBtn");
+    const verifyBtn = document.getElementById("verifyBtn");
+
+    function showMessage(text, isSuccess) {
+        resultBox.className = "contact-result " + (isSuccess ? "success" : "error");
+        resultBox.innerText = text;
+    }
+
+    // Sunucudan gelen cevabı güvenli şekilde JSON'a çevirir
+    async function parseResponse(response) {
+        const text = await response.text();
+        try {
+            return JSON.parse(text);
+        } catch {
+            console.error("SUNUCU HATASI — status:", response.status);
+            console.error(text.substring(0, 3000));
+            return null;
+        }
+    }
+
+    contactForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Gönderiliyor...";
+        resultBox.innerText = "";
+
+        try {
+            const response = await fetch("/Contact/CreateContactMessage", {
+                method: "POST",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                body: new FormData(contactForm)
+            });
+
+            const data = await parseResponse(response);
+
+            if (data === null) {
+                showMessage("Sunucu hatası (" + response.status + "). F12 → Console'a bakın.", false);
+                return;
+            }
+
+            if (data.success) {
+                verifyEmail = data.email;
+                document.getElementById("targetEmail").innerText = verifyEmail;
+                contactForm.style.display = "none";
+                codeArea.style.display = "block";
+                document.getElementById("codeInput").focus();
+            } else {
+                showMessage(data.message || "Bir hata oluştu.", false);
+            }
+        } catch (err) {
+            console.error(err);
+            showMessage("Bağlantı hatası: " + err.message, false);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Mesajı Gönder";
+        }
+    });
+
+    verifyBtn.addEventListener("click", async function () {
+        const code = document.getElementById("codeInput").value.trim();
+
+        if (code.length !== 6) {
+            showMessage("Lütfen 6 haneli kodu eksiksiz girin.", false);
+            return;
+        }
+
+        verifyBtn.disabled = true;
+        verifyBtn.innerText = "Doğrulanıyor...";
+
+        try {
+            const formData = new FormData();
+            formData.append("Email", verifyEmail);
+            formData.append("Code", code);
+
+            const response = await fetch("/Contact/VerifyContactMessage", {
+                method: "POST",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                body: formData
+            });
+
+            const data = await parseResponse(response);
+
+            if (data === null) {
+                showMessage("Sunucu hatası (" + response.status + "). F12 → Console'a bakın.", false);
+                return;
+            }
+
+            if (data.success) {
+                codeArea.style.display = "none";
+                showMessage("Mesajınız başarıyla iletildi. En kısa sürede dönüş yapacağız.", true);
+            } else {
+                showMessage(data.message || "Doğrulama başarısız.", false);
+            }
+        } catch (err) {
+            console.error(err);
+            showMessage("Bağlantı hatası: " + err.message, false);
+        } finally {
+            verifyBtn.disabled = false;
+            verifyBtn.innerText = "Doğrula ve Gönder";
+        }
+    });
+</script>

@@ -10,17 +10,13 @@ namespace Bagery.WebUI.Filters
     {
         public void OnException(ExceptionContext context)
         {
-            
-            if(context.Exception is ValidationUIException validationException)
+            if (context.Exception is ValidationUIException validationException)
             {
-
-                foreach(var error in validationException.Errors)
+                foreach (var error in validationException.Errors)
                 {
                     context.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
-
             }
-
             else if (context.Exception is IdentityException exception)
             {
                 if (exception.Errors != null && exception.Errors.Any())
@@ -30,7 +26,6 @@ namespace Bagery.WebUI.Filters
                         context.ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
-                // 2. Durum: Sadece string olarak fırlattığın düz mesaj ("Şifreler uyuşmuyor" vs.)
                 else if (!string.IsNullOrEmpty(exception.Message))
                 {
                     context.ModelState.AddModelError(string.Empty, exception.Message);
@@ -41,6 +36,30 @@ namespace Bagery.WebUI.Filters
                 return;
             }
 
+            // --- AJAX / fetch isteği ise view yerine JSON dön ---
+            // Contact Message Create işlemi için yapaıldı 
+
+
+            if (context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var messages = context.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                context.Result = new JsonResult(new
+                {
+                    success = false,
+                    message = string.Join(" ", messages)
+                });
+                context.ExceptionHandled = true;
+                return;
+            }
+            // --- normal sayfa isteği: mevcut davranış ---
+
+
+
+
             var actionName = context.RouteData.Values["action"]?.ToString();
             var modelMetadataProvider = context.HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
 
@@ -49,14 +68,7 @@ namespace Bagery.WebUI.Filters
                 ViewName = actionName,
                 ViewData = new ViewDataDictionary(modelMetadataProvider, context.ModelState)
             };
-
             context.ExceptionHandled = true;
-
-
-
-
-
-
         }
     }
 }

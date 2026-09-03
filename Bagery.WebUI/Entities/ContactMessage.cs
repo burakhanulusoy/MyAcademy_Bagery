@@ -11,7 +11,8 @@ namespace Bagery.WebUI.Entities
         public string Subject { get; set; }
         public string Message { get; set; }
         public ContactMessageStatus MessageStatus { get; set; }
-
-
+        public string? VerificationCode { get; set; }
+        public DateTime? CodeExpireDate { get; set; }
+        public bool IsVerified { get; set; }
     }
 }
