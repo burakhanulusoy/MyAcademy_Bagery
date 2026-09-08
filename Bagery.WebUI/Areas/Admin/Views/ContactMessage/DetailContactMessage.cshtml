@@ -1,120 +1,398 @@
 ﻿@using Bagery.WebUI.Enums
 @model GetContactMessageByIdQueryResult
+
 @{
     ViewData["Title"] = "Mesaj Detayı";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 @functions {
-    string StatusColor(ContactMessageStatus status) => status.ToString() switch
+    string StatusText(ContactMessageStatus status) => status switch
     {
-        "Pending" => "warning",
-        "Read" => "info",
-        "Answered" => "success",
-        "Closed" => "secondary",
-        _ => "secondary"
-    };
-
-    string StatusText(ContactMessageStatus status) => status.ToString() switch
-    {
-        "Pending" => "Beklemede",
-        "Read" => "Okundu",
-        "Answered" => "Cevaplandı",
-        "Closed" => "Kapatıldı",
+        ContactMessageStatus.Pending => "Bekliyor",
+        ContactMessageStatus.Read => "Okundu",
+        ContactMessageStatus.Replied => "Yanıtlandı",
         _ => status.ToString()
     };
+
+    string StatusClass(ContactMessageStatus status) => status switch
+    {
+        ContactMessageStatus.Pending => "status-pending",
+        ContactMessageStatus.Read => "status-read",
+        ContactMessageStatus.Replied => "status-replied",
+        _ => ""
+    };
+
+    string Initials(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return "?";
+
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        return string.Concat(
+            parts.Take(2).Select(x => char.ToUpper(x[0]))
+        );
+    }
 }
+
+<style>
+    .message-card {
+        border: 0;
+        border-radius: 14px;
+        box-shadow: 0 3px 14px rgba(15, 23, 42, .06);
+    }
+
+    .sender-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .message-content {
+        background: #f8fafc;
+        border: 1px solid #eef2f7;
+        border-radius: 12px;
+        padding: 22px;
+        white-space: pre-wrap;
+        line-height: 1.8;
+        color: #334155;
+        min-height: 180px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: #fffbeb;
+        color: #a16207;
+        border: 1px solid #fde68a;
+    }
+
+    .status-read {
+        background: #f0fdf4;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    .status-replied {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
+    .info-label {
+        font-size: 11px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin-bottom: 3px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .info-row {
+        padding: 13px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .info-row:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+    .detail-title {
+        font-size: 20px;
+        color: #1e293b;
+        font-weight: 700;
+    }
+</style>
 
 <div class="page-content-wrapper">
     <div class="page-content">
-        <div class="row">
 
-            <div class="col-lg-8">
-                <div class="card shadow-sm border-0 radius-10">
-                    <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h5 class="mb-1 text-primary fw-bold">@Model.Subject</h5>
-                                <p class="text-muted small mb-0">
-                                    @Model.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy, HH:mm") tarihinde gönderildi
-                                </p>
-                            </div>
-                            <span class="badge bg-@StatusColor(Model.MessageStatus) fs-6">
-                                @StatusText(Model.MessageStatus)
-                            </span>
-                        </div>
-                    </div>
+        <!-- ÜST BAR -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-                    <div class="card-body p-4">
-                        <div class="bg-light rounded p-4 mb-4" style="white-space: pre-wrap; line-height: 1.7;">@Model.Message</div>
+            <div class="d-flex align-items-center gap-3">
 
-                        <div class="d-flex gap-2">
-                            <a href="mailto:@Model.Email?subject=RE: @Model.Subject"
-                               class="btn btn-primary d-flex align-items-center gap-1">
-                                <i class='bx bx-reply fs-5'></i> E-posta ile Yanıtla
-                            </a>
-                            <a href="tel:@Model.PhoneNumber"
-                               class="btn btn-outline-secondary d-flex align-items-center gap-1">
-                                <i class='bx bx-phone fs-5'></i> Ara
-                            </a>
-                        </div>
-                    </div>
+                <a asp-action="Index"
+                   class="btn btn-light border btn-sm">
+                    <i class="bx bx-arrow-back me-1"></i>
+                    Geri
+                </a>
+
+                <div>
+                    <h5 class="mb-0 fw-bold text-dark">Mesaj Detayı</h5>
+                    <small class="text-muted">
+                        İletişim mesajı bilgileri
+                    </small>
                 </div>
+
             </div>
 
-            <div class="col-lg-4">
-                <div class="card shadow-sm border-0 radius-10 mb-3">
-                    <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
-                        <h6 class="mb-0 fw-bold">Gönderen Bilgileri</h6>
-                    </div>
+            <span class="status-badge @StatusClass(Model.MessageStatus)">
+                @if (Model.MessageStatus == ContactMessageStatus.Pending)
+                {
+                    <i class="bx bx-time-five"></i>
+                }
+                else if (Model.MessageStatus == ContactMessageStatus.Read)
+                {
+                    <i class="bx bx-check-circle"></i>
+                }
+                else
+                {
+                    <i class="bx bx-reply"></i>
+                }
+
+                @StatusText(Model.MessageStatus)
+            </span>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- SOL -->
+            <div class="col-lg-8">
+
+                <div class="card message-card">
+
                     <div class="card-body p-4">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-3">
-                                <span class="text-muted small d-block">Ad Soyad</span>
-                                <span class="fw-semibold">@Model.NameSurname</span>
-                            </li>
-                            <li class="mb-3">
-                                <span class="text-muted small d-block">E-posta</span>
-                                <a href="mailto:@Model.Email" class="fw-semibold text-decoration-none">@Model.Email</a>
-                            </li>
-                            <li class="mb-0">
-                                <span class="text-muted small d-block">Telefon</span>
-                                <a href="tel:@Model.PhoneNumber" class="fw-semibold text-decoration-none">@Model.PhoneNumber</a>
-                            </li>
-                        </ul>
+
+                        <!-- GÖNDEREN KISA BİLGİ -->
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="sender-avatar">
+                                    @Initials(Model.NameSurname)
+                                </div>
+
+                                <div>
+                                    <h6 class="mb-1 fw-bold text-dark">
+                                        @Model.NameSurname
+                                    </h6>
+
+                                    <div class="text-muted small">
+                                        @Model.Email
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="text-end">
+
+                                <small class="text-muted d-block">
+                                    Gönderim Tarihi
+                                </small>
+
+                                <span class="small fw-semibold">
+                                    @Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- KONU -->
+                        <div class="mb-4">
+
+                            <small class="text-muted d-block mb-1">
+                                KONU
+                            </small>
+
+                            <h4 class="detail-title mb-0">
+                                @Model.Subject
+                            </h4>
+
+                        </div>
+
+
+                        <!-- MESAJ -->
+                        <div class="mb-4">
+
+                            <small class="text-muted d-block mb-2">
+                                MESAJ
+                            </small>
+
+                            <div class="message-content">@Model.Message</div>
+
+                        </div>
+
+
+                        <!-- İŞLEMLER -->
+                        <div class="d-flex gap-2 flex-wrap">
+
+                            <a href="mailto:@Model.Email?subject=RE: @Model.Subject"
+                               class="btn btn-primary">
+
+                                <i class="bx bx-reply me-1"></i>
+                                E-posta ile Yanıtla
+
+                            </a>
+
+                            @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+                            {
+                                <a href="tel:@Model.PhoneNumber"
+                                   class="btn btn-outline-secondary">
+
+                                    <i class="bx bx-phone me-1"></i>
+                                    Telefonla Ara
+
+                                </a>
+                            }
+
+                        </div>
+
                     </div>
+
                 </div>
 
-                <div class="card shadow-sm border-0 radius-10">
-                    <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
-                        <h6 class="mb-0 fw-bold">Durum Güncelle</h6>
-                    </div>
-                    <div class="card-body p-4">
-                        <form method="post" asp-action="UpdateContactMessageStatus">
-                            <input type="hidden" name="Id" value="@Model.Id" />
+            </div>
 
-                            <select name="MessageStatus" class="form-select mb-3">
+
+            <!-- SAĞ -->
+            <div class="col-lg-4">
+
+                <!-- GÖNDEREN BİLGİLERİ -->
+                <div class="card message-card mb-4">
+
+                    <div class="card-body p-4">
+
+                        <h6 class="fw-bold text-dark mb-3">
+                            <i class="bx bx-user me-1 text-primary"></i>
+                            Gönderen Bilgileri
+                        </h6>
+
+
+                        <div class="info-row">
+
+                            <div class="info-label">
+                                Ad Soyad
+                            </div>
+
+                            <div class="info-value">
+                                @Model.NameSurname
+                            </div>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <div class="info-label">
+                                E-posta
+                            </div>
+
+                            <a href="mailto:@Model.Email"
+                               class="info-value text-primary text-decoration-none">
+                                @Model.Email
+                            </a>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <div class="info-label">
+                                Telefon
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber))
+                            {
+                                <a href="tel:@Model.PhoneNumber"
+                                   class="info-value text-decoration-none">
+                                    @Model.PhoneNumber
+                                </a>
+                            }
+                            else
+                            {
+                                <div class="info-value text-muted">
+                                    Belirtilmemiş
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DURUM -->
+                <div class="card message-card">
+
+                    <div class="card-body p-4">
+
+                        <h6 class="fw-bold text-dark mb-1">
+                            <i class="bx bx-slider me-1 text-primary"></i>
+                            Mesaj Durumu
+                        </h6>
+
+                        <p class="text-muted small mb-3">
+                            Mesajın mevcut durumunu değiştirebilirsiniz.
+                        </p>
+
+
+                        <form method="post"
+                              asp-action="UpdateContactMessageStatus">
+
+                            <input type="hidden"
+                                   name="Id"
+                                   value="@Model.Id" />
+
+                            <select name="MessageStatus"
+                                    class="form-select mb-3">
+
                                 @foreach (var status in Enum.GetValues<ContactMessageStatus>())
                                 {
                                     <option value="@((int)status)"
-                                            selected="@(status.Equals(Model.MessageStatus) ? "selected" : null)">
+                                            selected="@(status == Model.MessageStatus)">
                                         @StatusText(status)
                                     </option>
                                 }
+
                             </select>
 
-                            <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1">
-                                <i class='bx bx-save fs-5'></i> Kaydet
+
+                            <button type="submit"
+                                    class="btn btn-primary w-100">
+
+                                <i class="bx bx-check me-1"></i>
+                                Durumu Güncelle
+
                             </button>
+
                         </form>
 
-                        <a asp-action="Index" class="btn btn-outline-secondary w-100 mt-2 d-flex align-items-center justify-content-center gap-1">
-                            <i class='bx bx-arrow-back fs-5'></i> Listeye Dön
-                        </a>
                     </div>
+
                 </div>
+
             </div>
 
         </div>
+
     </div>
 </div>

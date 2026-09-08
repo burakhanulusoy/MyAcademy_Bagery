@@ -1,0 +1,67 @@
+﻿@model List<GetPromotionsQueryResult>
+@*
+   promotions view components
+*@
+<style>
+    .promotion-section {
+        position: relative;
+    }
+
+        .promotion-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .promotion-section .auto-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .promotion-section .sec-title p,
+        .promotion-section .sec-title h2 {
+            color: #ffffff !important;
+        }
+</style>
+
+<section class="promotion-section alternat-2 sec-pad overlay-none"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/promotionarka.png")');">
+    <div class="auto-container">
+        <div class="sec-title centred">
+            <p>Kampanyalar</p>
+            <h2>Seçkin Lezzetler <br />Ayrıcalıklı Fiyatlarla</h2>
+        </div>
+        <div class="single-item-carousel owl-carousel owl-theme owl-dots-none nav-style-one">
+
+            @foreach (var item in Model)
+            {
+                <div class="inner-box">
+                    <div class="row clearfix">
+                        <div class="col-lg-6 col-md-12 col-sm-12 image-column">
+                            <div class="image-box">
+                                <figure class="image"><img src="@item.ImageUrl" alt="@item.Title"></figure>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 content-column">
+                            <div class="content-box">
+                                <div class="price-box"
+                                     style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/icons/icon-bg-4.png")');">
+                                    <span>@item.PromotionPrice.ToString("N0") ₺</span>
+                                    <p>Sadece</p>
+                                </div>
+                                <h3>@item.Title</h3>
+                                <p>@item.Description</p>
+                                <div class="btn-box">
+                                    <a href="/Product/Index" class="theme-btn-two">Hemen Sipariş Verin</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>

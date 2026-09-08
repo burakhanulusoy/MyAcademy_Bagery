@@ -1,44 +1,48 @@
 ﻿@using Bagery.WebUI.Enums
 @model List<GetContactMessagesQueryResult>
+
 @{
     ViewData["Title"] = "İletişim Mesajları";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var pendingCount = Model.Count(x => x.MessageStatus == ContactMessageStatus.Pending);
 }
 
 @functions {
-    string StatusColor(ContactMessageStatus status) => status.ToString() switch
+    string StatusText(ContactMessageStatus status) => status switch
     {
-        "Pending" => "warning",
-        "Read" => "info",
-        "Answered" => "success",
-        "Closed" => "secondary",
-        _ => "secondary"
+        ContactMessageStatus.Pending => "Bekliyor",
+        ContactMessageStatus.Read => "Okundu",
+        ContactMessageStatus.Replied => "Yanıtlandı",
+        _ => status.ToString()
     };
 
-    string StatusText(ContactMessageStatus status) => status.ToString() switch
+    string StatusClass(ContactMessageStatus status) => status switch
     {
-        "Pending" => "Beklemede",
-        "Read" => "Okundu",
-        "Answered" => "Cevaplandı",
-        "Closed" => "Kapatıldı",
-        _ => status.ToString()
+        ContactMessageStatus.Pending => "status-pending",
+        ContactMessageStatus.Read => "status-read",
+        ContactMessageStatus.Replied => "status-replied",
+        _ => ""
     };
 
     string Initials(string name)
     {
-        if (string.IsNullOrWhiteSpace(name)) return "?";
+        if (string.IsNullOrWhiteSpace(name))
+            return "?";
+
         var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        return string.Concat(parts.Take(2).Select(p => char.ToUpper(p[0])));
+        return string.Concat(parts.Take(2).Select(x => char.ToUpper(x[0])));
     }
 
     string TimeAgo(DateTime utc)
     {
         var diff = DateTime.UtcNow - utc;
-        if (diff.TotalMinutes < 1) return "az önce";
-        if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes} dakika önce";
+
+        if (diff.TotalMinutes < 1) return "Az önce";
+        if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes} dk önce";
         if (diff.TotalHours < 24) return $"{(int)diff.TotalHours} saat önce";
         if (diff.TotalDays < 30) return $"{(int)diff.TotalDays} gün önce";
-        return utc.ToLocalTime().ToString("dd MMM yyyy");
+
+        return utc.ToLocalTime().ToString("dd.MM.yyyy");
     }
 }
 
@@ -58,16 +62,38 @@
     }
 
     .msg-row-pending {
-        background-color: #fffdf5;
-        box-shadow: inset 3px 0 0 #ffc107;
+        background: #fffdf5;
+        box-shadow: inset 3px 0 0 #f59e0b;
     }
 
     .msg-preview {
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
+        max-width: 350px;
         overflow: hidden;
-        max-width: 340px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .status-select {
+        font-weight: 600;
+        border-radius: 7px;
+    }
+
+    .status-pending {
+        color: #a16207;
+        background: #fffbeb;
+        border-color: #fde68a;
+    }
+
+    .status-read {
+        color: #15803d;
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+    }
+
+    .status-replied {
+        color: #1d4ed8;
+        background: #eff6ff;
+        border-color: #bfdbfe;
     }
 
     .table > :not(caption) > * > * {
@@ -80,106 +106,162 @@
     <div class="page-content">
 
         <div class="card shadow-sm border-0 radius-10">
-            <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+            <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0
+                        d-flex justify-content-between align-items-center flex-wrap gap-2">
+
                 <div>
-                    <h5 class="mb-1 text-primary fw-bold">İletişim Mesajları</h5>
+                    <h5 class="mb-1 text-primary fw-bold">
+                        İletişim Mesajları
+                    </h5>
+
                     <p class="text-muted small mb-0">
-                        Siteden gelen doğrulanmış mesajlar — toplam @Model.Count kayıt
+                        Siteden gelen mesajlar — toplam @Model.Count kayıt
                     </p>
                 </div>
 
-                @{
-                    var pendingCount = Model.Count(x => x.MessageStatus.ToString() == "Pending");
-                }
                 @if (pendingCount > 0)
                 {
-                    <span class="badge bg-warning text-dark fs-6 d-flex align-items-center gap-1">
-                        <i class='bx bx-time-five'></i> @pendingCount bekleyen
+                    <span class="badge bg-warning text-dark">
+                        <i class="bx bx-time-five"></i>
+                        @pendingCount Bekleyen
                     </span>
                 }
+
             </div>
 
             <div class="card-body p-4">
+
                 @if (!Model.Any())
                 {
                     <div class="text-center py-5 text-muted">
-                        <i class='bx bx-envelope-open fs-1 d-block mb-2 opacity-50'></i>
-                        <p class="mb-0">Henüz mesaj bulunmuyor.</p>
+                        <i class="bx bx-envelope-open fs-1 d-block mb-2"></i>
+                        Henüz mesaj bulunmuyor.
                     </div>
                 }
                 else
                 {
                     <div class="table-responsive">
+
                         <table class="table table-hover align-middle mb-0">
+
                             <thead class="table-light">
                                 <tr>
                                     <th>Gönderen</th>
                                     <th>Konu</th>
                                     <th style="width:150px;">Tarih</th>
-                                    <th style="width:165px;">Durum</th>
-                                    <th style="width:110px;" class="text-end">İşlemler</th>
+                                    <th style="width:160px;">Durum</th>
+                                    <th style="width:110px;" class="text-end">
+                                        İşlemler
+                                    </th>
                                 </tr>
                             </thead>
+
                             <tbody>
+
                                 @foreach (var item in Model)
                                 {
-                                    var isPending = item.MessageStatus.ToString() == "Pending";
+                                    var isPending =
+                                    item.MessageStatus == ContactMessageStatus.Pending;
 
                                     <tr class="@(isPending ? "msg-row-pending" : "")">
+
                                         <td>
                                             <div class="d-flex align-items-center gap-2">
-                                                <div class="msg-avatar">@Initials(item.NameSurname)</div>
-                                                <div class="lh-sm">
-                                                    <span class="fw-semibold d-block">@item.NameSurname</span>
-                                                    <a href="mailto:@item.Email" class="small text-muted text-decoration-none">@item.Email</a>
+
+                                                <div class="msg-avatar">
+                                                    @Initials(item.NameSurname)
                                                 </div>
+
+                                                <div>
+                                                    <span class="fw-semibold d-block">
+                                                        @item.NameSurname
+                                                    </span>
+
+                                                    <a href="mailto:@item.Email"
+                                                       class="small text-muted text-decoration-none">
+                                                        @item.Email
+                                                    </a>
+                                                </div>
+
                                             </div>
                                         </td>
 
                                         <td>
-                                            <span class="@(isPending ? "fw-bold" : "fw-semibold") d-block">@item.Subject</span>
-                                            <span class="text-muted small msg-preview">@item.Message</span>
+                                            <span class="@(isPending ? "fw-bold" : "fw-semibold") d-block">
+                                                @item.Subject
+                                            </span>
+
+                                            <span class="text-muted small msg-preview d-block">
+                                                @item.Message
+                                            </span>
                                         </td>
 
                                         <td class="small">
-                                            <span class="d-block">@TimeAgo(item.CreatedAt)</span>
-                                            <span class="text-muted">@item.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+                                            <span class="d-block">
+                                                @TimeAgo(item.CreatedAt)
+                                            </span>
+
+                                            <span class="text-muted">
+                                                @item.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                            </span>
                                         </td>
 
                                         <td>
-                                            <form method="post" asp-action="UpdateContactMessageStatus">
-                                                <input type="hidden" name="Id" value="@item.Id" />
+                                            <form method="post"
+                                                  asp-action="UpdateContactMessageStatus">
+
+                                                <input type="hidden"
+                                                       name="Id"
+                                                       value="@item.Id" />
+
                                                 <select name="MessageStatus"
-                                                        class="form-select form-select-sm text-@StatusColor(item.MessageStatus) fw-semibold"
+                                                        class="form-select form-select-sm status-select @StatusClass(item.MessageStatus)"
                                                         onchange="this.form.submit()">
+
                                                     @foreach (var status in Enum.GetValues<ContactMessageStatus>())
                                                     {
                                                         <option value="@((int)status)"
-                                                                selected="@(status.Equals(item.MessageStatus) ? "selected" : null)">
+                                                                selected="@(status == item.MessageStatus)">
                                                             @StatusText(status)
                                                         </option>
                                                     }
+
                                                 </select>
+
                                             </form>
                                         </td>
 
                                         <td class="text-end">
-                                            <a asp-action="DetailContactMessage" asp-route-id="@item.Id"
-                                               class="btn btn-sm btn-outline-primary" title="Detayı Gör">
-                                                <i class='bx bx-show'></i>
+
+                                            <a asp-action="DetailContactMessage"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-outline-primary"
+                                               title="Görüntüle">
+                                                <i class="bx bx-show"></i>
                                             </a>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Sil"
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="Sil"
                                                     onclick="confirmDelete('@item.Id', '@item.NameSurname')">
-                                                <i class='bx bx-trash'></i>
+                                                <i class="bx bx-trash"></i>
                                             </button>
+
                                         </td>
+
                                     </tr>
                                 }
+
                             </tbody>
+
                         </table>
+
                     </div>
                 }
+
             </div>
+
         </div>
 
     </div>
@@ -188,17 +270,18 @@
 <script>
     function confirmDelete(id, name) {
         Swal.fire({
-            title: "Mesajı silmek istiyor musunuz?",
+            title: "Mesaj silinsin mi?",
             text: name + " tarafından gönderilen mesaj kalıcı olarak silinecek.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#dc3545",
             cancelButtonColor: "#6c757d",
-            confirmButtonText: "Evet, Sil!",
+            confirmButtonText: "Evet, Sil",
             cancelButtonText: "İptal"
-        }).then((result) => {
+        }).then(result => {
             if (result.isConfirmed) {
-                window.location.href = "/Admin/ContactMessage/DeleteContactMessage/" + id;
+                window.location.href =
+                    "/Admin/ContactMessage/DeleteContactMessage/" + id;
             }
         });
     }

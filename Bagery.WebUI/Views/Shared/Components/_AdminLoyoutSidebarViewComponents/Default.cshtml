@@ -1,167 +1,284 @@
-﻿
-@*
-    admin layout sidebar
+﻿@*
+    Admin Layout Sidebar
 *@
 
-<!--start sidebar -->
 <aside class="sidebar-wrapper" data-simplebar="true">
+
+    <!-- SIDEBAR HEADER -->
     <div class="sidebar-header">
+
         <div>
-            <img src="~/main-files/fobia/ltr/assets/images/logo-icon-2.png" class="logo-icon" alt="logo icon">
+            <img src="~/main-files/fobia/ltr/assets/images/logo-icon-2.png"
+                 class="logo-icon"
+                 alt="Logo">
         </div>
+
         <div>
-            <h4 class="logo-text"> Fobia-Admin</h4>
+            <h4 class="logo-text">Fobia Admin</h4>
         </div>
+
     </div>
-    <!--navigation-->
+
+
+    <!-- NAVIGATION -->
     <ul class="metismenu" id="menu">
+
+
+        <!-- DASHBOARD -->
         <li>
             <a href="/Admin/Static/Dashboard">
+
                 <div class="parent-icon">
                     <ion-icon name="home-outline"></ion-icon>
                 </div>
-                <div class="menu-title">İstatistikler</div>
+
+                <div class="menu-title">
+                    İstatistikler
+                </div>
+
             </a>
         </li>
+
+
+
+        <!-- ========================= -->
+        <!-- SITE YÖNETİMİ -->
+        <!-- ========================= -->
+
+        <li class="menu-label">
+            Site Yönetimi
+        </li>
+
+
+        <!-- SAYFA AFİŞLERİ -->
         <li>
             <a href="/Admin/Banner/Index">
+
                 <div class="parent-icon">
-                    <ion-icon name="briefcase-outline"></ion-icon>
+                    <ion-icon name="images-outline"></ion-icon>
                 </div>
-                <div class="menu-title">Sayfa Afişlerimiz</div>
+
+                <div class="menu-title">
+                    Sayfa Afişleri
+                </div>
+
             </a>
         </li>
 
+
+        <!-- KATEGORİLER -->
         <li>
             <a href="/Admin/Category/Index">
+
                 <div class="parent-icon">
-                    <ion-icon name="gift-outline"></ion-icon>
+                    <ion-icon name="grid-outline"></ion-icon>
                 </div>
-                <div class="menu-title">Kategorilerimiz</div>
+
+                <div class="menu-title">
+                    Kategoriler
+                </div>
+
             </a>
         </li>
-        <li>
-            <a href="/Admin/Client/Index">
-                <div class="parent-icon">
-                    <ion-icon name="ribbon-outline"></ion-icon>
-                </div>
-                <div class="menu-title">Markalarımız</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/Contact/Index">
-                <div class="parent-icon">
-                    <ion-icon name="leaf-outline"></ion-icon>
-                </div>
-                <div class="menu-title">İletişim</div>
-            </a>
-        </li>
+
+
+        <!-- ÜRÜNLER -->
         <li>
             <a href="/Admin/Product/Index">
+
                 <div class="parent-icon">
-                    <ion-icon name="newspaper-outline"></ion-icon>
+                    <ion-icon name="cube-outline"></ion-icon>
                 </div>
-                <div class="menu-title">Ürünlerimiz</div>
+
+                <div class="menu-title">
+                    Ürünler
+                </div>
+
             </a>
         </li>
 
 
-        <li class="menu-label">Diğer Sayfalar</li>
+        <!-- MARKALAR -->
+        <li>
+            <a href="/Admin/Client/Index">
 
-        <li>
-            <a href="/Admin/User/ChangePassword">
                 <div class="parent-icon">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <ion-icon name="business-outline"></ion-icon>
                 </div>
-                <div class="menu-title">Şifre Ayarı</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/Role/Index">
-                <div class="parent-icon">
-                    <ion-icon name="people-outline"></ion-icon>
+
+                <div class="menu-title">
+                    Markalar
                 </div>
-                <div class="menu-title">Roller</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/User/Index">
-                <div class="parent-icon">
-                    <ion-icon name="person-circle-outline"></ion-icon>
-                </div>
-                <div class="menu-title">Kullanıcılarımız</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/User/UpdateUser">
-                <div class="parent-icon">
-                    <ion-icon name="create-outline"></ion-icon>
-                </div>
-                <div class="menu-title">Profil Güncelle</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/Comment/Index">
-                <div class="parent-icon">
-                    <ion-icon name="receipt-outline"></ion-icon>
-                </div>
-                <div class="menu-title">Yorumlarım</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/Blog/Index">
-                <div class="parent-icon">
-                    <ion-icon name="copy-outline"></ion-icon>
-                </div>
-                <div class="menu-title">Bloglarım</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/User/Map">
-                <div class="parent-icon">
-                    <ion-icon name="map-outline"></ion-icon>
-                </div>
-                <div class="menu-title">Kullanıcı Ülkeleri</div>
+
             </a>
         </li>
 
-        <!-- YENİ EKLENEN MENÜLER -->
-        <li>
-            <a href="/Admin/Testimonial/Index">
-                <div class="parent-icon">
-                    <ion-icon name="chatbubbles-outline"></ion-icon>
-                </div>
-                <div class="menu-title">Testimonial</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/OurHistory/Index">
-                <div class="parent-icon">
-                    <ion-icon name="book-outline"></ion-icon>
-                </div>
-                <div class="menu-title">Hikayemiz</div>
-            </a>
-        </li>
+
+        <!-- PROMOSYONLAR -->
         <li>
             <a href="/Admin/Promotion/Index">
+
                 <div class="parent-icon">
                     <ion-icon name="megaphone-outline"></ion-icon>
                 </div>
-                <div class="menu-title">Promosyon</div>
-            </a>
-        </li>
-        <li>
-            <a href="/Admin/Video/Index">
-                <div class="parent-icon">
-                    <ion-icon name="videocam-outline"></ion-icon>
+
+                <div class="menu-title">
+                    Promosyonlar
                 </div>
-                <div class="menu-title">Video</div>
+
             </a>
         </li>
+
+
+        <!-- TARİHİMİZ -->
+        <li>
+            <a href="/Admin/OurHistory/Index">
+
+                <div class="parent-icon">
+                    <ion-icon name="time-outline"></ion-icon>
+                </div>
+
+                <div class="menu-title">
+                    Tarihimiz
+                </div>
+
+            </a>
+        </li>
+
+
+        <!-- REFERANS YORUMLARI -->
+        <li>
+            <a href="/Admin/Testimonial/Index">
+
+                <div class="parent-icon">
+                    <ion-icon name="chatbubbles-outline"></ion-icon>
+                </div>
+
+                <div class="menu-title">
+                    Referans Yorumları
+                </div>
+
+            </a>
+        </li>
+
+
+
+        <!-- ========================= -->
+        <!-- İLETİŞİM -->
+        <!-- ========================= -->
+
+        <li class="menu-label">
+            İletişim
+        </li>
+
+
+        <!-- İLETİŞİM BİLGİLERİ -->
+        <li>
+            <a href="/Admin/Contact/Index">
+
+                <div class="parent-icon">
+                    <ion-icon name="call-outline"></ion-icon>
+                </div>
+
+                <div class="menu-title">
+                    İletişim Bilgileri
+                </div>
+
+            </a>
+        </li>
+
+
+        <!-- GELEN MESAJLAR -->
+        <li>
+            <a href="/Admin/ContactMessage/Index">
+
+                <div class="parent-icon">
+                    <ion-icon name="mail-unread-outline"></ion-icon>
+                </div>
+
+                <div class="menu-title">
+                    Gelen Mesajlar
+                </div>
+
+            </a>
+        </li>
+
+
+
+        <!-- ========================= -->
+        <!-- SİSTEM YÖNETİMİ -->
+        <!-- ========================= -->
+
+        <li class="menu-label">
+            Sistem Yönetimi
+        </li>
+
+
+        <!-- KULLANICILAR -->
+        <li>
+            <a href="/Admin/User/Index">
+
+                <div class="parent-icon">
+                    <ion-icon name="people-outline"></ion-icon>
+                </div>
+
+                <div class="menu-title">
+                    Kullanıcılar
+                </div>
+
+            </a>
+        </li>
+
+
+        <!-- ROLLER -->
+        <li>
+            <a href="/Admin/Role/Index">
+
+                <div class="parent-icon">
+                    <ion-icon name="shield-checkmark-outline"></ion-icon>
+                </div>
+
+                <div class="menu-title">
+                    Roller
+                </div>
+
+            </a>
+        </li>
+
+
+        <!-- PROFİL DÜZENLE -->
+        <li>
+            <a href="/Admin/User/UpdateUser">
+
+                <div class="parent-icon">
+                    <ion-icon name="person-outline"></ion-icon>
+                </div>
+
+                <div class="menu-title">
+                    Profil Düzenle
+                </div>
+
+            </a>
+        </li>
+
+
+        <!-- ŞİFRE DEĞİŞTİR -->
+        <li>
+            <a href="/Admin/User/ChangePassword">
+
+                <div class="parent-icon">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                </div>
+
+                <div class="menu-title">
+                    Şifre Değiştir
+                </div>
+
+            </a>
+        </li>
+
 
     </ul>
-    <!--end navigation-->
+    <!-- END NAVIGATION -->
+
 </aside>
-
-
-
