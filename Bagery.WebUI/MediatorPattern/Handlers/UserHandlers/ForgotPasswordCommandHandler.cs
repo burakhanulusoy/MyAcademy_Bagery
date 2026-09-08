@@ -42,8 +42,7 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            var resetLink = $"{request.OriginUrl}/Account/ResetPassword?email={request.Email}&token={encodedToken}";
-
+            var resetLink = $"{request.OriginUrl}/User/ResetPassword?email={Uri.EscapeDataString(request.Email)}&token={encodedToken}";
             await _emailService.SendPasswordResetLinkAsync(request.Email, resetLink, user.FullName);
 
             return true;

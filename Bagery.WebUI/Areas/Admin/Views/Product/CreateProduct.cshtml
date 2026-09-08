@@ -29,31 +29,32 @@
                     <div class="mb-3">
                         <label class="form-label"><i class="fadeIn animated bx bx-duplicate"></i> Kategori Seçiniz</label>
                         <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-control" required>
-                            <option disabled selected>Kategori Seçiniz</option>
+                            <option value="">Kategori Seçiniz</option>
                         </select>
+                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="CategoryId"></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Ürün Fiyatı</label>
-                        <input class="form-control" type="number" placeholder="Fiyat giriniz..." asp-for="Price" />
+                        <input class="form-control" type="number" step="0.01" placeholder="Fiyat giriniz..." asp-for="Price" />
                         <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Price"></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label"><i class="fadeIn animated bx bx-export"></i> Ana Görseli Seçin</label>
-                        <input class="form-control" type="file" asp-for="mainFile" />
+                        <input class="form-control" type="file" accept="image/*" asp-for="mainFile" />
                         <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="mainFile"></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label"><i class="fadeIn animated bx bx-export"></i> 1. Görseli Seçin</label>
-                        <input class="form-control" type="file" asp-for="File1" />
+                        <input class="form-control" type="file" accept="image/*" asp-for="File1" />
                         <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File1"></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label"><i class="fadeIn animated bx bx-export"></i> 2. Görseli Seçin</label>
-                        <input class="form-control" type="file" asp-for="File2" />
+                        <input class="form-control" type="file" accept="image/*" asp-for="File2" />
                         <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File2"></span>
                     </div>
 

@@ -66,10 +66,6 @@ namespace Bagery.WebUI.Controllers
         }
 
 
-        public IActionResult BackToMainSite()
-        {
-            return RedirectToAction("Index", "Default", new { Area = string.Empty });
-        }
 
         public async Task<IActionResult> Logout()
         {
@@ -90,6 +86,43 @@ namespace Bagery.WebUI.Controllers
             // code parametresi buraya "404" olarak gelir. 
             return View();
         }
+
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View(new ForgotPasswordCommand(string.Empty, string.Empty));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand command)
+        {
+            var origin = $"{Request.Scheme}://{Request.Host}";
+            await _mediator.Send(command with { OriginUrl = origin });
+
+            TempData["ForgotPasswordSuccess"] = "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.";
+            return RedirectToAction("ForgotPassword");
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            return View(new ResetPasswordCommand(email, token, string.Empty, string.Empty));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
+        {
+            await _mediator.Send(command);
+
+            TempData["ResetPasswordSuccess"] = "Şifreniz başarıyla güncellendi. Giriş yapabilirsiniz.";
+            return RedirectToAction("Login");
+        }
+
+
+
+
+
 
     }
 }

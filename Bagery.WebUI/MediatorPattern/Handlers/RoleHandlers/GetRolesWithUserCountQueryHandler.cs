@@ -26,7 +26,7 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.RoleHandlers
                 {
                     RoleId = role.Id,
                     RoleName = role.Name,
-                    UserCount = usersInRole.Count // Kullanıcı sayısını ekliyoruz
+                    UserCount = usersInRole.Count(u => !u.IsDeleted) // Kullanıcı sayısını ekliyoruz
                 });
             }
 

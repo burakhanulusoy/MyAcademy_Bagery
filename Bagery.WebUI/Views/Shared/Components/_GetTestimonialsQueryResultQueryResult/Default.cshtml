@@ -1,0 +1,49 @@
+﻿@model List<GetTestimonialsQueryResult>
+
+@*
+    testimonial view component
+*@
+
+<section class="testimonial-style-two centred"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/testimonialarka.png")');">
+    <div class="pattern-layer">
+        <div class="pattern-1"
+             style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/shape/shape-9.png")');"></div>
+        <div class="pattern-2"
+             style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/shape/shape-10.png")');"></div>
+    </div>
+    <div class="auto-container">
+        <div class="inner-box">
+            <div class="sec-title">
+                <p>Yorumlarımız</p>
+                <h2>Misafirlerimizin <br />Bizim Hakkımızda Söyledikleri</h2>
+            </div>
+            <div class="single-item-carousel owl-carousel owl-theme owl-dots-none nav-style-one">
+             
+                @foreach(var item in Model)
+                {
+                    <div class="testimonial-block-one">
+                        <div class="icon-box"
+                             style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/icons/icon-bg-5.png")');">
+                            <i class="icon-Quote"></i>
+                        </div>
+                        <div class="text">
+                            <p>“@item.Comment”</p>
+                        </div>
+                        <div class="author-info">
+                            <h4>@item.FullName</h4>
+                            <span class="designation">@item.Title</span>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+

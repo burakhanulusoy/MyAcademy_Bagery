@@ -17,6 +17,8 @@ namespace Bagery.WebUI.Validators.ProductValidators
                  .MinimumLength(3).WithMessage("Ürün adı en az 3 karakter olmalıdır.")
                  .MaximumLength(100).WithMessage("Ürün adı en fazla 100 karakter olmalıdır.");
 
+            RuleFor(x => x.CategoryId)
+               .NotEmpty().WithMessage("Kategori seçilmelidir.");
 
             RuleFor(x => x.Description)
                 .NotEmpty().WithMessage("Ürün açıklaması boş geçilemez.")

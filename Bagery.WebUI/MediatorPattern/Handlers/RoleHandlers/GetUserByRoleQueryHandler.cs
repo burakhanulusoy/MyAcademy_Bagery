@@ -13,19 +13,22 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.RoleHandlers
     {
         public async Task<List<GetUserByRolIdQueryResult>> Handle(GetUserByRoleIdQuery request, CancellationToken cancellationToken)
         {
-            
             var role = await _roleManager.FindByIdAsync(request.Id.ToString());
+
+            if (role == null)
+                return new List<GetUserByRolIdQueryResult>();
 
             var userInRole = await _userManager.GetUsersInRoleAsync(role.Name);
 
-            var result = userInRole.Select(user => new GetUserByRolIdQueryResult
-            {
-                RoleId = request.Id,
-                Users = user.Adapt<GetUserForFobiaTemplateQueryResult>()
-            }).ToList();
+            var result = userInRole
+                .Where(user => !user.IsDeleted) 
+                .Select(user => new GetUserByRolIdQueryResult
+                {
+                    RoleId = request.Id,
+                    Users = user.Adapt<GetUserForFobiaTemplateQueryResult>()
+                }).ToList();
 
             return result;
-
         }
     }
 }

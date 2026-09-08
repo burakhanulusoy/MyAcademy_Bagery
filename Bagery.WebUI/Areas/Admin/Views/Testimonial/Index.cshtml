@@ -93,12 +93,14 @@
 
                                         <!-- İşlemler (Update & Delete) -->
                                         <td class="text-end">
-                                            <div class="btn-group shadow-sm">
-                                                <a href="/Admin/Testimonial/UpdateTestimonial/@item.Id" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 transition-zoom" title="Düzenle">
-                                                    <i class="bx bx-edit fs-6"></i>
+                                            <div class="d-inline-flex gap-2">
+                                                <a href="/Admin/Testimonial/UpdateTestimonial/@item.Id"
+                                                   class="btn btn-sm btn-outline-primary action-btn transition-zoom" title="Düzenle">
+                                                    <i class="bx bx-edit"></i>
                                                 </a>
-                                                <button onclick="confirmDelete('/Admin/Testimonial/DeleteTestimonial/@item.Id')" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1 transition-zoom" title="Sil">
-                                                    <i class="bx bx-trash fs-6"></i>
+                                                <button onclick="confirmDelete('/Admin/Testimonial/DeleteTestimonial/@item.Id')"
+                                                        class="btn btn-sm btn-outline-danger action-btn transition-zoom" title="Sil">
+                                                    <i class="bx bx-trash"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -135,12 +137,24 @@
         background: linear-gradient(45deg, #0d6efd, #0dcaf0) !important; /* Hoş bir mavi degrade */
     }
 
+    .action-btn {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        font-size: 16px;
+        line-height: 1;
+    }
+
     .transition-zoom {
         transition: transform 0.2s ease-in-out, background-color 0.2s ease;
     }
 
         .transition-zoom:hover {
-            transform: scale(1.15);
+            transform: scale(1.08);
         }
 
     .transition-hover {
@@ -181,4 +195,3 @@
         });
     }
 </script>
-
