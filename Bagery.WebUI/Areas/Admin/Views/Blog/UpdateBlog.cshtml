@@ -1,0 +1,208 @@
+﻿@model GetBlogByIdQueryResult
+@{
+    ViewData["Title"] = "Blog Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">Blog Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item"><a href="/Admin/Blog/Index">Bloglar</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Düzenle</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <form enctype="multipart/form-data" method="post" id="blogForm">
+
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <input type="hidden" name="BackgroundImageUrl" value="@Model.BackgroundImageUrl" />
+            <input type="hidden" name="ImageUrl1" value="@Model.ImageUrl1" />
+
+            <div class="row g-4">
+
+                <!-- SOL -->
+                <div class="col-lg-8">
+
+                    <div class="card shadow-sm border-0 radius-10 mb-4">
+                        <div class="card-header bg-transparent border-bottom py-3">
+                            <h6 class="mb-0 fw-bold">Giriş Bölümü</h6>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Blog Başlığı</label>
+                                <input class="form-control" type="text" name="Title" value="@Model.Title" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Kısa Açıklama</label>
+                                <textarea class="form-control" name="ShortDescription" rows="2" required>@Model.ShortDescription</textarea>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Ana Açıklama</label>
+                                <textarea class="form-control" name="MainDescription" rows="5" required>@Model.MainDescription</textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 radius-10 mb-4">
+                        <div class="card-header bg-transparent border-bottom py-3">
+                            <h6 class="mb-0 fw-bold">Orta Bölüm</h6>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Alt Başlık</label>
+                                <input class="form-control" type="text" name="LongTitle" value="@Model.LongTitle" required />
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Detay Açıklama</label>
+                                <textarea class="form-control" name="LongDescription" rows="6" required>@Model.LongDescription</textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 radius-10">
+                        <div class="card-header bg-transparent border-bottom py-3">
+                            <h6 class="mb-0 fw-bold">Kapanış Bölümü</h6>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Kapanış Başlığı</label>
+                                <input class="form-control" type="text" name="LastDescriptionTitle" value="@Model.LastDescriptionTitle" required />
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Kapanış Metni</label>
+                                <textarea class="form-control" name="LastDescription" rows="4" required>@Model.LastDescription</textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SAĞ -->
+                <div class="col-lg-4">
+
+                    <div class="card shadow-sm border-0 radius-10 mb-4">
+                        <div class="card-header bg-transparent border-bottom py-3">
+                            <h6 class="mb-0 fw-bold">Görseller</h6>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Arka Plan Görseli</label>
+                                <img src="@Model.BackgroundImageUrl" class="img-preview mb-2" id="bgPreview"
+                                     onerror="this.src='/images/default-image.png'" />
+                                <input class="form-control" type="file" accept="image/*" name="BackgroundImageFile"
+                                       onchange="previewImage(this, 'bgPreview')" />
+                                <small class="text-secondary">Değiştirmek istemiyorsanız boş bırakın.</small>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Blog Görseli</label>
+                                <img src="@Model.ImageUrl1" class="img-preview mb-2" id="imgPreview"
+                                     onerror="this.src='/images/default-image.png'" />
+                                <input class="form-control" type="file" accept="image/*" name="ImageFile"
+                                       onchange="previewImage(this, 'imgPreview')" />
+                                <small class="text-secondary">Değiştirmek istemiyorsanız boş bırakın.</small>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 radius-10 mb-4">
+                        <div class="card-body p-4">
+                            <div class="small text-secondary mb-1">Oluşturulma Tarihi</div>
+                            <div class="fw-semibold">@Model.CreatedAt.ToString("dd MMMM yyyy HH:mm")</div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 radius-10">
+                        <div class="card-body p-4">
+                            <div class="d-grid gap-2">
+                                <button type="button" onclick="confirmUpdate()" class="btn btn-primary">
+                                    <i class="bx bx-save"></i> Değişiklikleri Kaydet
+                                </button>
+                                <a href="/Admin/Blog/Index" class="btn btn-outline-secondary">
+                                    İptal
+                                </a>
+                            </div>
+
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger mt-3 mb-0 py-2 small"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<style>
+    .img-preview {
+        display: block;
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid var(--bs-border-color);
+    }
+
+    .validation-summary-valid {
+        display: none;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function previewImage(input, targetId) {
+        var target = document.getElementById(targetId);
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                target.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function confirmUpdate() {
+        var form = document.getElementById("blogForm");
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        Swal.fire({
+            title: "Değişiklikleri kaydetmek istiyor musunuz?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#28a745",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, Kaydet!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>

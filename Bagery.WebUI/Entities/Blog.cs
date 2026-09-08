@@ -7,12 +7,13 @@ namespace Bagery.WebUI.Entities
 
         public string Title { get; set; }
         public string ShortDescription { get; set; }
+        public string MainDescription { get; set; }
+        public string BackgroundImageUrl { get; set; }
+        public string LongTitle { get; set; }
+        public string LongDescription { get; set; }
+        public string ImageUrl1 { get; set; }
         public string LastDescription { get; set; }
         public string LastDescriptionTitle { get; set; }
-        public string ImageUrl1 { get; set; }
-        public string BackgroundImageUrl { get; set; }
-        public string LongDescription { get; set; }
-        public string MainDescription { get; set; }
         public AppUser AppUser { get; set; }
         public Guid AppUserId { get; set; }
         public IList<Comment> Comments { get; set; }

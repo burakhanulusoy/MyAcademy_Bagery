@@ -1,0 +1,19 @@
+﻿@model List<GetCategoriesWithProductsQueryResult>
+
+<div class="sidebar-widget sidebar-categories">
+    <div class="widget-title">
+        <h3>Kategorilerimiz</h3>
+    </div>
+    <div class="widget-content">
+        <ul class="categories-list clearfix">
+            @foreach (var item in Model)
+            {
+                <li>
+                    <a href="/Product/Shop?categoryId=@item.Id">
+                        @item.CategoryName (@(item.Products?.Count ?? 0))
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

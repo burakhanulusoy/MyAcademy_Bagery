@@ -1,0 +1,367 @@
+﻿@model List<GetBlogByUserIdQueryResult>
+@{
+    ViewData["Title"] = "Bloglarım";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">Blog Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Bloglarım</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto d-flex gap-2">
+                <a href="/Admin/Blog/Index" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                    <i class="bx bx-list-ul fs-5"></i> Tüm Bloglar
+                </a>
+                <a href="/Admin/Blog/CreateBlog" class="btn btn-primary d-flex align-items-center gap-2">
+                    <i class="bx bx-plus-circle fs-5"></i> Yeni Blog Ekle
+                </a>
+            </div>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                @foreach (var item in Model)
+                {
+                    <div class="col">
+                        <div class="blog-card h-100">
+                            <div class="blog-thumb">
+                                <img src="@item.ImageUrl1" alt="@item.Title"
+                                     onerror="this.src='/images/default-image.png'" />
+                            </div>
+                            <div class="blog-body">
+                                <span class="blog-date">@item.CreatedAt.ToString("dd MMMM yyyy")</span>
+                                <h6 class="blog-title">@item.Title</h6>
+                                <p class="blog-desc">@item.ShortDescription</p>
+
+                                <div class="blog-actions">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary action-btn preview-btn"
+                                            title="İncele"
+                                            data-title="@item.Title"
+                                            data-date="@item.CreatedAt.ToString("dd MMMM yyyy")"
+                                            data-bg="@item.BackgroundImageUrl"
+                                            data-img="@item.ImageUrl1"
+                                            data-short="@item.ShortDescription"
+                                            data-main="@item.MainDescription"
+                                            data-longtitle="@item.LongTitle"
+                                            data-long="@item.LongDescription"
+                                            data-lasttitle="@item.LastDescriptionTitle"
+                                            data-last="@item.LastDescription">
+                                        <i class="bx bx-show"></i>
+                                    </button>
+                                    <a href="/Admin/Blog/UpdateBlog/@item.Id" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                        <i class="bx bx-edit"></i> Düzenle
+                                    </a>
+                                    <button onclick="confirmDelete('/Admin/Blog/DeleteBlog/@item.Id')"
+                                            class="btn btn-sm btn-outline-danger action-btn" title="Sil">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="card shadow-sm border-0 radius-10">
+                <div class="card-body text-center py-5 text-secondary">
+                    <i class="bx bx-edit-alt fs-1 opacity-50 text-primary"></i>
+                    <h6 class="fw-semibold mt-2">Henüz blog yazmamışsınız.</h6>
+                    <p class="small mb-3">İlk blog yazınızı ekleyerek başlayın.</p>
+                    <a href="/Admin/Blog/CreateBlog" class="btn btn-primary">Yeni Blog Ekle</a>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+<!-- ÖNİZLEME MODALI -->
+<div class="modal fade" id="blogPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0">
+
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title text-secondary">Blog Önizleme</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-0">
+
+                <div class="preview-hero" id="pvHero">
+                    <div class="preview-hero-overlay"></div>
+                    <div class="preview-hero-content">
+                        <h2 id="pvTitle"></h2>
+                        <div class="preview-meta">
+                            <span id="pvDate"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-body">
+
+                    <p class="preview-short" id="pvShort"></p>
+
+                    <p class="preview-text" id="pvMain"></p>
+
+                    <div class="preview-split">
+                        <div class="preview-split-text">
+                            <h3 id="pvLongTitle"></h3>
+                            <div class="preview-text" id="pvLong"></div>
+                        </div>
+                        <div class="preview-split-img">
+                            <img id="pvImg" onerror="this.src='/images/default-image.png'" />
+                        </div>
+                    </div>
+
+                    <div class="preview-last">
+                        <h3 id="pvLastTitle"></h3>
+                        <p class="preview-text" id="pvLast"></p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .blog-card {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bs-body-bg);
+        transition: border-color .2s ease;
+    }
+
+        .blog-card:hover {
+            border-color: var(--bs-primary);
+        }
+
+    .blog-thumb img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .blog-body {
+        padding: 16px 18px 18px;
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+    }
+
+    .blog-date {
+        font-size: 12px;
+        color: var(--bs-secondary-color);
+        margin-bottom: 6px;
+    }
+
+    .blog-title {
+        font-weight: 600;
+        margin: 0 0 8px;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .blog-desc {
+        font-size: 13px;
+        color: var(--bs-secondary-color);
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .blog-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: auto;
+    }
+
+    .action-btn {
+        width: 34px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    /* --- Önizleme --- */
+    .preview-hero {
+        position: relative;
+        min-height: 280px;
+        background-size: cover;
+        background-position: center;
+        background-color: var(--bs-secondary-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .preview-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, .5);
+    }
+
+    .preview-hero-content {
+        position: relative;
+        z-index: 2;
+        padding: 40px 32px;
+        max-width: 720px;
+    }
+
+        .preview-hero-content h2 {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+    .preview-meta {
+        color: rgba(255, 255, 255, .85);
+        font-size: 13px;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+    }
+
+    .preview-body {
+        padding: 36px 40px 20px;
+    }
+
+    .preview-short {
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 1.7;
+        margin-bottom: 22px;
+        padding-left: 16px;
+        border-left: 3px solid var(--bs-primary);
+    }
+
+    .preview-text {
+        line-height: 1.85;
+        color: var(--bs-secondary-color);
+        white-space: pre-line;
+        margin-bottom: 22px;
+    }
+
+    .preview-split {
+        display: flex;
+        gap: 28px;
+        align-items: flex-start;
+        margin: 32px 0;
+    }
+
+    .preview-split-text {
+        flex: 1 1 55%;
+    }
+
+        .preview-split-text h3 {
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+    .preview-split-img {
+        flex: 1 1 45%;
+    }
+
+        .preview-split-img img {
+            width: 100%;
+            border-radius: 10px;
+            display: block;
+        }
+
+    .preview-last {
+        border-top: 1px solid var(--bs-border-color);
+        padding-top: 26px;
+    }
+
+        .preview-last h3 {
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+    @@media (max-width: 768px) {
+        .preview-split {
+            flex-direction: column;
+        }
+
+        .preview-body {
+            padding: 24px 20px 16px;
+        }
+    }
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.querySelectorAll(".preview-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            var d = this.dataset;
+
+            document.getElementById("pvTitle").textContent = d.title;
+            document.getElementById("pvDate").textContent = d.date;
+            document.getElementById("pvShort").textContent = d.short;
+            document.getElementById("pvMain").textContent = d.main;
+            document.getElementById("pvLongTitle").textContent = d.longtitle;
+            document.getElementById("pvLong").textContent = d.long;
+            document.getElementById("pvLastTitle").textContent = d.lasttitle;
+            document.getElementById("pvLast").textContent = d.last;
+
+            var hero = document.getElementById("pvHero");
+            hero.style.backgroundImage = d.bg ? "url('" + d.bg + "')" : "none";
+
+            document.getElementById("pvImg").src = d.img || "/images/default-image.png";
+
+            new bootstrap.Modal(document.getElementById("blogPreviewModal")).show();
+        });
+    });
+
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: "Blogu silmek istiyor musunuz?",
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, Sil!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>

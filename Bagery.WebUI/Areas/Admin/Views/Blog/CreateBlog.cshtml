@@ -1,0 +1,208 @@
+﻿@model CreateBlogCommand
+@{
+    ViewData["Title"] = "Yeni Blog Ekle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">Blog Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item"><a href="/Admin/Blog/Index">Bloglar</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Yeni Blog</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <form enctype="multipart/form-data" method="post" id="blogForm">
+
+            <div class="row g-4">
+
+                <!-- SOL: Ana içerik -->
+                <div class="col-lg-8">
+
+                    <div class="card shadow-sm border-0 radius-10 mb-4">
+                        <div class="card-header bg-transparent border-bottom py-3">
+                            <h6 class="mb-0 fw-bold">Giriş Bölümü</h6>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Blog Başlığı</label>
+                                <input class="form-control" type="text" asp-for="Title" placeholder="Blog başlığını yazınız..." />
+                                <span class="text-danger small" asp-validation-for="Title"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Kısa Açıklama</label>
+                                <textarea class="form-control" asp-for="ShortDescription" rows="2"
+                                          placeholder="Listelerde görünecek kısa özet..."></textarea>
+                                <span class="text-danger small" asp-validation-for="ShortDescription"></span>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Ana Açıklama</label>
+                                <textarea class="form-control" asp-for="MainDescription" rows="5"
+                                          placeholder="Blogun giriş metni..."></textarea>
+                                <span class="text-danger small" asp-validation-for="MainDescription"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 radius-10 mb-4">
+                        <div class="card-header bg-transparent border-bottom py-3">
+                            <h6 class="mb-0 fw-bold">Orta Bölüm</h6>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Alt Başlık</label>
+                                <input class="form-control" type="text" asp-for="LongTitle" placeholder="Ara başlık..." />
+                                <span class="text-danger small" asp-validation-for="LongTitle"></span>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Detay Açıklama</label>
+                                <textarea class="form-control" asp-for="LongDescription" rows="6"
+                                          placeholder="Blogun ana gövde metni..."></textarea>
+                                <span class="text-danger small" asp-validation-for="LongDescription"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 radius-10">
+                        <div class="card-header bg-transparent border-bottom py-3">
+                            <h6 class="mb-0 fw-bold">Kapanış Bölümü</h6>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Kapanış Başlığı</label>
+                                <input class="form-control" type="text" asp-for="LastDescriptionTitle" placeholder="Sonuç başlığı..." />
+                                <span class="text-danger small" asp-validation-for="LastDescriptionTitle"></span>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Kapanış Metni</label>
+                                <textarea class="form-control" asp-for="LastDescription" rows="4"
+                                          placeholder="Blogun kapanış paragrafı..."></textarea>
+                                <span class="text-danger small" asp-validation-for="LastDescription"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SAĞ: Görseller ve aksiyon -->
+                <div class="col-lg-4">
+
+                    <div class="card shadow-sm border-0 radius-10 mb-4">
+                        <div class="card-header bg-transparent border-bottom py-3">
+                            <h6 class="mb-0 fw-bold">Görseller</h6>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Arka Plan Görseli</label>
+                                <input class="form-control" type="file" accept="image/*" asp-for="BackgroundFile"
+                                       onchange="previewImage(this, 'bgPreview')" />
+                                <img id="bgPreview" class="img-preview d-none" />
+                                <span class="text-danger small" asp-validation-for="BackgroundFile"></span>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Blog Görseli</label>
+                                <input class="form-control" type="file" accept="image/*" asp-for="File1"
+                                       onchange="previewImage(this, 'imgPreview')" />
+                                <img id="imgPreview" class="img-preview d-none" />
+                                <span class="text-danger small" asp-validation-for="File1"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 radius-10">
+                        <div class="card-body p-4">
+                            <div class="d-grid gap-2">
+                                <button type="button" onclick="confirmSave()" class="btn btn-primary">
+                                    <i class="bx bx-save"></i> Blogu Yayınla
+                                </button>
+                                <a href="/Admin/Blog/Index" class="btn btn-outline-secondary">
+                                    İptal
+                                </a>
+                            </div>
+
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger mt-3 mb-0 py-2 small"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<style>
+    .img-preview {
+        display: block;
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-top: 12px;
+        border: 1px solid var(--bs-border-color);
+    }
+
+    .validation-summary-valid {
+        display: none;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function previewImage(input, targetId) {
+        var target = document.getElementById(targetId);
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                target.src = e.target.result;
+                target.classList.remove("d-none");
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function confirmSave() {
+        var form = document.getElementById("blogForm");
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        Swal.fire({
+            title: "Blogu yayınlamak istiyor musunuz?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#28a745",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, Yayınla!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
