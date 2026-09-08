@@ -1,0 +1,61 @@
+﻿@model List<GetCategoriesWithProductsQueryResult>
+
+<section class="project-style-two">
+    <div class="auto-container">
+        <div class="sortable-masonry">
+            <div class="row clearfix">
+                <div class="col-lg-4 col-md-12 col-sm-12 title-column">
+                    <div class="title-inner">
+                        <div class="sec-title">
+                            <p>Ürün Görsellerimiz</p>
+                            <h2>Lezzetlerimize <br />Göz Atın</h2>
+                        </div>
+                        <div class="filters">
+                            <ul class="filter-tabs filter-btns clearfix">
+                                <li class="active filter" data-role="button" data-filter=".all">
+                                    <span>TÜMÜ</span>
+                                </li>
+                                @foreach (var category in Model)
+                                {
+                                    <li class="filter" data-role="button" data-filter=".cat-@category.Id">
+                                        <span>@category.CategoryName</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="btn-box">
+                            <a href="/Product/Index" class="theme-btn-one">Tümünü Görün</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-12 col-sm-12 content-column">
+                    <div class="items-container row clearfix">
+                        @foreach (var category in Model)
+                        {
+                            foreach (var product in category.Products)
+                            {
+                                <div class="col-lg-6 col-md-6 col-sm-12 masonry-item small-column all cat-@category.Id">
+                                    <div class="project-block-one">
+                                        <div class="inner-box">
+                                            <figure class="image-box">
+                                                <img src="@product.MainImageUrl" alt="@product.ProductName">
+                                            </figure>
+                                            <div class="lower-content">
+                                                <h3><a href="/Product/ProductDetail/@product">@product.ProductName</a></h3>
+                                                <div class="view-btn">
+                                                    <a href="@product.MainImageUrl" class="lightbox-image" data-fancybox="gallery">
+                                                        <i class="icon-Zoom"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
