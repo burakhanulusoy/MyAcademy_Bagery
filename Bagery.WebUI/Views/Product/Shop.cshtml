@@ -1,0 +1,290 @@
+﻿@model ShopPageResult
+@{
+    ViewData["Title"] = "Ürünlerimiz";
+    Layout = "~/Views/Shared/_WebUILayout.cshtml";
+}
+
+<!--Page Title-->
+<section class="page-title centred"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
+    <div class="auto-container">
+        <div class="content-box">
+            <div class="title">
+                <h1>Ürünlerimiz</h1>
+            </div>
+            <ul class="bread-crumb clearfix">
+                <li><a href="/">Anasayfa</a></li>
+                <li>Ürünler</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--End Page Title-->
+<!-- shop-page-section -->
+<section class="shop-page-section shop-page-1">
+    <div class="auto-container">
+        <div class="row clearfix">
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-3 col-md-12 col-sm-12 sidebar-side">
+                <div class="shop-sidebar default-sidebar">
+
+                    <!-- Arama -->
+                    <div class="sidebar-widget sidebar-search">
+                        <form action="/Product/Shop" method="get" class="search-form">
+                            <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                            <input type="hidden" name="min" value="@Model.Min" />
+                            <input type="hidden" name="max" value="@Model.Max" />
+                            <div class="form-group">
+                                <input type="search" name="search" value="@Model.Search" placeholder="Ürün ara...">
+                                <button type="submit"><i class="icon-Search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Kategoriler -->
+                    <div class="sidebar-widget sidebar-categories">
+                        <div class="widget-title">
+                            <h3>Kategoriler</h3>
+                        </div>
+                        <div class="widget-content">
+                            <ul class="categories-list clearfix">
+                                <li>
+                                    <a href="@Url.Action("Shop", "Product", new { search = Model.Search, min = Model.Min, max = Model.Max })"
+                                       class="@(Model.CategoryId == null ? "active-cat" : "")">
+                                        Tüm Ürünler
+                                    </a>
+                                </li>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Shop", "Product", new { categoryId = category.Id, search = Model.Search, min = Model.Min, max = Model.Max })"
+                                           class="@(Model.CategoryId == category.Id ? "active-cat" : "")">
+                                            @category.CategoryName
+                                            <span class="cat-count">(@(category.Products?.Count ?? 0))</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Fiyat Filtresi -->
+                    <div class="sidebar-widget price-filter">
+                        <div class="widget-title">
+                            <h3>Fiyata Göre Filtrele</h3>
+                        </div>
+                        <div class="widget-content">
+                            <form action="/Product/Shop" method="get">
+                                <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                                <input type="hidden" name="search" value="@Model.Search" />
+
+                                <div class="price-inputs">
+                                    <input type="number" name="min" min="0" value="@Model.Min" placeholder="En az" />
+                                    <span class="price-sep">—</span>
+                                    <input type="number" name="max" min="0" value="@Model.Max" placeholder="En çok" />
+                                </div>
+
+                                <button type="submit" class="theme-btn-two filter-submit">Filtrele</button>
+
+                                @if (Model.Min.HasValue || Model.Max.HasValue)
+                                {
+                                    <a href="@Url.Action("Shop", "Product", new { categoryId = Model.CategoryId, search = Model.Search })"
+                                       class="clear-filter">Fiyat filtresini temizle</a>
+                                }
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Featured Products (statik) -->
+                    <div class="sidebar-widget post-widget">
+                        <div class="widget-title">
+                            <h3>Featured Products</h3>
+                        </div>
+                        <div class="post-inner">
+                            <div class="post">
+                                <figure class="image-box"><a href="shop-details.html"><img src="~/Bagery Pack/Bagery/assets/images/resource/shop/post-1.jpg" alt=""></a></figure>
+                                <h5><a href="shop-details.html">Vanilla Ice Cream</a></h5>
+                                <p>$50.00</p>
+                            </div>
+                            <div class="post">
+                                <figure class="image-box"><a href="shop-details.html"><img src="~/Bagery Pack/Bagery/assets/images/resource/shop/post-2.jpg" alt=""></a></figure>
+                                <h5><a href="shop-details.html">Donuts Cake</a></h5>
+                                <p>$35.00</p>
+                            </div>
+                            <div class="post">
+                                <figure class="image-box"><a href="shop-details.html"><img src="~/Bagery Pack/Bagery/assets/images/resource/shop/post-3.jpg" alt=""></a></figure>
+                                <h5><a href="shop-details.html">Corne Ice Cream</a></h5>
+                                <p>$60.00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- İÇERİK -->
+            <div class="col-lg-9 col-md-12 col-sm-12 content-side">
+                <div class="our-shop">
+
+                    <div class="item-shorting clearfix">
+                        <div class="left-column pull-left clearfix">
+                            <div class="text">
+                                @if (Model.Products.Any())
+                                {
+                                    <p>Sayfa @Model.Page / @Model.TotalPages</p>
+                                }
+                            </div>
+                        </div>
+                        <div class="right-column pull-right clearfix">
+                            <div class="short-box clearfix">
+                                <p>Short by</p>
+                                <div class="select-box">
+                                    <select class="wide">
+                                        <option data-display="Popularity">Popularity</option>
+                                        <option value="1">New Collection</option>
+                                        <option value="2">Top Sell</option>
+                                        <option value="4">Top Ratted</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="menu-box">
+                                <a href="/Product/Shop"><i class="icon-Menu"></i></a>
+                                <a href="/Product/Shop"><i class="icon-List-View"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!Model.Products.Any())
+                    {
+                        <div class="empty-shop">
+                            <h4>Aradığınız kriterlere uygun ürün bulunamadı.</h4>
+                            <p>Filtreleri değiştirerek tekrar deneyebilirsiniz.</p>
+                            <a href="/Product/Shop" class="theme-btn-two">Tüm Ürünleri Göster</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row clearfix">
+                            @foreach (var product in Model.Products)
+                            {
+                                <div class="col-lg-4 col-md-6 col-sm-12 shop-block">
+                                    <div class="shop-block-one">
+                                        <div class="inner-box">
+                                            <figure class="image-box">
+                                                <img src="@product.MainImageUrl" alt="@product.ProductName">
+                                            </figure>
+                                            <div class="lower-content">
+                                                <span class="price-box">@product.Price.ToString("N0") ₺</span>
+                                                <h3><a href="/Product/Detail/@product.Id">@product.ProductName</a></h3>
+                                                <ul class="rating clearfix">
+                                                    <li><i class="icon-Star"></i></li>
+                                                    <li><i class="icon-Star"></i></li>
+                                                    <li><i class="icon-Star"></i></li>
+                                                    <li><i class="icon-Star"></i></li>
+                                                    <li><i class="icon-Star"></i></li>
+                                                </ul>
+                                                <div class="cart-btn">
+                                                    <a href="/Product/Detail/@product.Id" class="theme-btn-two">İncele</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        @if (Model.TotalPages > 1)
+                        {
+                            <div class="pagination-wrapper centred">
+                                <ul class="pagination">
+                                    @if (Model.Page > 1)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Shop", "Product", new { categoryId = Model.CategoryId, search = Model.Search, min = Model.Min, max = Model.Max, page = Model.Page - 1 })">Önceki</a>
+                                        </li>
+                                    }
+
+                                    @for (int i = 1; i <= Model.TotalPages; i++)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Shop", "Product", new { categoryId = Model.CategoryId, search = Model.Search, min = Model.Min, max = Model.Max, page = i })"
+                                               class="@(i == Model.Page ? "active" : "")">@i</a>
+                                        </li>
+                                    }
+
+                                    @if (Model.Page < Model.TotalPages)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Shop", "Product", new { categoryId = Model.CategoryId, search = Model.Search, min = Model.Min, max = Model.Max, page = Model.Page + 1 })">Sonraki</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- shop-page-section end -->
+
+<style>
+    .categories-list a.active-cat {
+        font-weight: 700;
+    }
+
+    .cat-count {
+        opacity: .55;
+        font-size: 13px;
+        margin-left: 4px;
+    }
+
+    .price-inputs {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .price-inputs input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e6e6e6;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+    .price-sep {
+        opacity: .5;
+    }
+
+    .filter-submit {
+        width: 100%;
+        margin-top: 14px;
+    }
+
+    .clear-filter {
+        display: block;
+        margin-top: 10px;
+        font-size: 13px;
+        text-decoration: underline;
+    }
+
+    .empty-shop {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+        .empty-shop .theme-btn-two {
+            margin-top: 16px;
+        }
+
+    .shop-block-one .image-box img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+    }
+</style>
