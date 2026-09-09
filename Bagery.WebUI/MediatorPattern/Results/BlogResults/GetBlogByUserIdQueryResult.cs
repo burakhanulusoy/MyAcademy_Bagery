@@ -1,4 +1,5 @@
-﻿using Bagery.WebUI.MediatorPattern.Results.UserResults;
+﻿// GetBlogByUserIdQueryResult.cs
+using Bagery.WebUI.MediatorPattern.Results.CommentResults;
 
 namespace Bagery.WebUI.MediatorPattern.Results.BlogResults;
 
@@ -13,7 +14,6 @@ public record GetBlogByUserIdQueryResult(
     string ImageUrl1,
     string LastDescription,
     string LastDescriptionTitle,
-    DateTime CreatedAt
-    )
-{
-}
+    DateTime CreatedAt,
+    List<GetCommentForBlogQueryResult> Comments
+);

@@ -1,5 +1,7 @@
 using Bagery.WebUI.Extensions;
 using Bagery.WebUI.Filters;
+using Bagery.WebUI.Services;
+using OpenAI.Chat;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddWebUiRegistration(builder.Configuration);
 builder.Services.AddAmozonS3Registrations(builder.Configuration);
 
+
+builder.Services.AddScoped<CommentModerationService>();
 
 builder.Services.AddControllersWithViews(options =>
 {

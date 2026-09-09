@@ -1,0 +1,368 @@
+﻿@model List<GetCommentsQueryResult>
+@{
+    ViewData["Title"] = "Tüm Yorumlar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var groups = Model != null
+        ? Model.GroupBy(x => x.BlogId).OrderByDescending(g => g.Max(c => c.CreatedAt)).ToList()
+        : null;
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">Yorum Yönetimi</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0 align-items-center">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Tüm Yorumlar</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <a href="/Admin/Comment/MyComments" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                    <i class="bx bx-user fs-5"></i> Yorumlarım
+                </a>
+            </div>
+        </div>
+
+        @if (groups != null && groups.Any())
+        {
+            <div class="card shadow-sm border-0 radius-10 mb-4">
+                <div class="card-body">
+                    <div class="stat-bar">
+                        <div class="stat-item">
+                            <span class="stat-num">@Model.Count</span>
+                            <span class="stat-label text-secondary">Toplam Yorum</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <span class="stat-num">@groups.Count</span>
+                            <span class="stat-label text-secondary">Yorum Alan Yazı</span>
+                        </div>
+                        <div class="stat-search">
+                            <span class="position-absolute top-50 translate-middle-y ms-3 text-secondary">
+                                <ion-icon name="search-sharp"></ion-icon>
+                            </span>
+                            <input type="text" id="commentSearch" class="form-control ps-5 rounded-pill"
+                                   placeholder="Yorum, kişi veya yazı ara...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="blog-groups">
+                @foreach (var group in groups)
+                {
+                    var blog = group.First().Blog;
+
+                    <div class="blog-group card shadow-sm border-0 radius-10" data-blog="@($"{blog?.Title} {blog?.AppUser?.FullName}".ToLower())">
+
+                        <div class="group-header border-bottom">
+                            <img src="@blog?.ImageUrl1" alt="@blog?.Title"
+                                 onerror="this.src='/images/default-image.png'" />
+
+                            <div class="group-meta">
+                                <a href="/Blog/Detail/@group.Key" target="_blank" class="group-title">
+                                    @(blog?.Title ?? "Silinmiş yazı")
+                                </a>
+                                <span class="group-author text-secondary">
+                                    <i class="bx bx-pencil"></i>
+                                    @(blog?.AppUser?.FullName ?? "Bilinmiyor")
+                                </span>
+                            </div>
+
+                            <span class="badge rounded-pill border text-secondary group-count">
+                                @group.Count() yorum
+                            </span>
+                        </div>
+
+                        <div class="group-body">
+                            @foreach (var item in group.OrderByDescending(x => x.CreatedAt))
+                            {
+                                <div class="c-row border-bottom" data-search="@($"{item.CommentContent} {item.AppUser?.FullName} {blog?.Title} {blog?.AppUser?.FullName}".ToLower())">
+
+                                    <div class="c-avatar">
+                                        @if (!string.IsNullOrWhiteSpace(item.AppUser?.ImageUrl))
+                                        {
+                                            <img src="@item.AppUser.ImageUrl" alt="@item.AppUser.FullName"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                            <span class="c-initial border text-secondary" style="display:none;">
+                                                @(!string.IsNullOrWhiteSpace(item.AppUser?.FullName) ? item.AppUser.FullName.Substring(0, 1).ToUpper() : "U")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="c-initial border text-secondary">
+                                                @(!string.IsNullOrWhiteSpace(item.AppUser?.FullName) ? item.AppUser.FullName.Substring(0, 1).ToUpper() : "U")
+                                            </span>
+                                        }
+                                    </div>
+
+                                    <div class="c-content">
+                                        <div class="c-head">
+                                            <span class="c-name">@(item.AppUser?.FullName ?? "Bilinmiyor")</span>
+                                            <span class="c-date text-secondary">@item.CreatedAt.ToString("dd MMM yyyy · HH:mm")</span>
+                                        </div>
+                                        <p class="c-text text-secondary">@item.CommentContent</p>
+                                    </div>
+
+                                    <button onclick="confirmDelete('/Admin/Comment/DeleteComment/@item.Id?returnTo=Index')"
+                                            class="btn btn-sm btn-outline-danger c-delete" title="Yorumu sil">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                }
+            </div>
+
+            <div id="noResult" class="card shadow-sm border-0 radius-10 d-none">
+                <div class="card-body text-center py-5 text-secondary">
+                    <i class="bx bx-search-alt fs-1 opacity-50"></i>
+                    <p class="mb-0 mt-2">Aramanızla eşleşen yorum bulunamadı.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card shadow-sm border-0 radius-10">
+                <div class="card-body text-center py-5 text-secondary">
+                    <i class="bx bx-message-square-detail fs-1 opacity-50 text-primary"></i>
+                    <h6 class="fw-semibold mt-2">Henüz yorum yapılmamış.</h6>
+                    <p class="small mb-0">Bloglara yapılan yorumlar burada listelenecek.</p>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+<style>
+    /* --- Üst istatistik çubuğu --- */
+    .stat-bar {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-num {
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        letter-spacing: .3px;
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 34px;
+        background: currentColor;
+        opacity: .2;
+    }
+
+    .stat-search {
+        position: relative;
+        margin-left: auto;
+        min-width: 300px;
+    }
+
+    /* --- Blog grupları --- */
+    .blog-groups {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .blog-group {
+        overflow: hidden;
+    }
+
+    .group-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 20px;
+    }
+
+        .group-header img {
+            width: 46px;
+            height: 46px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+    .group-meta {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .group-title {
+        display: block;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .group-author {
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .group-count {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 12px;
+        flex-shrink: 0;
+        white-space: nowrap;
+        background: transparent;
+    }
+
+    /* --- Yorum satırları --- */
+    .group-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .c-row {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 16px 20px;
+    }
+
+        .c-row:last-child {
+            border-bottom: none !important;
+        }
+
+    .c-avatar {
+        flex-shrink: 0;
+    }
+
+        .c-avatar img,
+        .c-initial {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+    .c-initial {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 15px;
+        background: transparent;
+    }
+
+    .c-content {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .c-head {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 5px;
+    }
+
+    .c-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .c-date {
+        font-size: 12px;
+    }
+
+    .c-text {
+        margin: 0;
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+
+    .c-delete {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        font-size: 15px;
+        line-height: 1;
+    }
+
+    @@media (max-width: 767px) {
+        .stat-search {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById("commentSearch").addEventListener("keyup", function () {
+        var term = this.value.trim().toLowerCase();
+        var rows = document.querySelectorAll(".c-row");
+        var groups = document.querySelectorAll(".blog-group");
+        var visible = 0;
+
+        rows.forEach(function (row) {
+            var match = row.dataset.search.includes(term);
+            row.classList.toggle("d-none", !match);
+            if (match) visible++;
+        });
+
+        groups.forEach(function (g) {
+            var hasVisible = g.querySelectorAll(".c-row:not(.d-none)").length > 0;
+            g.classList.toggle("d-none", !hasVisible);
+        });
+
+        document.getElementById("noResult").classList.toggle("d-none", visible > 0 || term === "");
+    });
+
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: "Yorumu silmek istiyor musunuz?",
+            text: "Bu işlem geri alınamaz!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Evet, Sil!",
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>

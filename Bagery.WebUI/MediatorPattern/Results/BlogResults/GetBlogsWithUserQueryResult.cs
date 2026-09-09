@@ -1,4 +1,6 @@
-﻿using Bagery.WebUI.MediatorPattern.Results.UserResults;
+﻿// GetBlogsWithUserQueryResult.cs
+using Bagery.WebUI.MediatorPattern.Results.CommentResults;
+using Bagery.WebUI.MediatorPattern.Results.UserResults;
 
 namespace Bagery.WebUI.MediatorPattern.Results.BlogResults;
 
@@ -15,5 +17,6 @@ public record GetBlogsWithUserQueryResult(
     string LastDescriptionTitle,
     DateTime CreatedAt,
     GetUserForFobiaTemplateQueryResult AppUser,
-    Guid AppUserId
+    Guid AppUserId,
+    List<GetCommentForBlogQueryResult> Comments
 );

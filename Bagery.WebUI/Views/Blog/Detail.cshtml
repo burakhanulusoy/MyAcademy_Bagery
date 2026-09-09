@@ -83,80 +83,8 @@
                     </div>
 
 
-                    <div class="comment-box">
-                        <div class="group-title">
-                            <h3>Comments</h3>
-                        </div>
-                        <div class="comment">
-                            <figure class="thumb-box">
-                                <img src="assets/images/news/comment-1.png" alt="">
-                            </figure>
-                            <div class="comment-inner">
-                                <div class="comment-info">
-                                    <h4>Harry Jacob</h4>
-                                    <span class="comment-time">2 Jul, 2020</span>
-                                </div>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incid idunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerc itation ullamco laboris.</p>
-                                <a href="blog-details.html" class="reply-btn">Reply</a>
-                            </div>
-                        </div>
-                        <div class="comment">
-                            <figure class="thumb-box">
-                                <img src="assets/images/news/comment-2.png" alt="">
-                            </figure>
-                            <div class="comment-inner">
-                                <div class="comment-info">
-                                    <h4>Nabby Gail</h4>
-                                    <span class="comment-time">1 Jul, 2020</span>
-                                </div>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incid idunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerc itation ullamco laboris.</p>
-                                <a href="blog-details.html" class="reply-btn">Reply</a>
-                            </div>
-                        </div>
-                        <div class="comment">
-                            <figure class="thumb-box">
-                                <img src="assets/images/news/comment-3.png" alt="">
-                            </figure>
-                            <div class="comment-inner">
-                                <div class="comment-info">
-                                    <h4>Addie Dell</h4>
-                                    <span class="comment-time">1 Jul, 2020</span>
-                                </div>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incid idunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerc itation ullamco laboris.</p>
-                                <a href="blog-details.html" class="reply-btn">Reply</a>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div class="comments-form-area">
-                        <div class="group-title">
-                            <h3>Leave a Comment</h3>
-                        </div>
-                        <form action="blog-details.html" method="post" class="comment-form">
-                            <div class="row clearfix">
-                                <div class="col-lg-6 col-md-6 col-sm-12 form-group">
-                                    <input type="text" name="fname" placeholder="First Name" required="">
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 form-group">
-                                    <input type="text" name="lname" placeholder="Last Name" required="">
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 form-group">
-                                    <input type="email" name="email" placeholder="Email Address" required="">
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 form-group">
-                                    <input type="text" name="phone" placeholder="Phone" required="">
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 form-group">
-                                    <textarea name="message" placeholder="Leave A Comment"></textarea>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 form-group message-btn">
-                                    <button type="submit" class="theme-btn-one">Submit Now</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                    @await Component.InvokeAsync("_GetCommentsByBlogIdViewComponents", new { blogId = Model.Id })
+                    @await Component.InvokeAsync("_CreateCommentViewComponents", new { blogId = Model.Id })
                 </div>
             </div>
 

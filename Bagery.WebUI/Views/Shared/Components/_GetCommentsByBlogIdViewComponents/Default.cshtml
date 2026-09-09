@@ -1,0 +1,40 @@
+﻿@model List<GetCommentsByBlogIdQueryResult>
+
+<div class="comment-box">
+    <div class="group-title">
+        <h3>Yorumlar (@Model.Count)</h3>
+    </div>
+
+    @if (Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <div class="comment">
+                <figure class="thumb-box">
+                    <img src="@item.AppUser?.ImageUrl" alt="@item.AppUser?.FullName"
+                         onerror="this.src='/images/default-user.png'">
+                </figure>
+                <div class="comment-inner">
+                    <div class="comment-info">
+                        <h4>@(item.AppUser?.FullName ?? "Kullanıcı")</h4>
+                        <span class="comment-time">@item.CreatedAt.ToString("dd MMMM yyyy")</span>
+                    </div>
+                    <p>@item.CommentContent</p>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-muted">Bu yazıya henüz yorum yapılmamış. İlk yorumu siz yazın.</p>
+    }
+</div>
+
+<style>
+    .comment .thumb-box img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+</style>

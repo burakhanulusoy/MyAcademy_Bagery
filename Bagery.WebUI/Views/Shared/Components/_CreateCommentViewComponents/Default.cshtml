@@ -1,0 +1,58 @@
+﻿@model Guid
+
+<div class="comments-form-area">
+    <div class="group-title">
+        <h3>Yorum Yap</h3>
+    </div>
+
+    @if (TempData["CommentSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["CommentSuccess"]</div>
+    }
+
+    @if (TempData["CommentError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["CommentError"]</div>
+    }
+
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <div class="comment-notice">
+            <p>Yorum yapabilmek için giriş yapmanız gerekiyor.</p>
+            <a href="/User/Login" class="theme-btn-one">Giriş Yap</a>
+        </div>
+    }
+    else if (!User.IsInRole("Admin") && !User.IsInRole("Writer"))
+    {
+        <div class="comment-notice">
+            <p>Maalesef bloglara sadece yazarlar yorum yapabilir.</p>
+        </div>
+    }
+    else
+    {
+        <form asp-action="CreateComment" asp-controller="Comment" method="post" class="comment-form">
+            <input type="hidden" name="BlogId" value="@Model" />
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                    <textarea name="CommentContent" placeholder="Yorumunuzu yazınız..." required></textarea>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 form-group message-btn">
+                    <button type="submit" class="theme-btn-one">Yorumu Gönder</button>
+                </div>
+            </div>
+        </form>
+    }
+</div>
+
+<style>
+    .comment-notice {
+        background: #f8f8f8;
+        border-left: 3px solid #ddd;
+        padding: 22px 26px;
+        border-radius: 6px;
+    }
+
+        .comment-notice p {
+            margin-bottom: 12px;
+        }
+</style>

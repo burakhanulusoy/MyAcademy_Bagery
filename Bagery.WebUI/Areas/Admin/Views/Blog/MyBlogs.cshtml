@@ -34,6 +34,8 @@
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
                 @foreach (var item in Model)
                 {
+                    var commentCount = item.Comments?.Count ?? 0;
+
                     <div class="col">
                         <div class="blog-card h-100">
                             <div class="blog-thumb">
@@ -41,7 +43,14 @@
                                      onerror="this.src='/images/default-image.png'" />
                             </div>
                             <div class="blog-body">
-                                <span class="blog-date">@item.CreatedAt.ToString("dd MMMM yyyy")</span>
+
+                                <div class="blog-meta">
+                                    <span class="blog-date">@item.CreatedAt.ToString("dd MMMM yyyy")</span>
+                                    <span class="badge rounded-pill border text-secondary comment-badge">
+                                        <i class="bx bx-message-rounded"></i> @commentCount
+                                    </span>
+                                </div>
+
                                 <h6 class="blog-title">@item.Title</h6>
                                 <p class="blog-desc">@item.ShortDescription</p>
 
@@ -57,7 +66,8 @@
                                             data-longtitle="@item.LongTitle"
                                             data-long="@item.LongDescription"
                                             data-lasttitle="@item.LastDescriptionTitle"
-                                            data-last="@item.LastDescription">
+                                            data-last="@item.LastDescription"
+                                            data-target-comments="comments-@item.Id">
                                         <i class="bx bx-show"></i>
                                     </button>
                                     <a href="/Admin/Blog/UpdateBlog/@item.Id" class="btn btn-sm btn-outline-primary flex-grow-1">
@@ -68,6 +78,33 @@
                                         <i class="bx bx-trash"></i>
                                     </button>
                                 </div>
+
+                                <!-- Modal için gizli yorum verisi -->
+                                <template id="comments-@item.Id">
+                                    @if (commentCount > 0)
+                                    {
+                                        foreach (var c in item.Comments.OrderByDescending(x => x.CreatedAt))
+                                        {
+                                            <div class="pv-comment">
+                                                <span class="pv-c-initial border text-secondary">
+                                                    @(!string.IsNullOrWhiteSpace(c.AppUser?.FullName) ? c.AppUser.FullName.Substring(0, 1).ToUpper() : "U")
+                                                </span>
+                                                <div class="pv-c-body">
+                                                    <div class="pv-c-head">
+                                                        <span class="pv-c-name">@(c.AppUser?.FullName ?? "Bilinmiyor")</span>
+                                                        <span class="pv-c-date text-secondary">@c.CreatedAt.ToString("dd MMM yyyy · HH:mm")</span>
+                                                    </div>
+                                                    <p class="pv-c-text text-secondary">@c.CommentContent</p>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="text-secondary mb-0">Bu yazıya henüz yorum yapılmamış.</p>
+                                    }
+                                </template>
+
                             </div>
                         </div>
                     </div>
@@ -133,6 +170,11 @@
                         <p class="preview-text" id="pvLast"></p>
                     </div>
 
+                    <div class="preview-comments">
+                        <h3><i class="bx bx-message-rounded-dots"></i> Yorumlar</h3>
+                        <div id="pvComments"></div>
+                    </div>
+
                 </div>
 
             </div>
@@ -175,10 +217,23 @@
         flex: 1 1 auto;
     }
 
+    .blog-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
     .blog-date {
         font-size: 12px;
         color: var(--bs-secondary-color);
-        margin-bottom: 6px;
+    }
+
+    .comment-badge {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 11px;
+        background: transparent;
     }
 
     .blog-title {
@@ -189,6 +244,7 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        min-height: 44px;
     }
 
     .blog-desc {
@@ -199,6 +255,7 @@
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        min-height: 60px;
     }
 
     .blog-actions {
@@ -312,6 +369,71 @@
             margin-bottom: 14px;
         }
 
+    /* --- Modal içi yorumlar --- */
+    .preview-comments {
+        border-top: 1px solid var(--bs-border-color);
+        padding-top: 26px;
+        margin-top: 10px;
+    }
+
+        .preview-comments h3 {
+            font-weight: 700;
+            margin-bottom: 18px;
+            font-size: 20px;
+        }
+
+    .pv-comment {
+        display: flex;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+
+        .pv-comment:last-child {
+            border-bottom: none;
+        }
+
+    .pv-c-initial {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+        background: transparent;
+    }
+
+    .pv-c-body {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .pv-c-head {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 4px;
+    }
+
+    .pv-c-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .pv-c-date {
+        font-size: 12px;
+    }
+
+    .pv-c-text {
+        margin: 0;
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+
     @@media (max-width: 768px) {
         .preview-split {
             flex-direction: column;
@@ -343,6 +465,14 @@
             hero.style.backgroundImage = d.bg ? "url('" + d.bg + "')" : "none";
 
             document.getElementById("pvImg").src = d.img || "/images/default-image.png";
+
+            // Yorumları template'ten kopyala
+            var tpl = document.getElementById(d.targetComments);
+            var box = document.getElementById("pvComments");
+            box.innerHTML = "";
+            if (tpl) {
+                box.appendChild(tpl.content.cloneNode(true));
+            }
 
             new bootstrap.Modal(document.getElementById("blogPreviewModal")).show();
         });
