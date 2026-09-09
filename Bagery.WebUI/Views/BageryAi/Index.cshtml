@@ -1,0 +1,2415 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Bagery Sense — Dijital Baristan";
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f4ed" />
+    <title>Bagery Sense — Dijital Baristan</title>
+    <link rel="icon" href="@Url.Content("~/Bagery Pack/Bagery/assets/images/favicon.ico")" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@@0;1&family=Manrope:wght@@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            color-scheme: light;
+            --bs-paper: #f6f4ed;
+            --bs-ink: #203e32;
+            --bs-muted: #69746a;
+            --bs-line: #e2e5da;
+            --bs-accent: #b95338;
+            --bs-peach: #edd8c6;
+            --bs-serif: 'DM Serif Display', Georgia, serif;
+            --bs-sans: 'Manrope', 'Segoe UI', sans-serif;
+            --bs-ease: cubic-bezier(.22, 1, .36, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background: var(--bs-paper);
+            color: var(--bs-ink);
+            font: 15px/1.5 var(--bs-sans);
+        }
+
+        button, textarea {
+            font: inherit;
+        }
+
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+            button:disabled {
+                cursor: default;
+            }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button, a, textarea {
+            touch-action: manipulation;
+        }
+
+            button:focus-visible, a:focus-visible, textarea:focus-visible, summary:focus-visible {
+                outline: 3px solid #9d6547;
+                outline-offset: 4px;
+            }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        svg {
+            display: block;
+        }
+
+        .bs-icon {
+            width: 21px;
+            height: 21px;
+            flex: 0 0 auto;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .bs-sr {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .bs-page {
+            max-width: 1640px;
+            height: 100vh;
+            height: 100dvh;
+            min-height: 700px;
+            margin: auto;
+            padding: 0 36px 26px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bs-topbar {
+            height: 94px;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .bs-logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .bs-wordmark {
+            font-family: var(--bs-serif);
+            font-size: 38px;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+            .bs-wordmark i {
+                color: var(--bs-accent);
+                font-style: normal;
+            }
+
+        .bs-logo-note {
+            border-left: 1px solid #cdd3c7;
+            padding-left: 20px;
+            font-size: 10px;
+            line-height: 1.6;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        .bs-nav {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+        }
+
+            .bs-nav a {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 12px;
+                font-weight: 700;
+            }
+
+            .bs-nav .bs-back {
+                border: 1px solid #cdd3c7;
+                padding: 11px 17px;
+                border-radius: 100px;
+                transition: background .2s;
+            }
+
+            .bs-nav a:hover {
+                color: var(--bs-accent);
+            }
+
+            .bs-nav .bs-back:hover {
+                background: white;
+            }
+
+        .bs-app {
+            min-height: 0;
+            flex: 1;
+            display: grid;
+            grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr);
+            gap: 22px;
+        }
+
+        /* Barista atölyesi */
+        .bs-studio {
+            position: relative;
+            min-width: 0;
+            min-height: 0;
+            border: 1px solid #dfcbbb;
+            border-radius: 28px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: #ead4c2;
+            isolation: isolate;
+        }
+
+            .bs-studio::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: -1;
+                background: radial-gradient(ellipse at 50% 53%, #f7eade 0, transparent 62%), linear-gradient(130deg, #f1e2d3, #e7cbb4);
+            }
+
+        .bs-studio-copy {
+            position: relative;
+            padding: 32px 40px 0;
+            flex: 0 0 auto;
+        }
+
+        .bs-kicker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #765c45;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2.1px;
+            text-transform: uppercase;
+        }
+
+            .bs-kicker .bs-icon {
+                width: 15px;
+                height: 15px;
+            }
+
+        .bs-studio h1 {
+            margin: 16px 0 11px;
+            font: 400 clamp(44px, 4.15vw, 66px)/1.05 var(--bs-serif);
+            letter-spacing: -2px;
+        }
+
+            .bs-studio h1 em {
+                color: var(--bs-accent);
+                font-weight: 400;
+            }
+
+        .bs-studio-copy > p {
+            margin: 0;
+            max-width: 360px;
+            color: #75604f;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .bs-motion {
+            position: absolute;
+            right: 22px;
+            top: 23px;
+            width: 34px;
+            height: 34px;
+            border: 1px solid #cbb4a0;
+            border-radius: 50%;
+            color: #745641;
+            background: #ffffff48;
+            display: grid;
+            place-items: center;
+            transition: background .2s;
+        }
+
+            .bs-motion:hover {
+                background: #ffffffba;
+            }
+
+            .bs-motion .bs-icon {
+                width: 14px;
+                height: 14px;
+            }
+
+        .bs-scene {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            min-height: 265px;
+            margin: -5px 0 -4px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+            .bs-scene svg.bs-illustration {
+                width: 100%;
+                max-height: 100%;
+                height: auto;
+                overflow: visible;
+            }
+
+        .bs-scene-note {
+            position: absolute;
+            left: 28px;
+            bottom: 43%;
+            z-index: 2;
+            font: italic 19px/1.1 var(--bs-serif);
+            color: #91765c;
+            transform: rotate(-8deg);
+            pointer-events: none;
+        }
+
+            .bs-scene-note svg {
+                width: 40px;
+                height: 34px;
+                margin: 5px 0 0 25px;
+            }
+
+        .bs-bubble {
+            position: absolute;
+            top: 2%;
+            right: 9%;
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 15px 15px 15px 3px;
+            color: #6d4933;
+            background: #fffaf2;
+            border: 1px solid #e9d3bd;
+            box-shadow: 0 7px 20px #7e594812;
+            transform: rotate(4deg);
+            transition: transform .4s;
+        }
+
+        .bs-studio-footer {
+            padding: 17px 25px;
+            border-top: 1px solid #cfb8a366;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 0 0 auto;
+            gap: 12px;
+            background: #eedbca99;
+        }
+
+        .bs-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .bs-status-dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+            background: #58774d;
+            box-shadow: 0 0 0 4px #58774d15;
+        }
+
+        .bs-signature {
+            font-family: var(--bs-serif);
+            font-style: italic;
+            font-size: 17px;
+            color: #80654d;
+            white-space: nowrap;
+        }
+
+        /* Karakter parçaları: hareket yalnızca görsel durumlara bağlıdır. */
+        .bs-character {
+            animation: bs-breathe 4.5s ease-in-out infinite;
+            transform-origin: 340px 390px;
+        }
+
+        .bs-head {
+            transform-origin: 338px 227px;
+            transform: translate(var(--head-x, 0px), var(--head-y, 0px)) rotate(var(--head-r, 0deg));
+            transition: transform .55s var(--bs-ease);
+        }
+
+        .bs-eyes {
+            transform: translate(var(--eye-x, 0px), var(--eye-y, 0px));
+            transition: transform .25s ease-out;
+        }
+
+        .bs-eye {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: bs-blink 5.8s infinite;
+        }
+
+        .bs-pitcher {
+            transform-origin: 444px 286px;
+            transition: transform .8s var(--bs-ease);
+        }
+
+        .bs-arm-left {
+            transform-origin: 290px 270px;
+            transition: transform .6s var(--bs-ease);
+        }
+
+        .bs-latte {
+            transform-origin: 398px 388px;
+            transition: transform .6s var(--bs-ease);
+        }
+
+        .bs-milk {
+            opacity: 0;
+            stroke-dasharray: 45 1;
+            transition: opacity .25s;
+        }
+
+        .bs-steam-line {
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: bs-steam 3.4s ease-in-out infinite;
+        }
+
+            .bs-steam-line:nth-child(2) {
+                animation-delay: .8s;
+            }
+
+            .bs-steam-line:nth-child(3) {
+                animation-delay: 1.6s;
+            }
+
+        .bs-machine-led {
+            fill: #6e9470;
+            transition: fill .3s;
+        }
+
+        .bs-gauge-needle {
+            transform-origin: 167px 298px;
+            transition: transform .8s;
+        }
+
+        .bs-smile-happy, .bs-brow-question, .bs-heart {
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .bs-brow-normal, .bs-smile-normal {
+            opacity: 1;
+            transition: opacity .3s;
+        }
+
+        .bs-leaf {
+            transform-origin: 553px 394px;
+            animation: bs-leaf 7s ease-in-out infinite;
+        }
+
+        #bagerySense[data-state="listening"] .bs-head {
+            transform: translate(3px, 2px) rotate(6deg);
+        }
+
+        #bagerySense[data-state="listening"] .bs-bubble {
+            transform: rotate(0deg) translateY(-4px);
+        }
+
+        #bagerySense[data-state="thinking"] .bs-head {
+            transform: translate(-3px, 5px) rotate(-8deg);
+        }
+
+        #bagerySense[data-state="thinking"] .bs-pitcher {
+            transform: translate(-9px, -12px) rotate(-24deg);
+        }
+
+        #bagerySense[data-state="thinking"] .bs-arm-left {
+            transform: rotate(-6deg);
+        }
+
+        #bagerySense[data-state="thinking"] .bs-milk {
+            opacity: 1;
+            animation: bs-pour .5s linear infinite;
+        }
+
+        #bagerySense[data-state="thinking"] .bs-machine-led {
+            animation: bs-led 1.2s ease-in-out infinite;
+        }
+
+        #bagerySense[data-state="thinking"] .bs-gauge-needle {
+            transform: rotate(50deg);
+        }
+
+        #bagerySense[data-state="thinking"] .bs-status-dot {
+            animation: bs-led 1.3s infinite;
+        }
+
+        #bagerySense[data-state="success"] .bs-smile-normal {
+            opacity: 0;
+        }
+
+        #bagerySense[data-state="success"] .bs-smile-happy, #bagerySense[data-state="success"] .bs-heart {
+            opacity: 1;
+        }
+
+        #bagerySense[data-state="success"] .bs-latte {
+            transform: translateY(-7px) rotate(-4deg);
+        }
+
+        #bagerySense[data-state="success"] .bs-head {
+            transform: rotate(4deg);
+        }
+
+        #bagerySense[data-state="guard"] .bs-brow-normal {
+            opacity: 0;
+        }
+
+        #bagerySense[data-state="guard"] .bs-brow-question {
+            opacity: 1;
+        }
+
+        #bagerySense[data-state="guard"] .bs-head {
+            transform: rotate(-9deg);
+        }
+
+        #bagerySense[data-state="error"] .bs-status-dot {
+            background: var(--bs-accent);
+        }
+
+        /* Konuşma yüzeyi */
+        .bs-assistant {
+            min-height: 0;
+            min-width: 0;
+            border-radius: 28px;
+            border: 1px solid var(--bs-line);
+            display: flex;
+            flex-direction: column;
+            background: #fffefa;
+            overflow: hidden;
+            box-shadow: 0 15px 45px #344e3910;
+        }
+
+        .bs-chat-top {
+            flex: 0 0 auto;
+            min-height: 83px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 26px;
+            border-bottom: 1px solid #eef0e8;
+            gap: 12px;
+        }
+
+        .bs-assistant-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .bs-avatar {
+            width: 37px;
+            height: 37px;
+            border-radius: 13px;
+            background: #e8ede2;
+            color: var(--bs-ink);
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+        }
+
+        .bs-assistant-brand strong {
+            display: block;
+            font-size: 15px;
+            letter-spacing: -.4px;
+        }
+
+        .bs-assistant-brand small {
+            display: block;
+            color: var(--bs-muted);
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .bs-reset {
+            border: 0;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 0 8px 10px;
+            color: #738071;
+            font-size: 11px;
+            background: transparent;
+        }
+
+            .bs-reset:hover {
+                color: var(--bs-accent);
+            }
+
+            .bs-reset .bs-icon {
+                width: 16px;
+                height: 16px;
+            }
+
+        .bs-chat {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: #d6dbcf transparent;
+            padding: 26px;
+            scroll-padding: 20px;
+        }
+
+        .bs-welcome {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 4px 10px;
+        }
+
+        .bs-welcome-symbol {
+            width: 41px;
+            height: 41px;
+            color: var(--bs-accent);
+            margin-bottom: 17px;
+        }
+
+            .bs-welcome-symbol .bs-icon {
+                width: 41px;
+                height: 41px;
+                stroke-width: 1.2;
+            }
+
+        .bs-welcome h2 {
+            font: 400 clamp(34px, 3.05vw, 49px)/1.09 var(--bs-serif);
+            letter-spacing: -1.3px;
+            margin: 0 0 13px;
+        }
+
+            .bs-welcome h2 em {
+                font-weight: 400;
+                color: #6a805c;
+            }
+
+        .bs-welcome p {
+            max-width: 420px;
+            color: var(--bs-muted);
+            font-size: 14px;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .bs-quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .bs-quick {
+            display: grid;
+            grid-template-columns: 33px minmax(0,1fr) 14px;
+            gap: 10px;
+            align-items: center;
+            text-align: left;
+            min-height: 79px;
+            padding: 13px;
+            border: 1px solid var(--bs-line);
+            border-radius: 15px;
+            color: var(--bs-ink);
+            background: #fafbf6;
+            transition: transform .25s var(--bs-ease), background .25s, border-color .25s;
+        }
+
+            .bs-quick:hover {
+                background: #f0f3e9;
+                border-color: #b9c7ab;
+                transform: translateY(-3px);
+            }
+
+            .bs-quick:disabled {
+                opacity: .5;
+                transform: none;
+            }
+
+        .bs-quick-symbol {
+            width: 33px;
+            height: 37px;
+            display: grid;
+            place-items: center;
+            color: #62734e;
+        }
+
+        .bs-quick:nth-child(2) .bs-quick-symbol {
+            color: #ba6e43;
+        }
+
+        .bs-quick:nth-child(3) .bs-quick-symbol {
+            color: #806248;
+        }
+
+        .bs-quick:nth-child(4) .bs-quick-symbol {
+            color: #af6147;
+        }
+
+        .bs-quick-symbol .bs-icon {
+            width: 27px;
+            height: 27px;
+        }
+
+        .bs-quick strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .bs-quick small {
+            display: block;
+            margin-top: 3px;
+            font-size: 11px;
+            color: #6d775f;
+        }
+
+        .bs-quick > .bs-icon {
+            width: 14px;
+            height: 14px;
+            opacity: .45;
+        }
+
+        .bs-conversation:empty {
+            display: none;
+        }
+
+        .bs-turn {
+            margin: 0 0 24px;
+            animation: bs-reveal .45s var(--bs-ease) both;
+        }
+
+        .bs-turn-user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .bs-user-message {
+            max-width: 88%;
+            background: #e9eedf;
+            padding: 13px 17px;
+            border-radius: 17px 17px 4px 17px;
+            font-size: 14px;
+            line-height: 1.65;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .bs-answer-meta {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .4px;
+            margin-bottom: 11px;
+            color: #738064;
+        }
+
+            .bs-answer-meta .bs-icon {
+                width: 16px;
+                height: 16px;
+            }
+
+        .bs-answer-text {
+            font-size: 14px;
+            line-height: 1.85;
+            color: #394c3d;
+            overflow-wrap: anywhere;
+        }
+
+            .bs-answer-text p {
+                margin: 0 0 9px;
+            }
+
+                .bs-answer-text p:last-child {
+                    margin: 0;
+                }
+
+            .bs-answer-text h4 {
+                font-size: 15px;
+                margin: 12px 0 7px;
+            }
+
+            .bs-answer-text ul, .bs-answer-text ol {
+                margin: 7px 0 12px;
+                padding-left: 22px;
+            }
+
+            .bs-answer-text li + li {
+                margin-top: 5px;
+            }
+
+            .bs-answer-text strong {
+                color: #294b34;
+                font-weight: 800;
+            }
+
+        .bs-guard-note, .bs-error-note {
+            background: #f9f3e9;
+            border: 1px solid #ebe0cf;
+            padding: 14px 16px;
+            border-radius: 14px;
+        }
+
+        .bs-error-note {
+            background: #fbf3ef;
+            border-color: #e9d7ce;
+            color: #854936;
+        }
+
+        .bs-inline-actions {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .bs-followup, .bs-retry {
+            border: 1px solid #dce1d4;
+            background: transparent;
+            color: #61704f;
+            border-radius: 100px;
+            font-size: 11px;
+            padding: 8px 11px;
+        }
+
+            .bs-followup:hover, .bs-retry:hover {
+                background: #eff2e7;
+            }
+
+            .bs-followup:disabled {
+                opacity: .45;
+            }
+
+        .bs-thinking {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            min-height: 32px;
+            color: #859074;
+            font-size: 12px;
+        }
+
+        .bs-thinking-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+            .bs-thinking-dots i {
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: #889b71;
+                animation: bs-dot 1.2s ease-in-out infinite;
+            }
+
+                .bs-thinking-dots i:nth-child(2) {
+                    animation-delay: .15s;
+                }
+
+                .bs-thinking-dots i:nth-child(3) {
+                    animation-delay: .3s;
+                }
+
+        /* Gerçek ürün kartları */
+        .bs-products {
+            display: grid;
+            align-items: start;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .bs-product {
+            border: 1px solid #e4e7dd;
+            border-radius: 18px;
+            background: white;
+            min-width: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: bs-reveal .5s var(--bs-ease) both;
+            transition: box-shadow .25s, transform .25s;
+        }
+
+            .bs-product:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 25px #3a452315;
+            }
+
+        .bs-product-visual {
+            position: relative;
+            aspect-ratio: 1.65;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background: #efe9dd;
+            color: #aa937a;
+        }
+
+            .bs-product-visual > .bs-icon {
+                width: 50px;
+                height: 50px;
+                position: absolute;
+            }
+
+            .bs-product-visual img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                position: absolute;
+                transition: transform .65s var(--bs-ease);
+            }
+
+        .bs-product:hover .bs-product-visual img {
+            transform: scale(1.06);
+        }
+
+        .bs-product-no {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 3px 7px;
+            background: #fffdf2eb;
+            color: #574d3c;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .bs-product-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 14px;
+        }
+
+        .bs-product-category {
+            font-size: 9px;
+            letter-spacing: 1.1px;
+            color: #929780;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .bs-product-name {
+            font-size: 16px;
+            line-height: 1.35;
+            font-weight: 800;
+            letter-spacing: -.4px;
+            margin: 5px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .bs-product-description {
+            color: #808775;
+            font-size: 11px;
+            line-height: 1.65;
+            margin: 3px 0 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .bs-product-bottom {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .bs-product-price {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -.6px;
+        }
+
+        .bs-product-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #4d633a;
+            background: #eff2e8;
+            border-radius: 8px;
+            font-size: 11px;
+            padding: 8px 10px;
+            font-weight: 700;
+        }
+
+            .bs-product-link .bs-icon {
+                width: 14px;
+                height: 14px;
+            }
+
+        .bs-product-detail {
+            margin-top: 12px;
+            border-top: 1px solid #eef0e8;
+            padding-top: 10px;
+            font-size: 11px;
+            color: #6e7b5f;
+        }
+
+            .bs-product-detail summary {
+                cursor: pointer;
+            }
+
+            .bs-product-detail p {
+                color: #677060;
+                font-size: 12px;
+                line-height: 1.75;
+                white-space: pre-line;
+                margin-bottom: 0;
+                overflow-wrap: anywhere;
+            }
+
+        /* Sabit yazma alanı */
+        .bs-composer {
+            flex: 0 0 auto;
+            padding: 0 24px 20px;
+            background: #fffefa;
+            position: relative;
+        }
+
+            .bs-composer::before {
+                content: '';
+                position: absolute;
+                height: 16px;
+                top: -16px;
+                left: 0;
+                right: 0;
+                pointer-events: none;
+                background: linear-gradient(transparent, #fffefa);
+            }
+
+        .bs-composer-box {
+            display: flex;
+            align-items: flex-end;
+            gap: 11px;
+            padding: 11px 11px 11px 17px;
+            border: 1px solid #cfd7c3;
+            border-radius: 19px;
+            box-shadow: 0 5px 17px #58643a09;
+            background: #fff;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+            .bs-composer-box:focus-within {
+                border-color: #8c9d76;
+                box-shadow: 0 0 0 3px #789a4710;
+            }
+
+        .bs-composer textarea {
+            display: block;
+            width: 100%;
+            min-width: 0;
+            min-height: 44px;
+            max-height: 120px;
+            height: 44px;
+            resize: none;
+            border: 0;
+            outline: 0;
+            padding: 11px 0 8px;
+            background: transparent;
+            color: #2d4635;
+            font-size: 15px;
+            line-height: 1.6;
+            scrollbar-width: thin;
+        }
+
+            .bs-composer textarea::placeholder {
+                color: #9caa95;
+                font-size: 13px;
+            }
+
+        .bs-send {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 auto;
+            border: 0;
+            border-radius: 13px;
+            background: var(--bs-ink);
+            color: #fff;
+            display: grid;
+            place-items: center;
+            transition: transform .2s, background .2s;
+        }
+
+            .bs-send:hover:not(:disabled) {
+                background: #3d6144;
+                transform: translateY(-2px);
+            }
+
+            .bs-send:disabled {
+                background: #c6cebc;
+            }
+
+        .bs-composer-meta {
+            margin: 11px 1px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: #919987;
+            font-size: 9px;
+            line-height: 1.6;
+        }
+
+            .bs-composer-meta span:first-child {
+                display: inline-flex;
+                gap: 5px;
+                align-items: center;
+            }
+
+            .bs-composer-meta .bs-icon {
+                width: 12px;
+                height: 12px;
+            }
+
+        .bs-noscript {
+            margin: 10px;
+            color: #8c4530;
+            font-size: 13px;
+        }
+
+        @@keyframes bs-breathe {
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @@keyframes bs-blink {
+            0%, 43%, 47%, 100% {
+                transform: scaleY(1);
+            }
+
+            45% {
+                transform: scaleY(.08);
+            }
+        }
+
+        @@keyframes bs-steam {
+            0% {
+                opacity: 0;
+                stroke-dashoffset: 50;
+                transform: translateY(5px);
+            }
+
+            35% {
+                opacity: .6;
+            }
+
+            100% {
+                opacity: 0;
+                stroke-dashoffset: -40;
+                transform: translateY(-12px);
+            }
+        }
+
+        @@keyframes bs-pour {
+            to {
+                stroke-dashoffset: -22;
+            }
+        }
+
+        @@keyframes bs-led {
+            50% {
+                opacity: .4;
+            }
+        }
+
+        @@keyframes bs-leaf {
+            50% {
+                transform: rotate(3deg);
+            }
+        }
+
+        @@keyframes bs-dot {
+            50% {
+                transform: translateY(-4px);
+                opacity: .4;
+            }
+        }
+
+        @@keyframes bs-reveal {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@media (min-width: 1500px) {
+            .bs-app {
+                gap: 28px;
+            }
+
+            .bs-studio-copy {
+                padding: 40px 46px 0;
+            }
+
+            .bs-chat {
+                padding: 32px 36px;
+            }
+
+            .bs-chat-top {
+                padding-inline: 36px;
+            }
+
+            .bs-composer {
+                padding: 0 34px 25px;
+            }
+
+            .bs-quick {
+                min-height: 88px;
+            }
+        }
+
+        @@media (max-height: 800px) and (min-width: 981px) {
+            .bs-page {
+                min-height: 620px;
+            }
+
+            .bs-topbar {
+                height: 76px;
+            }
+
+            .bs-studio-copy {
+                padding-top: 24px;
+            }
+
+            .bs-studio h1 {
+                font-size: clamp(39px, 3.6vw, 54px);
+                margin-top: 10px;
+            }
+
+            .bs-studio-copy > p {
+                font-size: 12px;
+            }
+
+            .bs-chat-top {
+                min-height: 68px;
+                padding-top: 13px;
+                padding-bottom: 13px;
+            }
+
+            .bs-chat {
+                padding-top: 19px;
+                padding-bottom: 19px;
+            }
+
+            .bs-welcome-symbol {
+                margin-bottom: 12px;
+            }
+
+            .bs-welcome h2 {
+                font-size: 37px;
+            }
+
+            .bs-quick-grid {
+                margin-top: 18px;
+                gap: 8px;
+            }
+
+            .bs-quick {
+                min-height: 68px;
+                padding: 10px;
+            }
+        }
+
+        @@media (max-width: 1150px) and (min-width: 981px) {
+            .bs-page {
+                padding-inline: 22px;
+            }
+
+            .bs-app {
+                grid-template-columns: minmax(0, .87fr) minmax(0, 1.13fr);
+                gap: 16px;
+            }
+
+            .bs-studio-copy {
+                padding-inline: 27px;
+            }
+
+            .bs-studio h1 {
+                font-size: 45px;
+            }
+
+            .bs-motion {
+                right: 15px;
+            }
+
+            .bs-kicker {
+                letter-spacing: 1.4px;
+                font-size: 9px;
+            }
+
+            .bs-quick {
+                grid-template-columns: 25px minmax(0,1fr);
+                padding: 11px;
+            }
+
+                .bs-quick > .bs-icon {
+                    display: none;
+                }
+
+                .bs-quick strong {
+                    font-size: 11px;
+                }
+
+                .bs-quick small {
+                    font-size: 9px;
+                }
+
+            .bs-chat {
+                padding-inline: 21px;
+            }
+
+            .bs-scene-note {
+                display: none;
+            }
+        }
+
+        @@media (max-width: 980px) {
+            .bs-page {
+                min-height: 600px;
+                padding: 0 18px 16px;
+            }
+
+            .bs-topbar {
+                height: 77px;
+            }
+
+            .bs-app {
+                display: flex;
+                flex-direction: column;
+                gap: 13px;
+            }
+
+            .bs-studio {
+                height: 220px;
+                flex: 0 0 220px;
+                flex-direction: row;
+                border-radius: 22px;
+            }
+
+            .bs-studio-copy {
+                width: 54%;
+                padding: 25px 0 35px 26px;
+            }
+
+            .bs-studio h1 {
+                font-size: 35px;
+                margin: 9px 0;
+                letter-spacing: -1px;
+            }
+
+            .bs-studio-copy > p {
+                font-size: 11px;
+                max-width: 260px;
+            }
+
+            .bs-kicker {
+                font-size: 8px;
+                letter-spacing: 1.4px;
+            }
+
+            .bs-scene {
+                min-height: 0;
+                flex: 1;
+                align-self: stretch;
+                margin: 0 -15px 0 -18px;
+            }
+
+                .bs-scene svg.bs-illustration {
+                    height: 100%;
+                    width: 100%;
+                    object-fit: contain;
+                }
+
+            .bs-studio-footer {
+                position: absolute;
+                bottom: 11px;
+                left: 26px;
+                padding: 0;
+                border: 0;
+                background: transparent;
+            }
+
+            .bs-signature, .bs-scene-note, .bs-bubble {
+                display: none;
+            }
+
+            .bs-live {
+                font-size: 9px;
+            }
+
+            .bs-motion {
+                right: 12px;
+                top: 12px;
+                width: 29px;
+                height: 29px;
+                z-index: 2;
+            }
+
+            .bs-assistant {
+                flex: 1;
+                border-radius: 22px;
+            }
+
+            .bs-chat-top {
+                min-height: 65px;
+                padding: 13px 21px;
+            }
+
+            .bs-chat {
+                padding: 22px;
+            }
+
+            .bs-welcome {
+                min-height: 0;
+            }
+
+            .bs-welcome-symbol {
+                display: none;
+            }
+
+            .bs-welcome h2 {
+                font-size: 33px;
+            }
+
+            .bs-quick-grid {
+                margin-top: 17px;
+            }
+
+            .bs-composer {
+                padding: 0 18px 13px;
+            }
+
+            #bagerySense[data-started="true"] .bs-studio {
+                flex-basis: 158px;
+                height: 158px;
+            }
+
+                #bagerySense[data-started="true"] .bs-studio h1 {
+                    font-size: 27px;
+                }
+
+            #bagerySense[data-started="true"] .bs-studio-copy {
+                padding-top: 15px;
+            }
+
+                #bagerySense[data-started="true"] .bs-studio-copy > p {
+                    display: none;
+                }
+        }
+
+        @@media (max-width: 560px) {
+            .bs-page {
+                padding: 0 10px 9px;
+                min-height: 580px;
+            }
+
+            .bs-topbar {
+                height: 65px;
+                padding: 0 5px;
+                gap: 10px;
+            }
+
+            .bs-wordmark {
+                font-size: 32px;
+            }
+
+            .bs-logo-note {
+                display: none;
+            }
+
+            .bs-nav {
+                gap: 13px;
+            }
+
+                .bs-nav a {
+                    font-size: 11px;
+                    gap: 6px;
+                }
+
+                .bs-nav .bs-back {
+                    width: 35px;
+                    height: 35px;
+                    padding: 0;
+                    justify-content: center;
+                }
+
+            .bs-back span {
+                display: none;
+            }
+
+            .bs-nav .bs-icon {
+                width: 17px;
+                height: 17px;
+            }
+
+            .bs-app {
+                gap: 10px;
+            }
+
+            .bs-studio {
+                flex-basis: 176px;
+                height: 176px;
+                border-radius: 18px;
+            }
+
+            .bs-studio-copy {
+                width: 53%;
+                padding: 17px 0 30px 16px;
+            }
+
+            .bs-studio h1 {
+                font-size: 27px;
+                line-height: 1.1;
+                margin-top: 8px;
+                letter-spacing: -.7px;
+            }
+
+            .bs-studio-copy > p {
+                font-size: 10px;
+                line-height: 1.6;
+            }
+
+            .bs-kicker {
+                font-size: 7px;
+                letter-spacing: 1px;
+                gap: 5px;
+            }
+
+                .bs-kicker .bs-icon {
+                    width: 12px;
+                    height: 12px;
+                }
+
+            .bs-scene {
+                margin: 5px -24px 0 -30px;
+            }
+
+            .bs-studio-footer {
+                left: 17px;
+                bottom: 10px;
+            }
+
+            .bs-live {
+                font-size: 8px;
+                gap: 7px;
+            }
+
+            .bs-status-dot {
+                width: 5px;
+                height: 5px;
+                box-shadow: 0 0 0 3px #58774d15;
+            }
+
+            .bs-assistant {
+                border-radius: 19px;
+            }
+
+            .bs-chat-top {
+                padding: 12px 16px;
+                min-height: 62px;
+            }
+
+            .bs-assistant-brand strong {
+                font-size: 13px;
+            }
+
+            .bs-assistant-brand small {
+                font-size: 9px;
+            }
+
+            .bs-avatar {
+                width: 32px;
+                height: 32px;
+                border-radius: 11px;
+            }
+
+            .bs-reset span {
+                display: none;
+            }
+
+            .bs-reset {
+                padding: 8px;
+            }
+
+            .bs-chat {
+                padding: 19px 16px;
+            }
+
+            .bs-welcome {
+                padding: 0;
+            }
+
+                .bs-welcome h2 {
+                    font-size: 29px;
+                    letter-spacing: -.8px;
+                }
+
+                .bs-welcome p {
+                    font-size: 12px;
+                }
+
+            .bs-quick {
+                min-height: 72px;
+                grid-template-columns: 24px minmax(0,1fr);
+                gap: 7px;
+                padding: 9px;
+                border-radius: 12px;
+            }
+
+                .bs-quick > .bs-icon {
+                    display: none;
+                }
+
+            .bs-quick-symbol {
+                width: 24px;
+            }
+
+                .bs-quick-symbol .bs-icon {
+                    width: 23px;
+                    height: 23px;
+                }
+
+            .bs-quick strong {
+                font-size: 10px;
+            }
+
+            .bs-quick small {
+                font-size: 9px;
+            }
+
+            .bs-quick-grid {
+                gap: 8px;
+            }
+
+            .bs-composer {
+                padding: 0 12px 12px;
+                padding-bottom: max(12px, env(safe-area-inset-bottom));
+            }
+
+                .bs-composer textarea {
+                    font-size: 16px;
+                    padding-top: 11px;
+                }
+
+                    .bs-composer textarea::placeholder {
+                        font-size: 12px;
+                    }
+
+            .bs-composer-meta {
+                font-size: 8px;
+                margin-top: 8px;
+            }
+
+                .bs-composer-meta span:last-child {
+                    display: none;
+                }
+
+            .bs-answer-text, .bs-user-message {
+                font-size: 13px;
+            }
+
+            .bs-products {
+                gap: 9px;
+            }
+
+            .bs-product-info {
+                padding: 11px;
+            }
+
+            .bs-product-name {
+                font-size: 13px;
+            }
+
+            .bs-product-price {
+                font-size: 15px;
+            }
+
+            .bs-product-link {
+                font-size: 10px;
+                padding: 6px 8px;
+            }
+
+            .bs-product-description {
+                font-size: 10px;
+            }
+
+            .bs-product-category {
+                font-size: 8px;
+            }
+
+            #bagerySense[data-started="true"] .bs-studio {
+                flex-basis: 128px;
+                height: 128px;
+            }
+
+                #bagerySense[data-started="true"] .bs-studio h1 {
+                    font-size: 23px;
+                }
+
+            #bagerySense[data-started="true"] .bs-studio-copy {
+                padding-top: 11px;
+            }
+        }
+
+        @@media (max-width: 350px) {
+            .bs-products {
+                grid-template-columns: 1fr;
+            }
+
+            .bs-quick-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        #bagerySense[data-motion="off"] *, #bagerySense[data-motion="off"] *::before, #bagerySense[data-motion="off"] *::after {
+            animation: none !important;
+            transition: none !important;
+            scroll-behavior: auto !important;
+        }
+
+        #bagerySense[data-motion="off"] .bs-steam-line {
+            stroke-dashoffset: 0;
+            opacity: .35;
+        }
+
+    </style>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;overflow:hidden">
+        <defs>
+            <symbol id="bs-i-cup" viewBox="0 0 24 24"><path d="M4 9h12v7a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9Zm12 1h2a3 3 0 1 1 0 6h-2M2 22h18M7 6c-2-2 2-3 0-5m5 5c-2-2 2-3 0-5" /></symbol>
+            <symbol id="bs-i-spark" viewBox="0 0 24 24"><path d="m12 2 2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6L12 2Z" /></symbol>
+            <symbol id="bs-i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" /></symbol>
+            <symbol id="bs-i-up-right" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6h12v12" /></symbol>
+            <symbol id="bs-i-back" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6" /></symbol>
+            <symbol id="bs-i-pastry" viewBox="0 0 24 24"><path d="M4 16c-2 0-3-3-1-5l3-2m12 0 3 2c2 2 1 5-1 5M7 17c-3-3-3-8 0-10l3 3m4 0 3-3c3 2 3 7 0 10M10 6h4l2 4-4 10-4-10 2-4Z" /></symbol>
+            <symbol id="bs-i-wallet" viewBox="0 0 24 24"><path d="M20 8H4a2 2 0 0 1 0-4h14v4M4 8v12h17V8m0 4h-5v5h5" /><path d="M17.5 14.5h.1" stroke-width="2.5" /></symbol>
+            <symbol id="bs-i-reset" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1 7M3 4v6h6" /></symbol>
+            <symbol id="bs-i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3" /></symbol>
+            <symbol id="bs-i-play" viewBox="0 0 24 24"><path d="m7 4 13 8-13 8V4Z" /></symbol>
+            <symbol id="bs-i-send" viewBox="0 0 24 24"><path d="M12 20V4m-7 7 7-7 7 7" /></symbol>
+            <symbol id="bs-i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none" /></symbol>
+            <symbol id="bs-i-leaf" viewBox="0 0 24 24"><path d="M19 3c-8-1-15 3-15 10 0 9 17 8 15-10ZM4 21l10-11" /></symbol>
+        </defs>
+    </svg>
+
+    <main class="bs-page" id="bagerySense" data-state="idle" data-started="false" data-motion="on"
+          data-endpoint="@Url.Content("~/BageryAi/Ask")"
+          data-product-url="@Url.Content("~/Product/Detail")"
+          data-base-url="@Url.Content("~/")">
+        <header class="bs-topbar">
+            <a class="bs-logo" href="@Url.Content("~/Default/Index")" aria-label="Bagery ana sayfa">
+                <span class="bs-wordmark">bagery<i>.</i></span>
+                <span class="bs-logo-note">Kahve. Keyif.<br />Biraz da sezgi.</span>
+            </a>
+            <nav class="bs-nav" aria-label="Sayfa bağlantıları">
+                <a href="@Url.Content("~/Product/Shop")">Ürünler <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-up-right" /></svg></a>
+                <a class="bs-back" href="@Url.Content("~/Default/Index")" aria-label="Ana siteye dön">
+                    <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-back" /></svg><span>Siteye dön</span>
+                </a>
+            </nav>
+        </header>
+        <div class="bs-app">
+            <section class="bs-studio" aria-labelledby="bsStudioTitle">
+                <div class="bs-studio-copy">
+                    <div class="bs-kicker"><svg class="bs-icon" aria-hidden="true"><use href="#bs-i-spark" /></svg> Bagery Sense</div>
+                    <h1 id="bsStudioTitle">Damak tadına<br />biraz <em>sezgi.</em></h1>
+                    <p>Sen ne sevdiğini anlat.<br />Ben Bagery'den sana yakışanı bulayım.</p>
+                </div>
+                <button class="bs-motion" id="bsMotion" type="button" aria-label="Animasyonları duraklat" aria-pressed="false" title="Animasyonları duraklat">
+                    <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-pause" /></svg>
+                </button>
+                <div class="bs-scene" id="bsScene">
+                    <span class="bs-scene-note" aria-hidden="true">
+                        Biraz kahve,<br />biraz sihir.
+                        <svg viewBox="0 0 50 40" fill="none"><path d="M3 2c-1 26 21 27 38 18m-9-5 11 4-6 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" /></svg>
+                    </span>
+                    <div class="bs-bubble" id="bsBubble" aria-hidden="true">Bir fincan iyi fikir.</div>
+                    <svg class="bs-illustration" viewBox="0 0 660 460" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bsSceneTitle">
+                        <title id="bsSceneTitle">Kahve tezgâhında sana eşlik eden animasyonlu Bagery baristası</title>
+                        <defs>
+                            <linearGradient id="bsSkin" x1="292" y1="129" x2="377" y2="218" gradientUnits="userSpaceOnUse"><stop stop-color="#EEC29D" /><stop offset=".65" stop-color="#DDAA82" /><stop offset="1" stop-color="#C98C65" /></linearGradient>
+                            <linearGradient id="bsShirt" x1="281" y1="250" x2="399" y2="377" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFCF2" /><stop offset="1" stop-color="#D8C8AD" /></linearGradient>
+                            <linearGradient id="bsApron" x1="302" y1="257" x2="376" y2="389" gradientUnits="userSpaceOnUse"><stop stop-color="#4B6953" /><stop offset=".65" stop-color="#2A4839" /><stop offset="1" stop-color="#1D3429" /></linearGradient>
+                            <linearGradient id="bsCap" x1="291" y1="95" x2="378" y2="154" gradientUnits="userSpaceOnUse"><stop stop-color="#D07550" /><stop offset="1" stop-color="#A6452F" /></linearGradient>
+                            <linearGradient id="bsMetal" x1="412" y1="250" x2="472" y2="285" gradientUnits="userSpaceOnUse"><stop stop-color="#F7F5E9" /><stop offset=".2" stop-color="#B3BDB6" /><stop offset=".46" stop-color="#EEF0E4" /><stop offset="1" stop-color="#8F9D95" /></linearGradient>
+                            <linearGradient id="bsMachine" x1="82" y1="267" x2="244" y2="390" gradientUnits="userSpaceOnUse"><stop stop-color="#81907C" /><stop offset=".65" stop-color="#576C57" /><stop offset="1" stop-color="#3B5244" /></linearGradient>
+                            <linearGradient id="bsCream" x1="365" y1="350" x2="432" y2="385" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFEF6" /><stop offset="1" stop-color="#D9C9AD" /></linearGradient>
+                            <linearGradient id="bsCounter" x1="340" y1="398" x2="340" y2="436" gradientUnits="userSpaceOnUse"><stop stop-color="#EAD8BE" /><stop offset=".22" stop-color="#D6B996" /><stop offset="1" stop-color="#BD9973" /></linearGradient>
+                            <radialGradient id="bsBlush"><stop stop-color="#C47A60" stop-opacity=".45" /><stop offset="1" stop-color="#C47A60" stop-opacity="0" /></radialGradient>
+                            <filter id="bsSoftShadow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8" /></filter>
+                        </defs>
+                        <!-- Atölyenin mimari arka planı -->
+                        <path d="M143 394V187a188 188 0 0 1 376 0v207" stroke="#BD9D7D" stroke-opacity=".3" />
+                        <path d="M158 390V188a173 173 0 0 1 346 0v202" stroke="#C7AC90" stroke-opacity=".4" />
+                        <path d="M178 390V188a153 153 0 0 1 306 0v202" fill="#F6E9DC" fill-opacity=".45" />
+                        <path d="M510 124h41m-20-20v40" stroke="#A66F4C" stroke-width="1.2" opacity=".45" />
+                        <circle cx="117" cy="216" r="4" fill="#C99871" opacity=".45" />
+                        <ellipse cx="337" cy="413" rx="234" ry="17" fill="#A97F5D" opacity=".16" filter="url(#bsSoftShadow)" />
+                        <!-- Özgün barista karakteri -->
+                        <g class="bs-character">
+                            <!-- Sol kol kahve makinesine uzanır. -->
+                            <g class="bs-arm-left">
+                                <path d="M298 256c-22-6-33 8-43 29l-26 38 22 20 42-36c17-16 30-41 5-51Z" fill="url(#bsShirt)" />
+                                <path d="m231 315 25 22-9 13-26-21Z" fill="#CFC1A8" />
+                                <path d="M224 328c-9-7-18-9-22-3-3 5 4 10 8 15-13-6-22-3-22 4 0 13 19 19 34 15 9-2 16-8 20-15Z" fill="#D8A27B" />
+                                <path d="m209 340 9 5" stroke="#B68360" stroke-width="2" stroke-linecap="round" />
+                            </g>
+                            <!-- Gövde ve önlük -->
+                            <path d="M294 248c23-14 61-15 91 1 31 25 34 102 35 152H253c3-54 8-125 41-153Z" fill="url(#bsShirt)" />
+                            <path d="m310 242 10 23h32l11-23" fill="#C8A17E" />
+                            <path d="M319 221h34v25c0 17-34 17-34 0Z" fill="#D39C74" />
+                            <path d="m311 242-16 6 17 30 23-15Zm50 0 19 8-18 28-26-15Z" fill="#FCF6E7" />
+                            <path d="M302 249c-2 24-6 39-20 50l-16 100h146l-21-100c-14-12-20-34-22-50l-13-2-6 36h-30l-5-35Z" fill="url(#bsApron)" />
+                            <path d="M302 253c-3 21-9 40-15 48l-15 94m97-142c3 21 9 40 17 48l18 94" stroke="#90A083" stroke-opacity=".48" stroke-width="1.3" stroke-dasharray="3 4" />
+                            <circle cx="314" cy="278" r="4" fill="#C4A36E" /><circle cx="354" cy="278" r="4" fill="#C4A36E" />
+                            <path d="M303 334h64v37c0 16-64 16-64 0Z" fill="#355442" stroke="#678167" stroke-width="1" />
+                            <path d="M312 343h46" stroke="#819476" stroke-width="1" stroke-dasharray="3 3" />
+                            <text x="335" y="368" fill="#DECCA6" text-anchor="middle" font-family="Georgia,serif" font-size="23" font-style="italic">b.</text>
+                            <!-- Bağımsız baş: bakış, göz kırpma, gülümseme. -->
+                            <g class="bs-head">
+                                <ellipse cx="281" cy="179" rx="12" ry="18" fill="#C68E68" /><ellipse cx="390" cy="179" rx="12" ry="18" fill="#CC966F" />
+                                <path d="M281 151c-2-33 18-56 55-56 38 0 57 25 57 59v30c-7 38-26 58-56 60-32-2-52-25-56-60Z" fill="url(#bsSkin)" />
+                                <path d="M282 171c-8-21-7-48 4-62 12-17 39-21 64-16 39 7 48 32 42 78l-9-19-4-30c-23 9-54 6-80-1l-8 32Z" fill="#573C2B" />
+                                <ellipse cx="303" cy="199" rx="20" ry="14" fill="url(#bsBlush)" /><ellipse cx="370" cy="199" rx="20" ry="14" fill="url(#bsBlush)" />
+                                <g class="bs-brow-normal" stroke="#71513C" stroke-width="4.5" stroke-linecap="round"><path d="M303 160q9-5 19-1" /><path d="M350 159q10-4 20 1" /></g>
+                                <g class="bs-brow-question" stroke="#71513C" stroke-width="4.5" stroke-linecap="round"><path d="M303 156q9-8 19-6" /><path d="M350 160q10-1 20 4" /></g>
+                                <g class="bs-eyes">
+                                    <g class="bs-eye"><ellipse cx="315" cy="177" rx="5.2" ry="7.2" fill="#433D2E" /><circle cx="316" cy="174" r="1.7" fill="#FFF6DC" /></g>
+                                    <g class="bs-eye"><ellipse cx="358" cy="177" rx="5.2" ry="7.2" fill="#433D2E" /><circle cx="359" cy="174" r="1.7" fill="#FFF6DC" /></g>
+                                </g>
+                                <path d="m336 179-5 13q5 5 12 0" stroke="#BD805C" stroke-width="2.3" stroke-linecap="round" />
+                                <path class="bs-smile-normal" d="M322 209q14 12 28-1" stroke="#92523C" stroke-width="3.2" stroke-linecap="round" />
+                                <g class="bs-smile-happy"><path d="M320 205q17 8 33-1c-1 23-30 23-33 1Z" fill="#8A4A35" /><path d="M323 208q14 6 27-1l-3 6h-19Z" fill="#FFF6E6" /></g>
+                                <!-- Kasket -->
+                                <path d="M279 132c1-34 19-55 56-55 36 0 57 21 59 58l-32 2-33-8Z" fill="url(#bsCap)" />
+                                <path d="M301 85c-10 12-11 26-12 47m46-52c-8 15-8 32-5 48" stroke="#E2976F" stroke-opacity=".5" stroke-width="1.5" />
+                                <path d="M282 128c29-9 75-4 107 7 7 2 8 9 0 11-32 6-84 0-110-8-8-2-6-8 3-10Z" fill="#9B4B31" />
+                                <path d="M282 128c23-5 65-2 99 6" stroke="#D58A60" stroke-width="2.5" stroke-linecap="round" />
+                                <rect x="344" y="102" width="23" height="19" rx="5" fill="#E9BF8D" transform="rotate(9 344 102)" />
+                                <text x="354" y="117" text-anchor="middle" fill="#935131" font-family="Georgia,serif" font-style="italic" font-size="14">b</text>
+                            </g>
+                            <!-- Sağ kol ve süt sürahisi -->
+                            <path d="M387 254c13-8 31 2 36 25l13 22-17 18-29-18c-20-15-24-35-3-47Z" fill="url(#bsShirt)" />
+                            <path d="m417 292 22 12-7 17-22-11Z" fill="#CDBEA3" />
+                            <g class="bs-pitcher">
+                                <path d="M425 304c7-16 14-28 25-27 14 1 18 16 8 28l-21 12Z" fill="#D9A47B" />
+                                <path d="M462 260h10c16 0 17 28 1 31l-10 1" stroke="#93A198" stroke-width="7" />
+                                <path d="m414 252 16 5h34l-2 37c-13 9-27 9-40-1l-2-24Z" fill="url(#bsMetal)" stroke="#83978C" stroke-width="1" />
+                                <path d="M425 260q18 6 37 0" stroke="#FDFDF4" stroke-width="2" />
+                                <path d="M432 267v19" stroke="#FDFDF4" stroke-width="2.5" opacity=".7" stroke-linecap="round" />
+                            </g>
+                        </g>
+                        <!-- Espresso makinesi -->
+                        <g>
+                            <rect x="80" y="381" width="187" height="18" rx="6" fill="#465748" />
+                            <path d="M87 275c0-16 12-27 28-27h117c16 0 27 11 27 27v103H87Z" fill="url(#bsMachine)" />
+                            <path d="M103 279h137v75H103Z" fill="#334D41" />
+                            <rect x="94" y="257" width="155" height="30" rx="8" fill="#82937E" />
+                            <rect x="106" y="264" width="61" height="15" rx="4" fill="#3A5544" />
+                            <text x="136" y="275" text-anchor="middle" fill="#E8E5CD" font-family="Arial,sans-serif" letter-spacing="2" font-size="7">BAGERY</text>
+                            <circle cx="205" cy="271" r="4" class="bs-machine-led" /><circle cx="221" cy="271" r="3" fill="#C9C5A6" />
+                            <circle cx="167" cy="298" r="12" fill="#F1E7D1" stroke="#ACC0A3" stroke-width="3" />
+                            <path class="bs-gauge-needle" d="m167 298-5-6" stroke="#7E5E41" stroke-width="2" stroke-linecap="round" />
+                            <path d="M142 315h50v8h-50Z" fill="#A2ACA1" />
+                            <path d="M160 323h14v10h-14Z" fill="#C2CABB" />
+                            <path d="M193 319h32" stroke="#C6BEAA" stroke-width="7" stroke-linecap="round" />
+                            <path d="M214 319h20" stroke="#342F27" stroke-width="10" stroke-linecap="round" />
+                            <path d="M221 294v28l7 16" stroke="#A8B6A3" stroke-width="4" stroke-linecap="round" />
+                            <path d="M101 356h141v18H101Z" fill="#72846F" />
+                            <path d="M114 360v10m12-10v10m12-10v10m12-10v10m12-10v10m12-10v10m12-10v10m12-10v10m12-10v10m12-10v10" stroke="#A4B39A" stroke-width="2" />
+                            <path d="M152 336h28l-3 16c-2 6-19 6-22 0Z" fill="#F4E8D0" />
+                            <path d="M179 340h5c7 0 6 10-3 10h-3" stroke="#F4E8D0" stroke-width="3" />
+                            <ellipse cx="166" cy="336" rx="14" ry="3" fill="#D2B392" />
+                            <!-- Üstte fincanlar -->
+                            <path d="M121 228h28l-3 15h-22Z" fill="#FFF6E3" /><path d="M149 232h6c5 0 5 8-3 8h-4" stroke="#E5D3B7" stroke-width="3" />
+                            <ellipse cx="135" cy="228" rx="14" ry="3" fill="#CAB294" />
+                            <path d="M172 228h28l-3 15h-22Z" fill="#F5E6C9" /><path d="M200 232h5c5 0 5 8-3 8h-4" stroke="#DCC6A6" stroke-width="3" />
+                            <ellipse cx="186" cy="228" rx="14" ry="3" fill="#BEA384" />
+                        </g>
+                        <!-- Bitki -->
+                        <g class="bs-leaf">
+                            <path d="M550 365v-60m0 36-23-30m23 42 25-30" stroke="#657C4D" stroke-width="2.3" />
+                            <path d="M549 320c-25-22-12-42 0-48 16 19 14 38 0 48Z" fill="#728758" />
+                            <path d="M535 324c-31 0-35-24-30-37 28 6 33 21 30 37Z" fill="#536F4F" />
+                            <path d="M561 337c31 0 35-24 30-37-28 6-33 21-30 37Z" fill="#85985F" />
+                            <path d="M543 352c-27 5-40-11-39-27 28-2 39 9 39 27Z" fill="#7E945C" />
+                        </g>
+                        <path d="M523 358h55l-8 40h-39Z" fill="#BD7654" />
+                        <ellipse cx="550" cy="358" rx="28" ry="6" fill="#A56849" />
+                        <path d="m531 370 4 24m7-23 1 24m10-24-1 24m12-25-3 24" stroke="#D0926C" stroke-width="2" />
+                        <!-- Tezgâh -->
+                        <rect x="51" y="398" width="561" height="34" rx="15" fill="url(#bsCounter)" />
+                        <rect x="51" y="396" width="561" height="14" rx="7" fill="#EEDDC3" />
+                        <path d="M67 416h529" stroke="#C3A281" stroke-opacity=".5" />
+                        <path d="m110 402 6 2m130-4 4 2m214 0 5 2m-177 0 7-2m237 2 4 1" stroke="#BDA083" stroke-width="2" stroke-linecap="round" opacity=".55" />
+                        <!-- Fincan ve latte: sonuçta hafifçe yükselir. -->
+                        <g class="bs-latte">
+                            <ellipse cx="397" cy="393" rx="49" ry="7" fill="#A4825F" opacity=".15" />
+                            <ellipse cx="397" cy="388" rx="45" ry="8" fill="#F5E8D0" /><ellipse cx="397" cy="386" rx="32" ry="4" fill="#D0B898" />
+                            <path d="M422 356h10c17 0 17 21-1 23h-12" stroke="#D8C4A4" stroke-width="8" />
+                            <path d="M368 351h59l-6 28c-4 16-42 16-47 0Z" fill="url(#bsCream)" />
+                            <ellipse cx="397" cy="351" rx="30" ry="7" fill="#FFFAEA" />
+                            <ellipse cx="397" cy="352" rx="25" ry="4.7" fill="#A8794D" />
+                            <path d="M387 351c0-5 8-5 10 0 2-5 10-5 10 0 0 3-10 5-10 5s-10-2-10-5Z" fill="#F0DABC" />
+                            <text x="397" y="377" fill="#7A936E" font-family="Georgia,serif" font-size="16" font-style="italic" text-anchor="middle">b.</text>
+                            <g stroke="#FFFCF0" stroke-width="2" stroke-linecap="round">
+                                <path class="bs-steam-line" d="M386 335c-9-9 10-14 2-28" />
+                                <path class="bs-steam-line" d="M399 334c-9-9 10-17 2-31" />
+                                <path class="bs-steam-line" d="M412 335c-9-9 10-14 2-27" />
+                            </g>
+                        </g>
+                        <path class="bs-milk" d="M394 255c1 28 4 57 3 94" stroke="#FFF8E4" stroke-width="3" stroke-linecap="round" />
+                        <g class="bs-heart" fill="#BE7255"><path d="M459 321c-12-13-29 5 0 21 29-16 12-34 0-21Z" /><path d="M479 303c-6-6-13 2 0 10 13-8 6-16 0-10Z" opacity=".55" /></g>
+                        <!-- Küçük kahve taneleri -->
+                        <g fill="#8A6244"><ellipse cx="306" cy="402" rx="7" ry="4" transform="rotate(-23 306 402)" /><ellipse cx="322" cy="401" rx="7" ry="4" transform="rotate(18 322 401)" /></g>
+                        <path d="m301 404 10-4m5-1 12 4" stroke="#BD9169" stroke-width="1" />
+                    </svg>
+
+                </div>
+                <footer class="bs-studio-footer">
+                    <span class="bs-live"><i class="bs-status-dot" aria-hidden="true"></i><span id="bsStudioStatus">Tanışalım mı?</span></span>
+                    <span class="bs-signature">Senin dijital baristan.</span>
+                </footer>
+            </section>
+            <section class="bs-assistant" aria-label="Bagery Sense ile konuşma">
+                <header class="bs-chat-top">
+                    <div class="bs-assistant-brand">
+                        <span class="bs-avatar"><svg class="bs-icon" aria-hidden="true"><use href="#bs-i-cup" /></svg></span>
+                        <div><strong>Bagery Sense</strong><small>Damak tadına göre, sana özel.</small></div>
+                    </div>
+                    <button class="bs-reset" id="newChatButton" type="button" aria-label="Konuşmayı temizle ve yeniden başla" title="Yeni konuşma">
+                        <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-reset" /></svg><span>Yeni başlangıç</span>
+                    </button>
+                </header>
+                <div class="bs-chat" id="chat" tabindex="0" aria-label="Konuşma alanı">
+                    <div class="bs-welcome" id="welcome">
+                        <span class="bs-welcome-symbol" aria-hidden="true"><svg class="bs-icon"><use href="#bs-i-spark" /></svg></span>
+                        <h2>Bir kahveyle<br /><em>başlayalım mı?</em></h2>
+                        <p>Nasıl bir şey istediğini söyle; kahveni, yanına yakışanı ya da bütçene uygun bir ikiliyi birlikte bulalım.</p>
+                        <div class="bs-quick-grid">
+                            <button type="button" class="bs-quick" data-prompt="Bagery ürünlerinden yoğun ve çok tatlı olmayan bir kahve öner.">
+                                <span class="bs-quick-symbol"><svg class="bs-icon" aria-hidden="true"><use href="#bs-i-cup" /></svg></span>
+                                <span><strong>Kahvemi bul</strong><small>Bugün hangi kahveyim?</small></span>
+                                <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-up-right" /></svg>
+                            </button>
+                            <button type="button" class="bs-quick" data-prompt="Bagery ürünlerinden bir kahve ve yanına yakışan bir tatlı öner.">
+                                <span class="bs-quick-symbol"><svg class="bs-icon" aria-hidden="true"><use href="#bs-i-pastry" /></svg></span>
+                                <span><strong>Güzel bir ikili</strong><small>Kahve, tatlı ve ben.</small></span>
+                                <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-up-right" /></svg>
+                            </button>
+                            <button type="button" class="bs-quick" data-prompt="Toplam bütçem 300 TL. Bagery ürünlerinden bu bütçeyi aşmayan bir seçim öner.">
+                                <span class="bs-quick-symbol"><svg class="bs-icon" aria-hidden="true"><use href="#bs-i-wallet" /></svg></span>
+                                <span><strong>Bütçeme göre</strong><small>300 TL ile ne seçelim?</small></span>
+                                <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-up-right" /></svg>
+                            </button>
+                            <button type="button" class="bs-quick" data-prompt="Beni şaşırt. Güncel Bagery ürünlerinden farklı bir yiyecek ve içecek eşleşmesi öner.">
+                                <span class="bs-quick-symbol"><svg class="bs-icon" aria-hidden="true"><use href="#bs-i-spark" /></svg></span>
+                                <span><strong>Sana bırakıyorum</strong><small>Biraz sürpriz iyi gelir.</small></span>
+                                <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-up-right" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bs-conversation" id="bsConversation" role="log" aria-live="polite" aria-relevant="additions" aria-label="Mesajlar"></div>
+                </div>
+                <footer class="bs-composer">
+                    <form id="aiForm" autocomplete="off">
+                        <label class="bs-sr" for="aiInput">Bagery Sense'e mesajını yaz</label>
+                        <div class="bs-composer-box">
+                            <textarea id="aiInput" rows="1" maxlength="600" placeholder="Canım şöyle bir şey istiyor…" spellcheck="true"></textarea>
+                            <button class="bs-send" id="sendButton" type="submit" aria-label="Mesajı gönder" title="Mesajı gönder" disabled>
+                                <svg class="bs-icon" aria-hidden="true"><use href="#bs-i-send" /></svg>
+                            </button>
+                        </div>
+                        <div class="bs-composer-meta">
+                            <span><svg class="bs-icon" aria-hidden="true"><use href="#bs-i-leaf" /></svg> Yalnızca Bagery ürünleri ve deneyimi hakkında.</span>
+                            <span>Enter gönder · Shift+Enter yeni satır</span>
+                        </div>
+                    </form>
+                    <noscript><p class="bs-noscript">Bagery Sense'i kullanmak için tarayıcında JavaScript açık olmalı.</p></noscript>
+                </footer>
+            </section>
+        </div>
+        <span class="bs-sr" id="bsAnnouncement" role="status" aria-live="polite"></span>
+    </main>
+    <script>
+        (() => {
+            'use strict';
+
+            const root = document.getElementById('bagerySense');
+            if (!root) return;
+
+            const $ = id => document.getElementById(id);
+            const form = $('aiForm');
+            const input = $('aiInput');
+            const chat = $('chat');
+            const conversation = $('bsConversation');
+            const welcome = $('welcome');
+            const send = $('sendButton');
+            const reset = $('newChatButton');
+            const scene = $('bsScene');
+            const motionButton = $('bsMotion');
+            const announcement = $('bsAnnouncement');
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            const money = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' });
+            const guidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+            const offTopicMessage = "Ben Bagery'nin dijital baristasıyım. Yalnızca Bagery, ürünlerimiz ve kafe deneyimin hakkında yardımcı olabilirim.";
+
+            let busy = false;
+            let requestId = 0;
+            let activeController = null;
+            let idleTimer = null;
+            let motionEnabled = !reducedMotion.matches;
+            let pointerFrame = null;
+            let followLatest = true;
+
+            // Mevcut sözleşme korunur: POST /BageryAi/Ask, { message }.
+            const endpoint = root.dataset.endpoint;
+            const productEndpoint = root.dataset.productUrl;
+            const baseUrl = new URL(root.dataset.baseUrl, document.baseURI);
+
+            const states = {
+                idle: ['Tanışalım mı?', 'Bir fincan iyi fikir.'],
+                listening: ['Tercihini anlatabilirsin.', 'Ben buradayım.'],
+                thinking: ['Önerin hazırlanıyor…', 'Biraz kahve, biraz düşünce.'],
+                success: ['Seçimlerin hazır.', 'Tam sana göre.'],
+                answered: ['Yanıtın hazır.', 'Güzel bir soru.'],
+                guard: ['Bagery hakkında devam edelim.', 'Kahveye dönelim mi?'],
+                error: ['Bağlantı kurulamadı.', 'Birazdan yeniden deneyelim.']
+            };
+
+            function element(tag, className = '', text = '') {
+                const result = document.createElement(tag);
+                if (className) result.className = className;
+                if (text) result.textContent = text;
+                return result;
+            }
+
+            function icon(name) {
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+                svg.setAttribute('class', 'bs-icon');
+                svg.setAttribute('aria-hidden', 'true');
+                use.setAttribute('href', '#bs-i-' + name);
+                svg.append(use);
+                return svg;
+            }
+
+            function setState(state) {
+                clearTimeout(idleTimer);
+                const texts = states[state] || states.idle;
+                root.dataset.state = state;
+                $('bsStudioStatus').textContent = texts[0];
+                $('bsBubble').textContent = texts[1];
+            }
+
+            function settleLater() {
+                idleTimer = setTimeout(() => {
+                    if (!busy) setState(input.value.trim() ? 'listening' : 'idle');
+                }, 4800);
+            }
+
+            function setMotion(enabled) {
+                motionEnabled = enabled && !reducedMotion.matches;
+                root.dataset.motion = motionEnabled ? 'on' : 'off';
+                motionButton.setAttribute('aria-pressed', String(!motionEnabled));
+                const label = motionEnabled ? 'Animasyonları duraklat' :
+                    (reducedMotion.matches ? 'Cihazının azaltılmış hareket tercihi etkin' : 'Animasyonları başlat');
+                motionButton.setAttribute('aria-label', label);
+                motionButton.title = label;
+                motionButton.replaceChildren(icon(motionEnabled ? 'pause' : 'play'));
+                if (!motionEnabled) resetLook();
+            }
+
+            function resetLook() {
+                ['--head-x', '--head-y', '--head-r', '--eye-x', '--eye-y'].forEach(name => root.style.removeProperty(name));
+            }
+
+            function scrollBottom(force = false) {
+                if (!force && !followLatest) return;
+                requestAnimationFrame(() => chat.scrollTo({ top: chat.scrollHeight, behavior: motionEnabled ? 'smooth' : 'auto' }));
+            }
+
+            function resizeInput() {
+                input.style.height = '44px';
+                input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+                send.disabled = !busy && !input.value.trim();
+            }
+
+            function setBusy(value) {
+                busy = value;
+                input.readOnly = value;
+                input.setAttribute('aria-busy', String(value));
+                send.replaceChildren(icon(value ? 'stop' : 'send'));
+                const label = value ? 'Yanıtı beklemeyi durdur' : 'Mesajı gönder';
+                send.setAttribute('aria-label', label);
+                send.title = label;
+                root.querySelectorAll('[data-prompt], [data-retry]').forEach(button => { button.disabled = value; });
+                resizeInput();
+            }
+
+            // AI/ürün metni HTML olarak çalıştırılmaz; yalnızca düğümler ve metin eklenir.
+            function appendInline(parent, text) {
+                const parts = text.split(/(\*\*[^*]+\*\*)/g);
+                parts.forEach(part => {
+                    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+                        parent.append(element('strong', '', part.slice(2, -2)));
+                    } else {
+                        parent.append(document.createTextNode(part));
+                    }
+                });
+            }
+
+            function formatMessage(parent, text) {
+                let list = null;
+                text.replace(/\r\n/g, '\n').split('\n').forEach(line => {
+                    const trimmed = line.trim();
+                    if (!trimmed) { list = null; return; }
+                    const item = trimmed.match(/^(?:[-*•]\s+|\d+[.)]\s+)(.+)$/);
+                    if (item) {
+                        const tag = /^\d/.test(trimmed) ? 'ol' : 'ul';
+                        if (!list || list.tagName.toLowerCase() !== tag) {
+                            list = element(tag);
+                            parent.append(list);
+                        }
+                        const li = element('li');
+                        appendInline(li, item[1]);
+                        list.append(li);
+                        return;
+                    }
+                    list = null;
+                    const heading = trimmed.match(/^#{1,4}\s+(.+)$/);
+                    const block = element(heading ? 'h4' : 'p');
+                    appendInline(block, heading ? heading[1] : trimmed);
+                    parent.append(block);
+                });
+            }
+
+            function addUserMessage(message) {
+                const row = element('div', 'bs-turn bs-turn-user');
+                row.append(element('div', 'bs-user-message', message));
+                conversation.append(row);
+                scrollBottom(true);
+            }
+
+            function addAnswer(message, kind = '') {
+                const row = element('div', 'bs-turn bs-turn-ai');
+                const meta = element('div', 'bs-answer-meta');
+                meta.append(icon('spark'), document.createTextNode('Bagery Sense'));
+                const body = element('div', 'bs-answer-text' + (kind ? ' bs-' + kind + '-note' : ''));
+                formatMessage(body, message);
+                row.append(meta, body);
+                conversation.append(row);
+                return row;
+            }
+
+            function addThinking() {
+                const row = element('div', 'bs-turn bs-thinking');
+                const dots = element('span', 'bs-thinking-dots');
+                dots.setAttribute('aria-hidden', 'true');
+                dots.append(element('i'), element('i'), element('i'));
+                row.append(dots, element('span', '', 'Sana uygun seçimleri buluyorum…'));
+                conversation.append(row);
+                announcement.textContent = 'Bagery Sense yanıt hazırlıyor.';
+                scrollBottom(true);
+                return row;
+            }
+
+            function productText(value) {
+                if (typeof value !== 'string') return '';
+                return value.replace(/<\/(?:p|div|li)>/gi, '\n').replace(/<[^>]*>/g, '')
+                    .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&quot;/gi, '"')
+                    .replace(/&#39;/gi, "'").replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').trim();
+            }
+
+            function safeImageUrl(value) {
+                if (typeof value !== 'string' || !value.trim()) return null;
+                try {
+                    const raw = value.trim().replace(/\\/g, '/');
+                    const url = new URL(raw.startsWith('~/') ? raw.slice(2) : raw, baseUrl);
+                    return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
+                } catch { return null; }
+            }
+
+            function renderProducts(products, parent) {
+                const selected = products.filter(p => p && typeof p.productName === 'string' && guidPattern.test(p.id));
+                if (!selected.length) return false;
+                const grid = element('div', 'bs-products');
+                selected.forEach((product, index) => {
+                    const card = element('article', 'bs-product');
+                    card.style.animationDelay = Math.min(index * 80, 640) + 'ms';
+                    const visual = element('div', 'bs-product-visual');
+                    visual.append(icon('cup'));
+                    const url = safeImageUrl(product.mainImageUrl);
+                    if (url) {
+                        const image = element('img');
+                        image.alt = product.productName;
+                        image.loading = 'lazy';
+                        image.decoding = 'async';
+                        image.addEventListener('error', () => image.remove(), { once: true });
+                        image.src = url;
+                        visual.append(image);
+                    }
+                    visual.append(element('span', 'bs-product-no', String(index + 1).padStart(2, '0')));
+                    const info = element('div', 'bs-product-info');
+                    info.append(element('span', 'bs-product-category', product.category?.categoryName || 'Bagery'));
+                    info.append(element('h3', 'bs-product-name', product.productName));
+                    const description = productText(product.description);
+                    if (description) info.append(element('p', 'bs-product-description', description));
+                    const bottom = element('div', 'bs-product-bottom');
+                    const hasPrice = product.price !== null && product.price !== undefined && product.price !== '' &&
+                        Number.isFinite(Number(product.price)) && Number(product.price) >= 0;
+                    bottom.append(element('span', 'bs-product-price', hasPrice ? money.format(Number(product.price)) : 'Fiyatı incele'));
+                    const link = element('a', 'bs-product-link', 'İncele');
+                    const detailUrl = new URL(productEndpoint, document.baseURI);
+                    detailUrl.searchParams.set('id', product.id);
+                    link.href = detailUrl.href;
+                    link.setAttribute('aria-label', product.productName + ' ürününü incele');
+                    link.append(icon('up-right'));
+                    bottom.append(link);
+                    info.append(bottom);
+                    const preparation = productText(product.preperationDescription);
+                    if (preparation) {
+                        const details = element('details', 'bs-product-detail');
+                        details.append(element('summary', '', 'Nasıl hazırlanıyor?'), element('p', '', preparation));
+                        details.addEventListener('toggle', () => scrollBottom());
+                        info.append(details);
+                    }
+                    card.append(visual, info);
+                    grid.append(card);
+                });
+                parent.append(grid);
+                return true;
+            }
+
+            function addScopeSuggestions(parent) {
+                const actions = element('div', 'bs-inline-actions');
+                [
+                    ['Kahve öner', 'Bagery ürünlerinden bir kahve öner.'],
+                    ['Tatlı seç', 'Bagery ürünlerinden bir tatlı öner.']
+                ].forEach(([label, prompt]) => {
+                    const button = element('button', 'bs-followup', label);
+                    button.type = 'button';
+                    button.dataset.prompt = prompt;
+                    actions.append(button);
+                });
+                parent.append(actions);
+            }
+
+            function errorMessage(status) {
+                if (status === 429) return 'Biraz yoğunluk var. Kısa bir süre sonra yeniden deneyelim.';
+                if (status === 401 || status === 403) return 'Bu isteğe şu anda erişilemiyor. Sayfayı yenileyip tekrar deneyebilirsin.';
+                return 'Şu anda yanıt hazırlayamıyorum. Yazdığın mesajı aşağıdaki düğmeyle tekrar gönderebilirsin.';
+            }
+
+            async function sendMessage(value) {
+                if (busy) return;
+                const message = String(value ?? input.value).trim();
+                if (!message || message.length > input.maxLength) return;
+
+                const id = ++requestId;
+                const controller = new AbortController();
+                activeController = controller;
+                let timedOut = false;
+                const timer = setTimeout(() => { timedOut = true; controller.abort(); }, 60000);
+                root.dataset.started = 'true';
+                welcome.hidden = true;
+                addUserMessage(message);
+                input.value = '';
+                setBusy(true);
+                setState('thinking');
+                const thinking = addThinking();
+
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify({ message }),
+                        signal: controller.signal
+                    });
+                    if (!response.ok) throw Object.assign(new Error('İstek başarısız'), { status: response.status });
+                    const result = await response.json();
+                    if (id !== requestId) return;
+                    if (!result || typeof result.inScope !== 'boolean' || typeof result.message !== 'string' ||
+                        (result.inScope && !result.message.trim())) throw new Error('Beklenmeyen yanıt biçimi');
+
+                    thinking.remove();
+                    const inScope = result.inScope;
+                    const row = addAnswer(inScope ? result.message : offTopicMessage, inScope ? '' : 'guard');
+                    const hasProducts = inScope && Array.isArray(result.products) && renderProducts(result.products, row);
+                    if (!inScope) addScopeSuggestions(row);
+                    setState(inScope ? (hasProducts ? 'success' : 'answered') : 'guard');
+                    announcement.textContent = 'Yanıt hazır.';
+                    scrollBottom();
+                    settleLater();
+                } catch (error) {
+                    if (id !== requestId) return;
+                    thinking.remove();
+                    if (controller.signal.aborted && !timedOut) {
+                        addAnswer('İsteği durdurdum. Yeni bir şey sorabilirsin.');
+                        setState('idle');
+                    } else {
+                        const text = timedOut ? 'Yanıt beklenenden uzun sürdü. Yeniden deneyelim mi?' : errorMessage(error.status);
+                        const row = addAnswer(text, 'error');
+                        const retry = element('button', 'bs-retry', 'Tekrar dene');
+                        retry.type = 'button';
+                        retry.dataset.retry = message;
+                        const actions = element('div', 'bs-inline-actions');
+                        actions.append(retry);
+                        row.append(actions);
+                        setState('error');
+                        console.warn('Bagery Sense isteği tamamlanamadı.', error.status || error.name);
+                    }
+                    scrollBottom();
+                    announcement.textContent = 'İstek tamamlanamadı.';
+                } finally {
+                    clearTimeout(timer);
+                    thinking.remove();
+                    if (id === requestId) {
+                        activeController = null;
+                        setBusy(false);
+                        if (window.matchMedia('(pointer: fine)').matches) input.focus({ preventScroll: true });
+                    }
+                }
+            }
+
+            function resetConversation() {
+                ++requestId; // Eski yanıtın temizlenen konuşmaya eklenmesini önler.
+                activeController?.abort();
+                activeController = null;
+                clearTimeout(idleTimer);
+                conversation.replaceChildren();
+                welcome.hidden = false;
+                root.dataset.started = 'false';
+                input.value = '';
+                setBusy(false);
+                setState('idle');
+                followLatest = true;
+                chat.scrollTop = 0;
+                announcement.textContent = 'Yeni konuşma başlatıldı.';
+                if (window.matchMedia('(pointer: fine)').matches) input.focus({ preventScroll: true });
+            }
+
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                if (busy) activeController?.abort();
+                else sendMessage();
+            });
+            input.addEventListener('input', () => {
+                resizeInput();
+                if (!busy) setState(input.value.trim() ? 'listening' : 'idle');
+            });
+            input.addEventListener('keydown', event => {
+                if (event.key === 'Enter' && !event.shiftKey && !event.isComposing && !busy) {
+                    event.preventDefault();
+                    sendMessage();
+                }
+            });
+            root.addEventListener('click', event => {
+                const button = event.target.closest('button[data-prompt], button[data-retry]');
+                if (button && !button.disabled) sendMessage(button.dataset.prompt || button.dataset.retry);
+            });
+            reset.addEventListener('click', resetConversation);
+            chat.addEventListener('scroll', () => {
+                followLatest = chat.scrollHeight - chat.scrollTop - chat.clientHeight < 130;
+            }, { passive: true });
+            motionButton.addEventListener('click', () => setMotion(!motionEnabled));
+            reducedMotion.addEventListener('change', () => setMotion(!reducedMotion.matches));
+
+            // Gözler fareyi takip eder; bu hareket herhangi bir AI çağrısı yapmaz.
+            root.addEventListener('pointermove', event => {
+                if (!motionEnabled || event.pointerType !== 'mouse' || busy || document.hidden) return;
+                if (pointerFrame) cancelAnimationFrame(pointerFrame);
+                const x = event.clientX;
+                const y = event.clientY;
+                pointerFrame = requestAnimationFrame(() => {
+                    const rect = scene.getBoundingClientRect();
+                    const dx = Math.max(-1, Math.min(1, (x - rect.left - rect.width / 2) / 500));
+                    const dy = Math.max(-1, Math.min(1, (y - rect.top - rect.height / 2) / 400));
+                    root.style.setProperty('--head-x', (dx * 3).toFixed(1) + 'px');
+                    root.style.setProperty('--head-y', (dy * 2).toFixed(1) + 'px');
+                    root.style.setProperty('--head-r', (dx * 4).toFixed(1) + 'deg');
+                    root.style.setProperty('--eye-x', (dx * 3).toFixed(1) + 'px');
+                    root.style.setProperty('--eye-y', (dy * 2).toFixed(1) + 'px');
+                    pointerFrame = null;
+                });
+            }, { passive: true });
+            root.addEventListener('pointerleave', resetLook);
+            window.addEventListener('pagehide', () => activeController?.abort());
+            setMotion(motionEnabled);
+            setState('idle');
+            resizeInput();
+        })();
+
+    </script>
+</body>
+</html>
