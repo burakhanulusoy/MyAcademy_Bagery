@@ -76,6 +76,9 @@ namespace Bagery.WebUI.Extensions
             .AddErrorDescriber<CustomErrorDescriber>()
             .AddDefaultTokenProviders();//token üretmek için koyduk...
 
+
+
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/User/Login";
@@ -90,6 +93,18 @@ namespace Bagery.WebUI.Extensions
                 options.SlidingExpiration = true;
 
             });
+
+
+            //Google authontication 
+            services.AddAuthentication()
+                    .AddGoogle(options =>
+                    {
+                        options.ClientId = configuration["Authentication:Google:ClientId"]!;
+                        options.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+                        options.SignInScheme = IdentityConstants.ExternalScheme;
+                    });
+                   
+
 
 
             services.AddHttpContextAccessor();

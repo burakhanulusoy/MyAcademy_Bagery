@@ -120,7 +120,39 @@ namespace Bagery.WebUI.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> GoogleLogin()
+        {
+            var redirectUrl = Url.Action("GoogleCallback", "User")!;
 
+            var properties = await _mediator.Send(new GoogleLoginCommand(redirectUrl));
+
+            return Challenge(properties, "Google");
+        }
+
+        public async Task<IActionResult> GoogleCallback(string? remoteError = null)
+        {
+            try
+            {
+                var userRoles = await _mediator.Send(new GoogleCallbackCommand(remoteError));
+
+                if (userRoles.Contains("Admin"))
+                    return RedirectToAction("Index", "Banner", new { area = "Admin" });
+
+                if (userRoles.Contains("Writer"))
+                    return RedirectToAction("Dashboard", "Static", new { area = "Writer" });
+
+                if (userRoles.Contains("User"))
+                    return RedirectToAction("Index", "Static", new { area = "User" });
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (IdentityException ex)
+            {
+                TempData["LoginError"] = ex.Message;
+                return RedirectToAction("Login");
+            }
+        }
 
 
 

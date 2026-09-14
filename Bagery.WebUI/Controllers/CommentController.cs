@@ -33,9 +33,10 @@ namespace Bagery.WebUI.Controllers
             }
 
             return RedirectToAction(
-                "Detail",
-                "Blog",
-                new { Id = command.BlogId });
+     "Detail",
+     "Blog",
+     new { Id = command.BlogId },
+     "commentSection");
         }
     }
 }

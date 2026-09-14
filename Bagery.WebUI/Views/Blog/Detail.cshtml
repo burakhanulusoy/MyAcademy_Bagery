@@ -83,8 +83,10 @@
                     </div>
 
 
-                    @await Component.InvokeAsync("_GetCommentsByBlogIdViewComponents", new { blogId = Model.Id })
-                    @await Component.InvokeAsync("_CreateCommentViewComponents", new { blogId = Model.Id })
+                    <div id="commentSection">
+                        @await Component.InvokeAsync("_GetCommentsByBlogIdViewComponents", new { blogId = Model.Id })
+                        @await Component.InvokeAsync("_CreateCommentViewComponents", new { blogId = Model.Id })
+                    </div>
                 </div>
             </div>
 
