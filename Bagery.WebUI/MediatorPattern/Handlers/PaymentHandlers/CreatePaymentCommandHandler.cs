@@ -186,11 +186,20 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.PaymentHandlers
             }
 
             // Kupon bu arada pasif yapıldıysa
-            if (cart.CouponCode is not null &&
-                await _couponRepository.GetActiveByCodeAsync(cart.CouponCode) is null)
+            // DEĞİŞTİ: kupon pasif yapıldıysa düşür; admin tutarını/şartını değiştirdiyse güncel değeri al
+            if (cart.CouponCode is not null)
             {
-                cart.RemoveCoupon();
-                changed = true;
+                var coupon = await _couponRepository.GetActiveByCodeAsync(cart.CouponCode);
+                if (coupon is null)
+                {
+                    cart.RemoveCoupon();
+                    changed = true;
+                }
+                else if (coupon.CouponPrice != cart.CouponPrice || coupon.MinPrice != cart.CouponMinPrice)
+                {
+                    cart.ApplyCoupon(coupon.CouponCode, coupon.CouponPrice, coupon.MinPrice);
+                    changed = true;
+                }
             }
 
             if (changed)
@@ -201,12 +210,10 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.PaymentHandlers
         }
 
         // secrets.json'da baseUrl (ngrok) varsa onu, yoksa isteğin geldiği adresi kullan
+        // DEĞİŞTİ: Kullanıcı hangi adresten ödeme yapıyorsa (localhost / canlı alan adı) oraya döner.
+        // Callback bundan etkilenmez; o PayTR panelindeki Bildirim URL'ye (ngrok) gider.
         private string ResolveBaseUrl(HttpContext httpContext)
         {
-            var configured = _configuration["PayTR:baseUrl"];
-            if (!string.IsNullOrWhiteSpace(configured))
-                return configured.TrimEnd('/'); // sonda "/" varsa "//Payment" olmasın
-
             return $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
         }
 

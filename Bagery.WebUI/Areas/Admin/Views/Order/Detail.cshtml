@@ -1,1 +1,127 @@
-﻿
+﻿@using Bagery.WebUI.Enums
+@using Bagery.WebUI.MediatorPattern.Results.OrderResults
+@model GetAdminOrderDetailQueryResult
+@{
+    ViewData["Title"] = "Sipariş Detayı";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var badgeClass = Model.Status switch
+    {
+        OrderStatus.Paid => "bg-success",
+        OrderStatus.Failed => "bg-danger",
+        _ => "bg-warning text-dark"
+    };
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        @* ÜST: sipariş no + durum + geri dön *@
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+            <div>
+                <h5 class="mb-2">Sipariş <code>@Model.OrderNo</code></h5>
+                <span class="badge @badgeClass">@Model.Status.ToTurkish()</span>
+                @* PayTR'den gelen mesaj: başarısızsa bankanın sebebi burada *@
+                <small class="text-secondary ms-2">@Model.StatusMessage</small>
+            </div>
+            <a href="/Admin/Order/Index" class="btn btn-outline-secondary">Siparişlere dön</a>
+        </div>
+
+        <div class="row g-3 mb-3">
+
+            @* MÜŞTERİ VE TESLİMAT *@
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="mb-3">Müşteri ve teslimat</h6>
+                        <table class="table table-sm mb-0">
+                            <tr><td class="text-secondary">Ad soyad</td><td>@Model.FullName</td></tr>
+                            <tr><td class="text-secondary">E-posta</td><td>@Model.Email</td></tr>
+                            <tr><td class="text-secondary">Telefon</td><td>@Model.PhoneNumber</td></tr>
+                            <tr><td class="text-secondary">Adres</td><td>@Model.Address</td></tr>
+                            <tr><td class="text-secondary">Sipariş notu</td><td>@(Model.Note ?? "-")</td></tr>
+                            @* Teslimat adı ile hesap sahibi farklı olabilir *@
+                            <tr><td class="text-secondary">Siparişi veren hesap</td><td>@Model.AppUserFullName (@Model.AppUserEmail)</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @* ÖDEME *@
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="mb-3">Ödeme</h6>
+                        <table class="table table-sm mb-0">
+                            <tr><td class="text-secondary">Sipariş tarihi</td><td>@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td></tr>
+                            @* PaidAt sadece ödenen siparişlerde dolu *@
+                            <tr><td class="text-secondary">Ödeme tarihi</td><td>@(Model.PaidAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "-")</td></tr>
+                            <tr><td class="text-secondary">Ara toplam</td><td>@Model.TotalPrice.ToString("N2") ₺</td></tr>
+                            @if (Model.CouponPrice > 0)
+                            {
+                                <tr><td class="text-secondary">İndirim (@Model.CouponCode)</td><td>−@Model.CouponPrice.ToString("N2") ₺</td></tr>
+                            }
+                            <tr><td class="text-secondary">Kargo</td><td>@(Model.ShippingPrice == 0 ? "Ücretsiz" : Model.ShippingPrice.ToString("N2") + " ₺")</td></tr>
+                            <tr><td class="text-secondary">Taksit</td><td>@(Model.InstallmentCount == 0 ? "Tek çekim" : $"{Model.InstallmentCount} taksit ({Model.CardBrand})")</td></tr>
+                            <tr><td class="text-secondary fw-bold">Ödenen tutar</td><td class="fw-bold">@Model.PaidPrice.ToString("N2") ₺</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* ÜRÜNLER *@
+        <div class="card">
+            <div class="card-body">
+                <h6 class="mb-3">Ürünler</h6>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:64px"></th>
+                                <th>Ürün</th>
+                                <th class="text-end">Birim fiyat</th>
+                                <th class="text-center">Adet</th>
+                                <th class="text-end">Tutar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderItems)
+                            {
+                                <tr>
+                                    <td><img src="@item.ImageUrl" alt="" width="48" height="48" style="object-fit:cover;border-radius:6px"></td>
+                                    <td>
+                                        @item.ProductName
+                                        @if (item.VariantName is not null)
+                                        {
+                                            <br>
+                                            <small class="text-secondary">@item.VariantName</small>
+                                        }
+                                    </td>
+                                    <td class="text-end">@item.UnitPrice.ToString("N2") ₺</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end">@item.LineTotal.ToString("N2") ₺</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

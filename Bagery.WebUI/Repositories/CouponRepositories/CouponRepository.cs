@@ -18,5 +18,20 @@ namespace Bagery.WebUI.Repositories.CouponRepositories
             return _table.AsNoTracking()
                          .FirstOrDefaultAsync(x => x.IsActive && x.CouponCode == code);
         }
+        // YENİ: düzenlemede kuponun kendisi hariç tutulur (exceptId), yoksa "kendi kodu zaten var" derdi
+        public Task<bool> CodeExistsAsync(string couponCode, Guid? exceptId = null)
+        {
+            var code = couponCode.Trim().ToUpperInvariant();
+            return _table.AnyAsync(x => x.CouponCode == code && (exceptId == null || x.Id != exceptId));
+        }
+
+        // YENİ: sadece aktif kuponlar, en düşük sepet şartından başlayarak
+        public Task<List<Coupon>> GetActiveCouponsAsync()
+        {
+            return _table.AsNoTracking()
+                         .Where(x => x.IsActive)
+                         .OrderBy(x => x.MinPrice)
+                         .ToListAsync();
+        }
     }
 }

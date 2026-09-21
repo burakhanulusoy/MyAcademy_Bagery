@@ -1,5 +1,6 @@
 ﻿namespace Bagery.WebUI.MediatorPattern.Results.OrderResults
 {
+    // Detay sayfasındaki ürün satırı
     public class GetAdminOrderItemResult
     {
         public string ProductName { get; set; } = string.Empty;

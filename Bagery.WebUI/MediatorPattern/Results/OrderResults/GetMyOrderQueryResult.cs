@@ -2,7 +2,6 @@
 
 namespace Bagery.WebUI.MediatorPattern.Results.OrderResults
 {
-    // Order entity'sinin sayfada gösterilecek kısmı (Mapster isimleri eşleştirerek doldurur)
     public class GetMyOrderQueryResult
     {
         public string OrderNo { get; set; } = string.Empty;
@@ -14,9 +13,13 @@ namespace Bagery.WebUI.MediatorPattern.Results.OrderResults
         public decimal CouponPrice { get; set; }
         public decimal PaidPrice { get; set; }
         public int InstallmentCount { get; set; }
+        public string? CardBrand { get; set; }                     // YENİ (fatura)
         public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;          // YENİ (fatura)
+        public string PhoneNumber { get; set; } = string.Empty;    // YENİ (fatura)
         public string Address { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }   // BaseEntity'den geliyor
+        public DateTime CreatedAt { get; set; }
+        public DateTime? PaidAt { get; set; }                      // YENİ (fatura tarihi)
         public List<GetMyOrderItemQueryResult> OrderItems { get; set; } = [];
     }
 }

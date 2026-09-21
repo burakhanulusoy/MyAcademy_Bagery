@@ -1,0 +1,23 @@
+﻿@using Bagery.WebUI.MediatorPattern.Results.CouponResults
+@model List<GetActiveCouponsQueryResult>
+
+@* Aktif kupon yoksa hiçbir şey basılmaz *@
+@if (Model.Any())
+{
+    <div class="active-coupons">
+        <p class="active-coupons-title">Geçerli kuponlar (kodu yukarıdaki kutuya yazın)</p>
+        <ul>
+            @foreach (var coupon in Model)
+            {
+                var description = coupon.MinPrice > 0
+                ? $"{coupon.CouponPrice:N2} ₺ indirim, {coupon.MinPrice:N2} ₺ ve üzeri sepetlerde"
+                : $"{coupon.CouponPrice:N2} ₺ indirim";
+
+                <li>
+                    <span class="coupon-code">@coupon.CouponCode</span>
+                    <span class="coupon-desc">@description</span>
+                </li>
+            }
+        </ul>
+    </div>
+}

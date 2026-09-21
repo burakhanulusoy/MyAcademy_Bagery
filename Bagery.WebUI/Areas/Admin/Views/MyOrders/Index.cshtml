@@ -1,0 +1,76 @@
+﻿@using Bagery.WebUI.Enums
+@using Bagery.WebUI.MediatorPattern.Results.OrderResults
+@model List<GetMyOrdersQueryResult>
+@{
+    ViewData["Title"] = "Siparişlerim";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@functions {
+    static string BadgeClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Paid => "bg-success",
+        OrderStatus.Failed => "bg-danger",
+        _ => "bg-warning text-dark"
+    };
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">Siparişlerim</div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                @if (!Model.Any())
+                {
+                    <p class="text-secondary mb-3">Henüz siparişiniz yok.</p>
+                    <a href="/Product/Shop" class="btn btn-primary">Mağazaya git</a>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Sipariş no</th>
+                                    <th>Ürünler</th>
+                                    <th class="text-end">Tutar</th>
+                                    <th>Durum</th>
+                                    <th class="text-end">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model)
+                                {
+                                    // "Caffè Latte" veya "Caffè Latte ve 2 ürün daha"
+                                    var title = order.ProductLineCount > 1
+                                    ? $"{order.FirstProductName} ve {order.ProductLineCount - 1} ürün daha"
+                                    : order.FirstProductName;
+
+                                    <tr>
+                                        <td>@order.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td title="@order.OrderNo"><code>@order.OrderNo.Substring(0, 8)</code></td>
+                                        <td>@title</td>
+                                        <td class="text-end">@order.PaidPrice.ToString("N2") ₺</td>
+                                        <td><span class="badge @BadgeClass(order.Status)">@order.Status.ToTurkish()</span></td>
+                                        <td class="text-end">
+                                            <a href="/Admin/MyOrders/Detail?orderNo=@order.OrderNo" class="btn btn-sm btn-outline-secondary">Detay</a>
+                                            @if (order.Status == OrderStatus.Paid)
+                                            {
+                                                <a href="/Admin/MyOrders/Invoice?orderNo=@order.OrderNo&download=true" class="btn btn-sm btn-outline-primary">PDF fatura</a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

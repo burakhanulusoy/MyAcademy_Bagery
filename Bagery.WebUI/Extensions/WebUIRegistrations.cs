@@ -9,6 +9,7 @@ using Bagery.WebUI.Repositories.ProductVariantRepositories;
 using Bagery.WebUI.Services;
 using Bagery.WebUI.Services.CartServices;
 using Bagery.WebUI.Services.EmailServices;
+using Bagery.WebUI.Services.InvoiceServices;
 using Bagery.WebUI.Services.PayTRServices;
 using Bagery.WebUI.UOW;
 using FluentValidation;
@@ -130,6 +131,9 @@ namespace Bagery.WebUI.Extensions
                 client.Timeout = TimeSpan.FromSeconds(30); // PayTR 30 sn cevap vermezse vazgeç
             });
 
+
+            // YENİ ---------- FATURA (PDF) ----------
+            services.AddScoped<IInvoicePdfService, InvoicePdfService>();
 
         }
 

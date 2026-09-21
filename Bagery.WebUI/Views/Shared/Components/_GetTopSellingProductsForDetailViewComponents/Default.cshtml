@@ -1,0 +1,41 @@
+﻿@model List<GetTopSellingProductsQueryResult>
+
+@* Gösterecek ürün yoksa bölüm hiç basılmaz *@
+@if (Model.Any())
+{
+    <div class="related-product"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/guzel.png")');">
+        <div class="auto-container">
+            <div class="top-title centred">
+                <h2>En çok sipariş edilenler</h2>
+            </div>
+            <div class="row clearfix">
+                @foreach (var product in Model)
+                {
+                    <div class="col-lg-3 col-md-6 col-sm-12 shop-block">
+                        <div class="shop-block-one">
+                            <div class="inner-box">
+                                <figure class="image-box">
+                                    <a href="/Product/Detail/@product.Id"><img src="@product.MainImageUrl" alt="@product.ProductName"></a>
+                                </figure>
+                                <div class="lower-content">
+                                    <span class="price-box">@product.Price.ToString("N0") ₺</span>
+                                    <h3><a href="/Product/Detail/@product.Id">@product.ProductName</a></h3>
+                                    <ul class="rating clearfix">
+                                        <li><i class="icon-Star"></i></li>
+                                        <li><i class="icon-Star"></i></li>
+                                        <li><i class="icon-Star"></i></li>
+                                        <li><i class="icon-Star"></i></li>
+                                        <li><i class="icon-Star"></i></li>
+                                    </ul>
+                                    @* Seçenekli ürünlerde seçim detayda yapıldığı için "Sepete ekle" değil "İncele" *@
+                                    <div class="cart-btn"><a href="/Product/Detail/@product.Id" class="theme-btn-two">İncele</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

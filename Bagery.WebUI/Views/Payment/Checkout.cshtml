@@ -1,7 +1,7 @@
 ﻿@using Bagery.WebUI.MediatorPattern.Results.CheckoutResults
 @using Microsoft.Extensions.Hosting
 @model GetCheckoutQueryResult
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env 
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
 @{
     ViewData["Title"] = "Ödeme";
     Layout = "~/Views/Shared/_WebUILayout.cshtml";
@@ -59,7 +59,7 @@
                     </div>
                 </div>
 
-                @* SAĞ: sipariş özeti + kart *@
+                @* SAĞ: sipariş özeti + kupon + kart *@
                 <div class="col-lg-6 col-md-12 col-sm-12 right-column">
                     <div class="inner-box">
                         <div class="order-info">
@@ -67,6 +67,21 @@
                             <div class="order-product">
                                 <ul class="order-list clearfix" id="orderList"></ul> @* JS dolduruyor *@
                             </div>
+                        </div>
+
+                        @* Kupon *@
+                        <div class="checkout-coupon">
+                            <h4 class="sub-title">Kupon</h4>
+                            <div class="coupon-row">
+                                @* name yok: ödeme formuyla birlikte gönderilmez *@
+                                <input type="text" id="couponInput" placeholder="Kupon kodunu yazın" autocomplete="off" aria-label="Kupon kodu">
+                                <button type="button" id="applyCouponBtn" class="theme-btn-one">Uygula</button>
+                            </div>
+                            <p id="couponApplied" class="coupon-applied-text" hidden>
+                                Uygulanan kupon: <strong id="couponCodeText"></strong>
+                                <button type="button" id="removeCouponBtn">Kaldır</button>
+                            </p>
+                            @await Component.InvokeAsync("_ActiveCouponsViewComponents")
                         </div>
 
                         <div class="payment-info">
@@ -112,7 +127,7 @@
 
                                 @if (Env.IsDevelopment())
                                 {
-                                    @* PAY_TR'deki yorum satırlarında duran PayTR test kartı; canlıda görünmez *@
+                                    @* PayTR test kartı; canlıda görünmez *@
                                     <p class="test-card-hint">Test kartı: 9792 0303 9444 0796, 12 / 30, CVV 000</p>
                                 }
                             </div>
@@ -135,6 +150,7 @@
             const cardNumberInput = document.getElementById('CardNumber');
             const installmentBox = document.getElementById('installmentBox');
             const installmentList = document.getElementById('installmentList');
+            const couponInput = document.getElementById('couponInput'); // YENİ
             let lastBin = ''; // aynı 8 hane için PayTR'ye tekrar tekrar sorulmasın
 
             function showError(message) {
@@ -170,6 +186,8 @@
                     ${couponRow}
                     <li class="sub-total clearfix"><h6>Kargo</h6><span>${cart.shippingPrice === 0 ? 'Ücretsiz' : cartApi.formatPrice(cart.shippingPrice)}</span></li>
                     <li class="order-total clearfix"><h6>Ödenecek tutar</h6><span>${cartApi.formatPrice(cart.paidPrice)}</span></li>`;
+
+                renderCouponState(cart); // YENİ: uygulanan kuponu göster/gizle
             }
 
             // ---------- 2) Kart numarası: 4'erli boşluk + ilk 8 hanede taksitleri getir ----------
@@ -194,7 +212,7 @@
                 installmentBox.hidden = false;
                 installmentList.innerHTML = '<p class="installment-hint">Taksit seçenekleri yükleniyor...</p>';
 
-                const result = await cartApi.post('/Payment/Installments', { binNumber: bin }); // Adım 7.5
+                const result = await cartApi.post('/Payment/Installments', { binNumber: bin });
 
                 if (bin !== lastBin) return; // bu sırada kart numarası değiştiyse eski cevabı gösterme
 
@@ -231,7 +249,7 @@
                 const result = await cartApi.post('/Payment/Create', data);
 
                 if (result.success) {
-                    // PAY_TR'deki yöntem: PayTR'nin döndürdüğü 3D Secure sayfasını ekrana bas
+                    // PayTR'nin döndürdüğü 3D Secure sayfasını ekrana bas
                     document.open();
                     document.write(result.redirectHtml);
                     document.close();
@@ -242,6 +260,42 @@
                 payBtn.textContent = 'Ödemeyi tamamla';
                 showError(result.message);
                 loadSummary(); // fiyat değiştiği için hata geldiyse özet de güncellensin
+            });
+
+            // ---------- 4) YENİ: kupon ----------
+            function renderCouponState(cart) {
+                const hasCoupon = !!cart.couponCode;
+                document.getElementById('couponApplied').hidden = !hasCoupon;
+                document.getElementById('couponCodeText').textContent = cart.couponCode || '';
+            }
+
+            // Kupon değişince tutar değişir: özet ve (kart yazıldıysa) taksit tablosu yenilensin
+            async function couponAction(promise) {
+                const result = await promise;
+                cartApi.toast(result.message, result.success);
+                if (!result.success) return;
+
+                couponInput.value = '';
+                await loadSummary();
+                if (lastBin) loadInstallments(lastBin); // taksit tutarları yeni toplamla hesaplansın
+            }
+
+            document.getElementById('applyCouponBtn').addEventListener('click', function () {
+                const code = couponInput.value.trim();
+                if (!code) { cartApi.toast('Kupon kodunu yazın.', false); return; }
+                couponAction(cartApi.applyCoupon(code));
+            });
+
+            // Kutu ödeme formunun içinde: Enter'a basınca ÖDEME gönderilmesin, kupon uygulansın
+            couponInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('applyCouponBtn').click();
+                }
+            });
+
+            document.getElementById('removeCouponBtn').addEventListener('click', function () {
+                couponAction(cartApi.removeCoupon());
             });
 
             loadSummary(); // sayfa açılınca sipariş özetini getir

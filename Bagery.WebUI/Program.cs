@@ -5,6 +5,9 @@ using Bagery.WebUI.Services.BageryAi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// YENÝ: QuestPDF her PDF üretiminden önce lisans türünü bilmek ister.
+// Community: 1 milyon $ altý ciro, bireysel ve öðrenci projeleri için ücretsiz.
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 // Add services to the container.
 
 builder.Services.AddWebUiRegistration(builder.Configuration);

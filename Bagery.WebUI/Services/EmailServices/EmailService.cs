@@ -46,6 +46,43 @@ namespace Bagery.WebUI.Services.EmailServices
             }
         }
 
+        // YENİ: ödeme onay e-postası (logo e-postanın içine gömülü)
+        public async Task SendOrderConfirmationAsync(string email, string name, string subject, string htmlBody, string logoFilePath)
+        {
+            var emailConfirmCode = configuration["Email:Code"];
+            var adminEmail = configuration["Email:Admin"];
+
+            var mimeMessage = new MimeMessage();
+            mimeMessage.From.Add(new MailboxAddress("Bagery", adminEmail));
+            mimeMessage.To.Add(new MailboxAddress(name, email));
+            mimeMessage.Subject = subject;
+
+            var bodyBuilder = new BodyBuilder();
+
+            // Logoyu link olarak değil, e-postanın içine ek olarak koyuyoruz.
+            // HTML'deki <img src="cid:bagery-logo"> bu eki gösterir; Gmail dış resimleri engellese de bu görünür.
+            if (File.Exists(logoFilePath))
+            {
+                var logo = bodyBuilder.LinkedResources.Add(logoFilePath);
+                logo.ContentId = OrderEmailTemplate.LogoContentId;
+            }
+
+            bodyBuilder.HtmlBody = htmlBody;
+            mimeMessage.Body = bodyBuilder.ToMessageBody();
+
+            using var client = new SmtpClient();
+            try
+            {
+                await client.ConnectAsync("smtp.gmail.com", 587, false);
+                await client.AuthenticateAsync(adminEmail, emailConfirmCode);
+                await client.SendAsync(mimeMessage);
+            }
+            finally
+            {
+                await client.DisconnectAsync(true);
+            }
+        }
+
         public async Task SendPasswordResetLinkAsync(string email, string resetLink, string name)
         {
             var emailConfirmCode = configuration["Email:Code"];

@@ -96,29 +96,8 @@
                         </div>
                     </div>
 
-                    <!-- Featured Products (statik) -->
-                    <div class="sidebar-widget post-widget">
-                        <div class="widget-title">
-                            <h3>Featured Products</h3>
-                        </div>
-                        <div class="post-inner">
-                            <div class="post">
-                                <figure class="image-box"><a href="shop-details.html"><img src="~/Bagery Pack/Bagery/assets/images/resource/shop/post-1.jpg" alt=""></a></figure>
-                                <h5><a href="shop-details.html">Vanilla Ice Cream</a></h5>
-                                <p>$50.00</p>
-                            </div>
-                            <div class="post">
-                                <figure class="image-box"><a href="shop-details.html"><img src="~/Bagery Pack/Bagery/assets/images/resource/shop/post-2.jpg" alt=""></a></figure>
-                                <h5><a href="shop-details.html">Donuts Cake</a></h5>
-                                <p>$35.00</p>
-                            </div>
-                            <div class="post">
-                                <figure class="image-box"><a href="shop-details.html"><img src="~/Bagery Pack/Bagery/assets/images/resource/shop/post-3.jpg" alt=""></a></figure>
-                                <h5><a href="shop-details.html">Corne Ice Cream</a></h5>
-                                <p>$60.00</p>
-                            </div>
-                        </div>
-                    </div>
+                    @* YENİ: en çok sipariş edilen 4 ürün *@
+                    @await Component.InvokeAsync("_GetTopSellingProductsForShopViewComponents")
 
                 </div>
             </div>

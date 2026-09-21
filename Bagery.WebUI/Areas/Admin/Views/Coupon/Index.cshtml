@@ -1,0 +1,86 @@
+﻿@using Bagery.WebUI.MediatorPattern.Results.CouponResults
+@model List<GetCouponsQueryResult>
+@{
+    ViewData["Title"] = "Kuponlar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div class="breadcrumb-title pe-3">Kupon Yönetimi</div>
+            <a href="/Admin/Coupon/CreateCoupon" class="btn btn-primary d-flex align-items-center gap-2">
+                <i class="bx bx-plus-circle fs-5"></i> Yeni kupon ekle
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-body p-4">
+                @if (!Model.Any())
+                {
+                    <p class="text-secondary mb-0">Henüz kupon yok. Sağ üstteki butonla ilk kuponu ekleyin.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover mb-0">
+                            <thead class="table-light text-secondary">
+                                <tr>
+                                    <th>Kupon kodu</th>
+                                    <th>İndirim</th>
+                                    <th>Min. sepet</th>
+                                    <th class="text-center">Kullanım</th>
+                                    <th>Durum</th>
+                                    <th class="text-end">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-light text-danger border border-danger p-2 px-3 rounded-pill">
+                                                <i class="bx bxs-coupon"></i> <span class="fw-bold">@item.CouponCode</span>
+                                            </span>
+                                        </td>
+                                        <td class="fw-bold text-success">@item.CouponPrice.ToString("N2") ₺</td>
+                                        <td>@(item.MinPrice > 0 ? item.MinPrice.ToString("N2") + " ₺" : "Şart yok")</td>
+                                        @* Sadece ödenmiş siparişler sayılıyor *@
+                                        <td class="text-center">@item.UsageCount</td>
+                                        <td>
+                                            @if (item.IsActive)
+                                            {
+                                                <span class="badge bg-success">Aktif</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Pasif</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-inline-flex gap-2">
+                                                @* Silmeden kampanyayı durdurmak/başlatmak için *@
+                                                <a href="/Admin/Coupon/ToggleCoupon/@item.Id" class="btn btn-sm btn-outline-secondary">
+                                                    @(item.IsActive ? "Pasif yap" : "Aktif yap")
+                                                </a>
+                                                <a href="/Admin/Coupon/UpdateCoupon/@item.Id" class="btn btn-sm btn-outline-primary" title="Düzenle">
+                                                    <i class="bx bx-edit"></i>
+                                                </a>
+                                                <a href="/Admin/Coupon/DeleteCoupon/@item.Id" class="btn btn-sm btn-outline-danger" title="Sil"
+                                                   onclick="return confirm('@item.CouponCode kuponu silinsin mi?');">
+                                                    <i class="bx bx-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

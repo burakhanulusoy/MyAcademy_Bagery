@@ -44,6 +44,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="OpenAI" Version="2.13.0" />
     <PackageReference Include="PagedList.Core.Mvc" Version="3.0.0" />
+    <PackageReference Include="QuestPDF" Version="2026.7.3" />
     <PackageReference Include="Scrutor" Version="7.0.0" />
   </ItemGroup>
 

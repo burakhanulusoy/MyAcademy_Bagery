@@ -310,3 +310,191 @@
     .payment-result .payment-error {
         margin: 20px 0;
     }
+
+
+
+
+
+/* ---------- Siparişlerim ---------- */
+.my-orders {
+    padding: 100px 0;
+}
+
+    .my-orders .cart-empty {
+        text-align: center;
+    }
+
+        .my-orders .cart-empty p {
+            margin: 10px 0 25px;
+        }
+
+.my-orders-list {
+    max-width: 860px;
+    margin: 0 auto;
+    border-top: 1px solid #e6e6e6;
+}
+
+.my-order-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 20px;
+    align-items: center;
+    padding: 20px 10px;
+    border-bottom: 1px solid #e6e6e6;
+    color: #222;
+}
+
+    .my-order-row:hover {
+        background: #fcf5f3;
+        color: #222;
+    }
+
+    .my-order-row small {
+        display: block;
+        color: #848484;
+        margin-top: 4px;
+    }
+
+    .my-order-row .price {
+        font-weight: 700;
+        min-width: 110px;
+        text-align: right;
+    }
+
+@media (max-width: 600px) {
+    .my-order-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+        .my-order-row .price {
+            text-align: left;
+        }
+}
+
+/* Durum etiketi (liste ve detayda) */
+.status-pill {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-paid {
+    background: #e5f3ea;
+    color: #2c6e46;
+}
+
+.status-pending {
+    background: #fdf1e3;
+    color: #8a5a12;
+}
+
+.status-failed {
+    background: #fbeaea;
+    color: #a8323a;
+}
+
+.payment-result .order-title {
+    margin-top: 15px;
+}
+
+
+
+
+/* ---------- Aktif kuponlar (sepet + ödeme) ---------- */
+.active-coupons {
+    clear: both;
+    margin-top: 20px;
+}
+/* clear: temanın float'lı kupon kutusunun altına insin */
+.active-coupons-title {
+    font-size: 14px;
+    color: #848484;
+    margin-bottom: 8px;
+}
+
+.active-coupons ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.active-coupons li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border: 1px dashed #e3a087;
+    border-radius: 4px;
+    background: #fcf5f3;
+    font-size: 14px;
+}
+
+.active-coupons .coupon-code {
+    font-weight: 700;
+    color: #2b3c6b;
+    letter-spacing: .5px;
+    user-select: all;
+}
+/* tek tıkla tamamı seçilir */
+.active-coupons .coupon-desc {
+    color: #555;
+}
+
+/* Ödeme sayfası kupon kutusu */
+.checkout-coupon {
+    margin-bottom: 30px;
+}
+
+    .checkout-coupon .coupon-row {
+        display: flex;
+        gap: 10px;
+    }
+
+        .checkout-coupon .coupon-row input {
+            flex: 1;
+            height: 50px;
+            border: 1px solid #e6e6e6;
+            padding: 0 15px;
+            font-size: 15px;
+        }
+
+    .checkout-coupon .coupon-applied-text {
+        margin-top: 10px;
+        color: #2b3c6b;
+    }
+
+        .checkout-coupon .coupon-applied-text button {
+            border: none;
+            background: none;
+            color: #a8323a;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+/* ---------- Çok satanlar ---------- */
+/* Detay sayfası kartları: Shop sayfasındaki kartlarla aynı yükseklik */
+.related-product .shop-block-one .image-box img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+}
+
+/* Mağaza sidebar'ı: tema kutusu 90x90, resim taşmasın/ezilmesin */
+.shop-sidebar .post-widget .post-inner .post .image-box {
+    overflow: hidden;
+}
+
+    .shop-sidebar .post-widget .post-inner .post .image-box img {
+        height: 90px;
+        object-fit: cover;
+    }
+
+
+
+

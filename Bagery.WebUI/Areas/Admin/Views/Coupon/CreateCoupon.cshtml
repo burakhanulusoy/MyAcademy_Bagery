@@ -1,0 +1,49 @@
+﻿@using Bagery.WebUI.MediatorPattern.Commands.CouponCommands
+@model CreateCouponCommand
+@{
+    ViewData["Title"] = "Yeni Kupon";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="card shadow-sm border-0 radius-10">
+            <div class="card-header bg-transparent border-bottom mt-2 pb-3">
+                <h5 class="mb-0 text-primary fw-bold">Yeni kupon ekle</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Kupon kodu</label>
+                            @* Yazarken büyük harf görünsün; kaydederken zaten büyütülüyor *@
+                            <input class="form-control" type="text" asp-for="CouponCode" placeholder="HOSGELDIN50" style="text-transform: uppercase;" />
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="CouponCode"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">İndirim tutarı (₺)</label>
+                            @* type="text": Türkçe sunucuda ondalık virgülle yazılır (açıklaması aşağıda) *@
+                            <input class="form-control" type="text" inputmode="decimal" asp-for="CouponPrice" placeholder="50 veya 12,50" />
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="CouponPrice"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Minimum sepet tutarı (₺)</label>
+                            <input class="form-control" type="text" inputmode="decimal" asp-for="MinPrice" placeholder="Boş = şart yok" />
+                            <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="MinPrice"></span>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" asp-for="IsActive" />
+                                <label class="form-check-label" asp-for="IsActive">Aktif (sepette müşterilere görünsün)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 border-top pt-4">
+                        <button type="submit" class="btn btn-primary px-5">Kaydet</button>
+                        <a href="/Admin/Coupon/Index" class="btn btn-secondary px-5">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

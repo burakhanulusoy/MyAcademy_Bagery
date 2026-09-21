@@ -1,0 +1,23 @@
+﻿@model List<GetTopSellingProductsQueryResult>
+
+@if (Model.Any())
+{
+    @* Temanın "Featured Products" kutusuyla aynı yapı; sadece içerik gerçek *@
+    <div class="sidebar-widget post-widget">
+        <div class="widget-title">
+            <h3>Çok Satanlar</h3>
+        </div>
+        <div class="post-inner">
+            @foreach (var product in Model)
+            {
+                <div class="post">
+                    <figure class="image-box">
+                        <a href="/Product/Detail/@product.Id"><img src="@product.MainImageUrl" alt="@product.ProductName"></a>
+                    </figure>
+                    <h5><a href="/Product/Detail/@product.Id">@product.ProductName</a></h5>
+                    <p>@product.Price.ToString("N0") ₺</p>
+                </div>
+            }
+        </div>
+    </div>
+}
