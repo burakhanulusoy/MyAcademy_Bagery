@@ -1,0 +1,463 @@
+﻿@using System.Globalization
+@using Bagery.WebUI.Enums
+@using Bagery.WebUI.MediatorPattern.Results.DashboardResults
+@model GetSalesDashboardQueryResult
+@{
+    ViewData["Title"] = "Satış Paneli";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var revenue = SplitMoney(Model.Revenue);
+
+    // Paranın dökümü: ürün + kargo + vade farkı - kupon = ciro
+    var parts = new (string Label, decimal Value, string Tone, string Sign)[]
+    {
+        ("Ürün satışları", Model.ProductSales, "--c4", "+"),
+        ("Kargo geliri", Model.ShippingIncome, "--c3", "+"),
+        ("Vade farkı (taksit)", Model.InstallmentIncome, "--c2", "+"),
+        ("Kupon indirimleri", Model.CouponDiscount, "--c5", "−")
+    };
+    var maxPart = Math.Max(parts.Max(p => p.Value), 1);
+    var maxBrand = Model.CardBrands.Count == 0 ? 1 : Model.CardBrands.Max(b => b.Value);
+}
+@functions {
+    private static readonly CultureInfo Tr = CultureInfo.GetCultureInfo("tr-TR");
+
+    // 12480.5 -> ("12.480", ",50") : kuruş ayrı ve küçük gösterilsin
+    static (string Whole, string Kurus) SplitMoney(decimal value)
+    {
+        var text = value.ToString("N2", Tr);
+        var comma = text.LastIndexOf(',');
+        return (text[..comma], text[comma..]);
+    }
+
+    static string DeltaClass(decimal change) => change > 0 ? "is-up" : change < 0 ? "is-down" : "is-flat";
+    static string DeltaIcon(decimal change) => change > 0 ? "bx-trending-up" : change < 0 ? "bx-trending-down" : "bx-minus";
+    static string Signed(decimal change) => (change > 0 ? "+" : "") + change.ToString("0.#", Tr) + "%";
+
+    // style="width: 42.5%" -> CSS noktalı ister, Türkçe virgül bozar
+    static string Pct(decimal value) => Math.Clamp(value, 0, 100).ToString("0.#", CultureInfo.InvariantCulture) + "%";
+
+    string PeriodClass(int days) => Model.Days == days ? "is-active" : "";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="bd">
+
+            @* Sekmeler: Satış / Site *@
+            <nav class="bd-tabs" aria-label="Dashboard">
+                <a href="/Admin/Static/Dashboard" class="is-active"><i class='bx bx-line-chart'></i> Satış paneli</a>
+                <a href="/Admin/Static/Overview"><i class='bx bx-grid-alt'></i> Site genel bakış</a>
+            </nav>
+
+            <header class="bd-head">
+                <div>
+                    <p class="bd-eyebrow">İstatistikler</p>
+                    <h1 class="bd-title">Satış paneli</h1>
+                    <p class="bd-sub">@Model.From.ToString("dd MMMM yyyy", Tr) – @Model.To.ToString("dd MMMM yyyy", Tr), önceki @Model.Days günle kıyaslanır</p>
+                </div>
+                <nav class="bd-period" aria-label="Dönem">
+                    <a href="?days=7" class="@PeriodClass(7)">7 gün</a>
+                    <a href="?days=30" class="@PeriodClass(30)">30 gün</a>
+                    <a href="?days=90" class="@PeriodClass(90)">90 gün</a>
+                    <a href="?days=365" class="@PeriodClass(365)">1 yıl</a>
+                </nav>
+            </header>
+
+            @* ÜST: ciro vitrini + 6 gösterge *@
+            <div class="bd-grid">
+                <section class="span-5 bd-hero" aria-label="Ciro">
+                    <div>
+                        <div class="bd-hero-label"><i class='bx bx-wallet'></i> Net ciro</div>
+                        <p class="bd-money">@revenue.Whole<span class="kurus">@revenue.Kurus ₺</span></p>
+                        <div class="bd-hero-foot">
+                            <span class="bd-delta"><i class='bx @DeltaIcon(Model.RevenueChange)'></i> @Signed(Model.RevenueChange)</span>
+                            <span>önceki döneme göre</span>
+                        </div>
+                    </div>
+                    <div id="bdSpark" class="bd-spark"></div>
+                </section>
+
+                <div class="span-7 bd-kpis">
+                    <div class="bd-kpi" style="--tone: var(--c1)">
+                        <span class="bd-kpi-icon"><i class='bx bx-receipt'></i></span>
+                        <p class="bd-kpi-label">Ödenen sipariş</p>
+                        <p class="bd-kpi-value">@Model.PaidOrders</p>
+                        <span class="bd-delta @DeltaClass(Model.PaidOrdersChange)"><i class='bx @DeltaIcon(Model.PaidOrdersChange)'></i> @Signed(Model.PaidOrdersChange)</span>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c4)">
+                        <span class="bd-kpi-icon"><i class='bx bx-basket'></i></span>
+                        <p class="bd-kpi-label">Ortalama sepet</p>
+                        <p class="bd-kpi-value">@Model.AverageBasket.ToString("N2", Tr) <small>₺</small></p>
+                        <span class="bd-delta @DeltaClass(Model.AverageBasketChange)"><i class='bx @DeltaIcon(Model.AverageBasketChange)'></i> @Signed(Model.AverageBasketChange)</span>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c3)">
+                        <span class="bd-kpi-icon"><i class='bx bx-package'></i></span>
+                        <p class="bd-kpi-label">Satılan ürün</p>
+                        <p class="bd-kpi-value">@Model.ItemsSold <small>adet</small></p>
+                        <p class="bd-kpi-note">Ödenen siparişlerdeki toplam adet</p>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c2)">
+                        <span class="bd-kpi-icon"><i class='bx bx-check-shield'></i></span>
+                        <p class="bd-kpi-label">Ödeme başarı oranı</p>
+                        <p class="bd-kpi-value">%@Model.SuccessRate.ToString("0.#", Tr)</p>
+                        <div class="bd-bar" style="--tone: var(--c2)"><span style="width: @Pct(Model.SuccessRate)"></span></div>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c6)">
+                        <span class="bd-kpi-icon"><i class='bx bx-time-five'></i></span>
+                        <p class="bd-kpi-label">Bekleyen</p>
+                        <p class="bd-kpi-value">@Model.PendingOrders</p>
+                        <p class="bd-kpi-note">PayTR bildirimi bekleniyor</p>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c5)">
+                        <span class="bd-kpi-icon"><i class='bx bx-x-circle'></i></span>
+                        <p class="bd-kpi-label">Başarısız ödeme</p>
+                        <p class="bd-kpi-value">@Model.FailedOrders</p>
+                        <p class="bd-kpi-note">Banka ya da 3D reddi</p>
+                    </div>
+                </div>
+            </div>
+
+            @* ORTA: günlük grafik + paranın dökümü *@
+            <div class="bd-grid">
+                <section class="span-8 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Günlük ciro ve sipariş</h2>
+                            <p class="bd-card-sub">Alan: ciro, sütun: ödenen sipariş sayısı</p>
+                        </div>
+                    </div>
+                    <div id="bdDaily" class="bd-chart is-tall"></div>
+                </section>
+
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Paranın dökümü</h2>
+                            <p class="bd-card-sub">Kuruşu kuruşuna, ciro nereden geldi</p>
+                        </div>
+                    </div>
+                    <ul class="bd-flow">
+                        @foreach (var part in parts)
+                        {
+                            <li style="--tone: var(@part.Tone)">
+                                <div class="bd-flow-row">
+                                    <span>@part.Label</span>
+                                    <strong>@part.Sign @part.Value.ToString("N2", Tr) ₺</strong>
+                                </div>
+                                <div class="bd-bar"><span style="width: @Pct(part.Value / maxPart * 100)"></span></div>
+                            </li>
+                        }
+                        <li class="is-total">
+                            <div class="bd-flow-row">
+                                <span>Net ciro</span>
+                                <strong>@Model.Revenue.ToString("N2", Tr) ₺</strong>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+            @* Kategori, saat, ödeme şekli *@
+            <div class="bd-grid">
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Kategori cirosu</h2>
+                            <p class="bd-card-sub">Ürün tutarları (kargo ve kupon hariç)</p>
+                        </div>
+                    </div>
+                    <div id="bdCategory" class="bd-chart"></div>
+                </section>
+
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Sipariş saatleri</h2>
+                            <p class="bd-card-sub">Müşteriler en çok ne zaman sipariş veriyor</p>
+                        </div>
+                    </div>
+                    <div id="bdHourly" class="bd-chart"></div>
+                </section>
+
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Ödeme şekli</h2>
+                            <p class="bd-card-sub">Tek çekim ve taksit, kart ailelerine göre</p>
+                        </div>
+                    </div>
+                    <div id="bdPayment" class="bd-chart is-small"></div>
+                    @if (Model.CardBrands.Any())
+                    {
+                        <ul class="bd-bars">
+                            @foreach (var brand in Model.CardBrands)
+                            {
+                                <li style="--tone: var(--c2)">
+                                    <div class="row"><span>@brand.Name</span><strong>@brand.Value.ToString("0") sipariş</strong></div>
+                                    <div class="bd-bar"><span style="width: @Pct(brand.Value / maxBrand * 100)"></span></div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </section>
+            </div>
+
+            @* En çok / en az satanlar *@
+            <div class="bd-grid">
+                <section class="span-6 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">En çok satan 10 ürün</h2>
+                            <p class="bd-card-sub">Adede göre, çubuk ürün cirosundaki payı gösterir</p>
+                        </div>
+                        <a href="/Admin/Product/Index" class="bd-card-link">Ürünler <i class='bx bx-right-arrow-alt'></i></a>
+                    </div>
+                    @if (!Model.TopProducts.Any())
+                    {
+                        <div class="bd-empty"><i class='bx bx-bar-chart-alt-2'></i>Bu dönemde satış yok</div>
+                    }
+                    else
+                    {
+                        <ol class="bd-rank">
+                            @foreach (var (product, index) in Model.TopProducts.Select((p, i) => (p, i)))
+                            {
+                                <li style="--tone: var(--c1)">
+                                    <span class="bd-rank-no">@(index + 1)</span>
+                                    @if (product.ImageUrl is not null)
+                                    {
+                                        <img src="@product.ImageUrl" alt="" loading="lazy">
+                                    }
+                                    else
+                                    {
+
+                                        <span class="ph"></span>
+                                    }
+                                    <div class="bd-rank-main">
+                                        <strong>@product.Name</strong>
+                                        <small>@product.Category, %@product.Share.ToString("0.#", Tr) pay</small>
+                                        <div class="bd-bar"><span style="width: @Pct(product.Share)"></span></div>
+                                    </div>
+                                    <div class="bd-rank-num">
+                                        <strong>@product.Quantity adet</strong>
+                                        <small>@product.Revenue.ToString("N2", Tr) ₺</small>
+                                    </div>
+                                </li>
+                            }
+                        </ol>
+                    }
+                </section>
+
+                <section class="span-6 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">En az satan 10 ürün</h2>
+                            <p class="bd-card-sub">Hiç satılmayanlar dahil, kampanya adayları</p>
+                        </div>
+                    </div>
+                    @if (!Model.LeastProducts.Any())
+                    {
+                        <div class="bd-empty"><i class='bx bx-package'></i>Katalogda ürün yok</div>
+                    }
+                    else
+                    {
+                        <ol class="bd-rank">
+                            @foreach (var (product, index) in Model.LeastProducts.Select((p, i) => (p, i)))
+                            {
+                                <li style="--tone: var(--c5)">
+                                    <span class="bd-rank-no">@(index + 1)</span>
+                                    @if (product.ImageUrl is not null)
+                                    {
+                                        <img src="@product.ImageUrl" alt="" loading="lazy">
+                                    }
+                                    else
+                                    {
+
+                                        <span class="ph"></span>
+                                    }
+                                    <div class="bd-rank-main">
+                                        <strong>@product.Name</strong>
+                                        <small>@product.Category</small>
+                                        @if (product.Quantity == 0)
+                                        {
+                                            <span class="bd-tag">Hiç satılmadı</span>
+                                        }
+                                        else
+                                        {
+                                            <div class="bd-bar"><span style="width: @Pct(product.Share)"></span></div>
+                                        }
+                                    </div>
+                                    <div class="bd-rank-num">
+                                        <strong>@product.Quantity adet</strong>
+                                        <small>@product.Revenue.ToString("N2", Tr) ₺</small>
+                                    </div>
+                                </li>
+                            }
+                        </ol>
+                    }
+                </section>
+            </div>
+
+            @* Kuponlar + son siparişler *@
+            <div class="bd-grid">
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Kupon performansı</h2>
+                            <p class="bd-card-sub">Ödenen siparişlerde kullanım</p>
+                        </div>
+                        <a href="/Admin/Coupon/Index" class="bd-card-link">Kuponlar <i class='bx bx-right-arrow-alt'></i></a>
+                    </div>
+                    @if (!Model.Coupons.Any())
+                    {
+                        <div class="bd-empty"><i class='bx bxs-coupon'></i>Bu dönemde kupon kullanılmadı</div>
+                    }
+                    else
+                    {
+                        <ul class="bd-list">
+                            @foreach (var coupon in Model.Coupons)
+                            {
+                                <li>
+                                    <div class="bd-list-main"><strong class="mono">@coupon.Code</strong><small>@coupon.Uses kullanım</small></div>
+                                    <div class="bd-list-side"><strong>−@coupon.Discount.ToString("N2", Tr) ₺</strong><small>toplam indirim</small></div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </section>
+
+                <section class="span-8 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Son siparişler</h2>
+                            <p class="bd-card-sub">Bu dönemin en yeni 8 siparişi</p>
+                        </div>
+                        <a href="/Admin/Order/Index" class="bd-card-link">Tümü <i class='bx bx-right-arrow-alt'></i></a>
+                    </div>
+                    @if (!Model.RecentOrders.Any())
+                    {
+                        <div class="bd-empty"><i class='bx bx-receipt'></i>Bu dönemde sipariş yok</div>
+                    }
+                    else
+                    {
+                        <div class="bd-table-wrap">
+                            <table class="bd-table">
+                                <thead>
+                                    <tr><th>Sipariş</th><th>Müşteri</th><th>Tarih</th><th class="num">Tutar</th><th>Durum</th></tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in Model.RecentOrders)
+                                    {
+                                        <tr>
+                                            <td><a href="/Admin/Order/Detail?orderNo=@order.OrderNo" class="bd-code">#@order.OrderNo.Substring(0, 8).ToUpperInvariant()</a></td>
+                                            <td>@order.FullName</td>
+                                            <td>@order.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm", Tr)</td>
+                                            <td class="num">@order.PaidPrice.ToString("N2", Tr) ₺</td>
+                                            <td><span class="bd-pill is-@order.Status.ToString().ToLower()">@order.Status.ToTurkish()</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </section>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@* Grafikler: ApexCharts layout'un en altında yükleniyor; sayfa tamamen hazır olunca (DOMContentLoaded) çiziyoruz *@
+<script src="~/js/bagery-dashboard.js" defer></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const D = window.BageryDash;
+
+        // C# -> JS veri köprüsü (isimler camelCase gelir: revenue, orders, name, value...)
+        const data = @Json.Serialize(new
+        {
+                daily = Model.Daily,
+                hourly = Model.Hourly,
+                categories = Model.CategoryRevenue,
+                payments = Model.PaymentTypes
+        });
+
+        // Vitrin kartının altındaki mini ciro çizgisi
+        D.chart('#bdSpark', c => ({
+            chart: { type: 'area', height: 90, sparkline: { enabled: true } },
+            series: [{ name: 'Ciro', data: data.daily.map(d => d.revenue) }],
+            colors: [c.c1],
+            stroke: { curve: 'smooth', width: 2.5 },
+            fill: { type: 'gradient', gradient: { opacityFrom: .5, opacityTo: 0 } },
+            tooltip: { x: { show: false }, y: { formatter: D.money } }
+        }));
+
+        // Günlük ciro (alan) + sipariş (sütun), iki ayrı eksen
+        D.chart('#bdDaily', c => ({
+            chart: { type: 'line', height: 340 },
+            series: [
+                { name: 'Ciro', type: 'area', data: data.daily.map(d => d.revenue) },
+                { name: 'Sipariş', type: 'column', data: data.daily.map(d => d.orders) }
+            ],
+            colors: [c.c1, c.ink],
+            stroke: { width: [3, 0], curve: 'smooth' },
+            fill: { type: ['gradient', 'solid'], opacity: [1, .85], gradient: { opacityFrom: .35, opacityTo: 0 } },
+            plotOptions: { bar: { columnWidth: '45%', borderRadius: 3 } },
+            xaxis: { categories: data.daily.map(d => d.label), tickAmount: Math.min(data.daily.length, 12), labels: { rotate: 0, hideOverlappingLabels: true } },
+            yaxis: [
+                { labels: { formatter: D.moneyShort } },
+                { opposite: true, min: 0, labels: { formatter: D.count } }
+            ],
+            tooltip: { shared: true, intersect: false, y: { formatter: (v, o) => o.seriesIndex === 0 ? D.money(v) : D.count(v) + ' sipariş' } },
+            legend: { position: 'top', horizontalAlign: 'right' }
+        }));
+
+        // Kategori cirosu (halka), ortada toplam
+        const categoryValues = data.categories.map(x => x.value);
+        D.chart('#bdCategory', c => ({
+            chart: { type: 'donut', height: 300 },
+            series: D.hasData(categoryValues) ? categoryValues : [],
+            labels: data.categories.map(x => x.name),
+            colors: c.list,
+            stroke: { width: 3, colors: [c.card] },
+            legend: { position: 'bottom' },
+            tooltip: { y: { formatter: D.money } },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '68%',
+                        labels: {
+                            show: true,
+                            value: { color: c.ink, formatter: v => D.money(v) },
+                            total: { show: true, label: 'Toplam', color: c.muted, formatter: w => D.money(w.globals.seriesTotals.reduce((a, b) => a + b, 0)) }
+                        }
+                    }
+                }
+            }
+        }));
+
+        // Sipariş saatleri (00-23)
+        D.chart('#bdHourly', c => ({
+            chart: { type: 'bar', height: 280 },
+            series: [{ name: 'Sipariş', data: data.hourly }],
+            colors: [c.c4],
+            plotOptions: { bar: { borderRadius: 4, columnWidth: '62%' } },
+            xaxis: { categories: data.hourly.map((_, h) => String(h).padStart(2, '0')), tickAmount: 8 },
+            yaxis: { labels: { formatter: D.count } },
+            tooltip: { x: { formatter: v => v + ':00 – ' + v + ':59' }, y: { formatter: v => D.count(v) + ' sipariş' } }
+        }));
+
+        // Tek çekim / taksit
+        const paymentValues = data.payments.map(x => x.value);
+        D.chart('#bdPayment', c => ({
+            chart: { type: 'donut', height: 220 },
+            series: D.hasData(paymentValues) ? paymentValues : [],
+            labels: data.payments.map(x => x.name),
+            colors: [c.ink, c.c2],
+            stroke: { width: 3, colors: [c.card] },
+            legend: { position: 'right' },
+            plotOptions: { pie: { donut: { size: '62%' } } },
+            tooltip: { y: { formatter: v => D.count(v) + ' sipariş' } }
+        }));
+    });
+</script>

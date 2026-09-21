@@ -1,0 +1,971 @@
+﻿/* =========================================================
+   Bagery admin dashboard
+   Açık ve koyu temada çalışır: renkler değişkenlerde, koyu temada sadece değişkenler değişir.
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap');
+
+.bd {
+    /* Temel: siyah-beyaz */
+    --ink: #0b0b0c;
+    --paper: #ffffff;
+    --card: #ffffff;
+    --wash: #f5f5f3;
+    --line: #ebebe8;
+    --muted: #6f6f6f;
+    /* Grafik paleti: siyah-beyazın üstünde canlı ama birbiriyle uyumlu */
+    --c1: #ff6b4a; /* mercan */
+    --c2: #f59e0b; /* kehribar */
+    --c3: #14b8a6; /* turkuaz */
+    --c4: #6366f1; /* çivit */
+    --c5: #ec4899; /* pembe */
+    --c6: #0ea5e9; /* gök mavisi */
+
+    --up: #15803d;
+    --up-bg: #dcfce7;
+    --down: #b91c1c;
+    --down-bg: #fee2e2;
+    --radius: 18px;
+    --display: 'Space Grotesk', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    color: var(--ink);
+}
+
+/* Koyu tema: sadece değişkenler değişir. Siyah kartlar açık renge döner, kontrast korunur. */
+html.dark-theme .bd {
+    --ink: #f3f3f1;
+    --paper: #141414;
+    --card: #1c1c1c;
+    --wash: #242424;
+    --line: #2e2e2e;
+    --muted: #9b9b9b;
+    --up: #4ade80;
+    --up-bg: rgba(74, 222, 128, .12);
+    --down: #f87171;
+    --down-bg: rgba(248, 113, 113, .12);
+}
+
+.bd *, .bd *::before, .bd *::after {
+    box-sizing: border-box;
+}
+
+.bd a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.bd .mono {
+    font-family: var(--mono);
+}
+
+.bd a:focus-visible, .bd button:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+}
+
+/* ---------- Başlık, sekmeler, dönem filtresi ---------- */
+.bd .bd-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 26px;
+}
+
+.bd .bd-eyebrow {
+    margin: 0 0 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.bd .bd-title {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    color: var(--ink);
+}
+
+.bd .bd-sub {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.bd .bd-tabs {
+    display: inline-flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    padding: 5px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+}
+
+    .bd .bd-tabs a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 40px;
+        padding: 0 20px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--muted);
+        transition: background .2s, color .2s;
+    }
+
+        .bd .bd-tabs a:hover {
+            color: var(--ink);
+        }
+
+        .bd .bd-tabs a.is-active {
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+    .bd .bd-tabs i {
+        font-size: 18px;
+    }
+
+.bd .bd-period {
+    display: inline-flex;
+    gap: 2px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--wash);
+}
+
+    .bd .bd-period a {
+        height: 34px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+        .bd .bd-period a.is-active {
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+/* ---------- 12 sütunlu ızgara ---------- */
+.bd .bd-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.bd .span-3 {
+    grid-column: span 3;
+}
+
+.bd .span-4 {
+    grid-column: span 4;
+}
+
+.bd .span-5 {
+    grid-column: span 5;
+}
+
+.bd .span-6 {
+    grid-column: span 6;
+}
+
+.bd .span-7 {
+    grid-column: span 7;
+}
+
+.bd .span-8 {
+    grid-column: span 8;
+}
+
+.bd .span-12 {
+    grid-column: span 12;
+}
+
+@media (max-width: 1199px) {
+    .bd .span-3, .bd .span-4, .bd .span-5, .bd .span-6, .bd .span-7, .bd .span-8 {
+        grid-column: span 6;
+    }
+}
+
+@media (max-width: 767px) {
+    .bd .bd-grid > * {
+        grid-column: span 12;
+    }
+
+    .bd .bd-title {
+        font-size: 30px;
+    }
+}
+
+/* ---------- Kart ---------- */
+.bd .bd-card {
+    padding: 22px 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card);
+    min-width: 0;
+}
+
+.bd .bd-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.bd .bd-card-title {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    color: var(--ink);
+}
+
+.bd .bd-card-sub {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.bd .bd-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+    .bd .bd-card-link:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+/* ---------- Siyah vitrin kartı (koyu temada açık) ---------- */
+.bd .bd-hero {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    padding: 26px 28px 0;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--paper);
+}
+
+    .bd .bd-hero::before, .bd .bd-hero::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        border: 1.5px solid currentColor;
+        opacity: .1;
+        pointer-events: none;
+    }
+
+    .bd .bd-hero::before {
+        width: 280px;
+        height: 280px;
+        right: -90px;
+        top: -120px;
+    }
+
+    .bd .bd-hero::after {
+        width: 170px;
+        height: 170px;
+        right: -30px;
+        top: -60px;
+    }
+
+.bd .bd-hero-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    opacity: .65;
+}
+
+    .bd .bd-hero-label i {
+        font-size: 18px;
+    }
+
+.bd .bd-money {
+    margin: 14px 0 0;
+    font-family: var(--display);
+    font-size: 58px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.03em;
+    font-variant-numeric: tabular-nums;
+}
+
+    .bd .bd-money .kurus {
+        font-size: .42em;
+        font-weight: 500;
+        opacity: .7;
+        letter-spacing: 0;
+    }
+/* kuruş: küçük ama görünür */
+.bd .bd-hero-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    font-size: 13px;
+    opacity: .8;
+}
+
+.bd .bd-hero-trio {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+    padding-bottom: 24px;
+}
+
+    .bd .bd-hero-trio small {
+        display: block;
+        font-size: 11px;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        opacity: .6;
+    }
+
+    .bd .bd-hero-trio strong {
+        font-family: var(--display);
+        font-size: 20px;
+        font-variant-numeric: tabular-nums;
+    }
+
+.bd .bd-spark {
+    margin: 8px -28px 0;
+}
+/* mini çizgi kartın iki kenarına kadar uzansın */
+@media (max-width: 575px) {
+    .bd .bd-money {
+        font-size: 42px;
+    }
+}
+
+/* ---------- Artış / azalış rozeti ---------- */
+.bd .bd-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+    .bd .bd-delta i {
+        font-size: 16px;
+    }
+
+    .bd .bd-delta.is-up {
+        background: var(--up-bg);
+        color: var(--up);
+    }
+
+    .bd .bd-delta.is-down {
+        background: var(--down-bg);
+        color: var(--down);
+    }
+
+    .bd .bd-delta.is-flat {
+        background: var(--wash);
+        color: var(--muted);
+    }
+
+.bd .bd-hero .bd-delta {
+    background: color-mix(in srgb, var(--paper) 14%, transparent);
+    color: inherit;
+}
+
+/* ---------- Küçük göstergeler (KPI) ---------- */
+.bd .bd-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    height: 100%;
+}
+
+@media (max-width: 991px) {
+    .bd .bd-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.bd .bd-kpi {
+    --tone: var(--c1);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 18px 16px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--card);
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+    .bd .bd-kpi:hover {
+        transform: translate(-2px, -2px);
+        border-color: var(--ink);
+        box-shadow: 4px 4px 0 var(--ink);
+    }
+
+.bd .bd-kpi-icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 6px;
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--tone) 16%, transparent);
+    color: var(--tone);
+    font-size: 20px;
+}
+
+.bd .bd-kpi-label {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.bd .bd-kpi-value {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+    .bd .bd-kpi-value small {
+        font-size: .55em;
+        font-weight: 500;
+        color: var(--muted);
+    }
+
+.bd .bd-kpi .bd-delta {
+    align-self: flex-start;
+    margin-top: auto;
+}
+
+.bd .bd-kpi-note {
+    margin: auto 0 0;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* ---------- Paranın dökümü ---------- */
+.bd .bd-flow {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .bd .bd-flow li {
+        --tone: var(--ink);
+    }
+
+.bd .bd-flow-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 7px;
+    font-size: 14px;
+}
+
+    .bd .bd-flow-row span {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+    }
+
+        .bd .bd-flow-row span::before {
+            content: "";
+            width: 9px;
+            height: 9px;
+            border-radius: 3px;
+            background: var(--tone);
+        }
+
+    .bd .bd-flow-row strong {
+        font-family: var(--mono);
+        font-size: 14px;
+        font-weight: 500;
+        white-space: nowrap;
+        color: var(--ink);
+    }
+
+.bd .bd-flow .is-total {
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 2px dashed var(--ink);
+}
+
+    .bd .bd-flow .is-total span {
+        color: var(--ink);
+        font-weight: 700;
+    }
+
+        .bd .bd-flow .is-total span::before {
+            display: none;
+        }
+
+    .bd .bd-flow .is-total strong {
+        font-family: var(--display);
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+/* İlerleme çubuğu (paylar, oranlar) */
+.bd .bd-bar {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--wash);
+}
+
+    .bd .bd-bar span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--tone, var(--ink));
+        transition: width .6s ease;
+    }
+
+/* ---------- Sıralama listesi (en çok / en az satan) ---------- */
+.bd .bd-rank {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .bd .bd-rank li {
+        display: grid;
+        grid-template-columns: 30px 48px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 8px;
+        border-radius: 12px;
+        transition: background .15s;
+    }
+
+        .bd .bd-rank li:hover {
+            background: var(--wash);
+        }
+
+.bd .bd-rank-no {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.bd .bd-rank li:nth-child(-n+3) .bd-rank-no {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+}
+/* ilk 3 öne çıksın */
+.bd .bd-rank img, .bd .bd-rank .ph {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: var(--wash);
+    filter: grayscale(1);
+    transition: filter .3s;
+}
+
+.bd .bd-rank li:hover img {
+    filter: none;
+}
+/* siyah-beyaz fotoğraf üzerine gelince renklenir */
+.bd .bd-rank-main {
+    min-width: 0;
+}
+
+    .bd .bd-rank-main strong {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+    .bd .bd-rank-main small {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 12px;
+        color: var(--muted);
+    }
+
+    .bd .bd-rank-main .bd-bar {
+        height: 5px;
+    }
+
+.bd .bd-rank-num {
+    text-align: right;
+    white-space: nowrap;
+}
+
+    .bd .bd-rank-num strong {
+        display: block;
+        font-family: var(--display);
+        font-size: 15px;
+        color: var(--ink);
+    }
+
+    .bd .bd-rank-num small {
+        font-size: 12px;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+    }
+
+.bd .bd-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1.5px dashed var(--muted);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* ---------- Tablo ---------- */
+.bd .bd-table-wrap {
+    overflow-x: auto;
+    margin: 0 -24px -22px;
+}
+
+.bd .bd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+    .bd .bd-table th {
+        padding: 12px 24px;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: var(--wash);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        text-align: left;
+        white-space: nowrap;
+        color: var(--muted);
+    }
+
+    .bd .bd-table td {
+        padding: 13px 24px;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+        vertical-align: middle;
+    }
+
+    .bd .bd-table tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .bd .bd-table tbody tr:hover {
+        background: var(--wash);
+    }
+
+    .bd .bd-table .num {
+        text-align: right;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+    }
+
+.bd .bd-code {
+    padding: 3px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--wash);
+    font-family: var(--mono);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* Durum etiketleri: renk değil şekil (dolu / çerçeveli / kesik çizgili) */
+.bd .bd-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 11px;
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+    .bd .bd-pill::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .bd .bd-pill.is-paid, .bd .bd-pill.is-replied {
+        background: var(--ink);
+        color: var(--paper);
+    }
+
+    .bd .bd-pill.is-pending {
+        border-color: var(--ink);
+        color: var(--ink);
+    }
+
+        .bd .bd-pill.is-pending::before {
+            animation: bd-blink 1.2s ease-in-out infinite;
+        }
+
+    .bd .bd-pill.is-read {
+        border-color: var(--line);
+        background: var(--wash);
+        color: var(--muted);
+    }
+
+    .bd .bd-pill.is-failed {
+        border-color: var(--muted);
+        border-style: dashed;
+        color: var(--muted);
+        text-decoration: line-through;
+    }
+
+@keyframes bd-blink {
+    50% {
+        opacity: .15;
+    }
+}
+
+/* ---------- "Sitede neler var" kutucukları ---------- */
+.bd .bd-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.bd .bd-tile {
+    --tone: var(--c1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--card);
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+.bd a.bd-tile:hover {
+    transform: translate(-2px, -2px);
+    border-color: var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+}
+
+.bd .bd-tile-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--tone) 16%, transparent);
+    color: var(--tone);
+    font-size: 21px;
+}
+
+.bd .bd-tile-count {
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.bd .bd-tile-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.bd .bd-tile-note {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.bd a.bd-tile::after {
+    content: "→";
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    color: var(--muted);
+    transition: transform .2s;
+}
+
+.bd a.bd-tile:hover::after {
+    transform: translateX(3px);
+    color: var(--ink);
+}
+
+/* ---------- Basit liste (kupon, blog, mesaj) ---------- */
+.bd .bd-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .bd .bd-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+    }
+
+        .bd .bd-list li:last-child {
+            border-bottom: 0;
+        }
+
+.bd .bd-list-main {
+    min-width: 0;
+}
+
+    .bd .bd-list-main strong {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+    .bd .bd-list-main small {
+        color: var(--muted);
+    }
+
+.bd .bd-list-side {
+    flex-shrink: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+    .bd .bd-list-side strong {
+        display: block;
+        color: var(--ink);
+    }
+
+    .bd .bd-list-side small {
+        color: var(--muted);
+    }
+
+/* Yatay çubuk listesi (kart aileleri, fiyat aralığı gibi) */
+.bd .bd-bars {
+    display: grid;
+    gap: 12px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .bd .bd-bars li {
+        font-size: 13px;
+    }
+
+    .bd .bd-bars .row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        color: var(--muted);
+    }
+
+        .bd .bd-bars .row strong {
+            color: var(--ink);
+        }
+
+/* Veri yoksa */
+.bd .bd-empty {
+    padding: 26px 10px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+    .bd .bd-empty i {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 30px;
+    }
+
+/* Grafik alanları: çizilmeden önce yer kaplasın ki sayfa zıplamasın */
+.bd .bd-chart {
+    min-height: 260px;
+}
+
+    .bd .bd-chart.is-tall {
+        min-height: 340px;
+    }
+
+    .bd .bd-chart.is-small {
+        min-height: 220px;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .bd * {
+        transition: none !important;
+        animation: none !important;
+    }
+}

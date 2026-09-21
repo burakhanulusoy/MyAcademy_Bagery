@@ -40,7 +40,7 @@ namespace Bagery.WebUI.Controllers
                 }
                 if (userRoles.Contains("Admin"))
                 {
-                    return RedirectToAction("Index", "Banner", new { area = "Admin" });
+                    return RedirectToAction("Dashboard", "Static", new { area = "Admin" });
                 }
 
                 if (userRoles.Contains("Writer"))

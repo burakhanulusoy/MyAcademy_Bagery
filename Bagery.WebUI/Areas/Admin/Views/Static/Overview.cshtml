@@ -1,0 +1,427 @@
+﻿@using System.Globalization
+@using Bagery.WebUI.MediatorPattern.Results.DashboardResults
+@model GetSiteOverviewQueryResult
+@{
+    ViewData["Title"] = "Site Genel Bakış";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var lifetime = SplitMoney(Model.LifetimeRevenue);
+
+    // "Sitede neler var": her kutucuk kendi admin sayfasına gider (Video'nun admin sayfası yok -> link yok)
+    var tiles = new (string Icon, string Label, int Count, string? Note, string? Url, string Tone)[]
+    {
+        ("bx-package",              "Ürün",            Model.ProductCount,      $"{Model.CategoryCount} kategoride",               "/Admin/Product/Index",        "--c1"),
+        ("bx-category",             "Kategori",        Model.CategoryCount,     null,                                              "/Admin/Category/Index",       "--c4"),
+        ("bx-slider-alt",           "Ürün seçeneği",   Model.VariantCount,      $"{Model.AvailableVariantCount} satışta",          "/Admin/ProductVariant/Index", "--c3"),
+        ("bx-receipt",              "Sipariş",         Model.OrderCount,        $"{Model.PaidOrderCount} ödendi",                  "/Admin/Order/Index",          "--c2"),
+        ("bx-user",                 "Kullanıcı",       Model.UserCount,         $"{Model.ConfirmedUserCount} onaylı e-posta",      "/Admin/User/Index",           "--c6"),
+        ("bxs-coupon",              "Kupon",           Model.CouponCount,       $"{Model.ActiveCouponCount} aktif",                "/Admin/Coupon/Index",         "--c5"),
+        ("bx-envelope",             "İletişim mesajı", Model.MessageCount,      $"{Model.UnreadMessageCount} bekliyor",            "/Admin/ContactMessage/Index", "--c1"),
+        ("bx-news",                 "Blog",            Model.BlogCount,         null,                                              "/Admin/Blog/Index",           "--c4"),
+        ("bx-comment-detail",       "Blog yorumu",     Model.CommentCount,      null,                                              "/Admin/Comment/Index",        "--c3"),
+        ("bx-message-square-dots",  "Referans yorumu", Model.TestimonialCount,  null,                                              "/Admin/Testimonial/Index",    "--c2"),
+        ("bx-image",                "Sayfa afişi",     Model.BannerCount,       null,                                              "/Admin/Banner/Index",         "--c6"),
+        ("bx-purchase-tag",         "Promosyon",       Model.PromotionCount,    null,                                              "/Admin/Promotion/Index",      "--c5"),
+        ("bx-building",             "Marka",           Model.ClientCount,       null,                                              "/Admin/Client/Index",         "--c1"),
+        ("bx-history",              "Tarihçe kaydı",   Model.HistoryCount,      null,                                              "/Admin/OurHistory/Index",     "--c4"),
+        ("bx-video",                "Video",           Model.VideoCount,        null,                                              null,                          "--c3"),
+        ("bx-credit-card",          "Taksit oranı",    Model.InstallmentRateCount, "PayTR'den alınan",                            "/Admin/Installment/Index",    "--c2")
+    };
+
+    var maxBlogComments = Model.MostCommentedBlogs.Count == 0 ? 1 : Math.Max(Model.MostCommentedBlogs.Max(b => b.Value), 1);
+}
+@functions {
+    private static readonly CultureInfo Tr = CultureInfo.GetCultureInfo("tr-TR");
+
+    static (string Whole, string Kurus) SplitMoney(decimal value)
+    {
+        var text = value.ToString("N2", Tr);
+        var comma = text.LastIndexOf(',');
+        return (text[..comma], text[comma..]);
+    }
+
+    static string Pct(decimal value) => Math.Clamp(value, 0, 100).ToString("0.#", CultureInfo.InvariantCulture) + "%";
+
+    static string MessageStatusText(Bagery.WebUI.Enums.ContactMessageStatus status) => status switch
+    {
+        Bagery.WebUI.Enums.ContactMessageStatus.Read => "Okundu",
+        Bagery.WebUI.Enums.ContactMessageStatus.Replied => "Yanıtlandı",
+        _ => "Bekliyor"
+    };
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="bd">
+
+            <nav class="bd-tabs" aria-label="Dashboard">
+                <a href="/Admin/Static/Dashboard"><i class='bx bx-line-chart'></i> Satış paneli</a>
+                <a href="/Admin/Static/Overview" class="is-active"><i class='bx bx-grid-alt'></i> Site genel bakış</a>
+            </nav>
+
+            <header class="bd-head">
+                <div>
+                    <p class="bd-eyebrow">İstatistikler</p>
+                    <h1 class="bd-title">Site genel bakış</h1>
+                    <p class="bd-sub">Sitede bugün neler var, tüm zamanlar</p>
+                </div>
+            </header>
+
+            @* ÜST: tüm zamanların cirosu + katalog özeti *@
+            <div class="bd-grid">
+                <section class="span-5 bd-hero" aria-label="Tüm zamanlar">
+                    <div>
+                        <div class="bd-hero-label"><i class='bx bx-trophy'></i> Tüm zamanların cirosu</div>
+                        <p class="bd-money">@lifetime.Whole<span class="kurus">@lifetime.Kurus ₺</span></p>
+                        <div class="bd-hero-foot"><span>@Model.PaidOrderCount ödenen sipariş, @Model.UserCount kullanıcı</span></div>
+                    </div>
+                    <div class="bd-hero-trio">
+                        <div><small>En ucuz</small><strong>@Model.MinPrice.ToString("N2", Tr) ₺</strong></div>
+                        <div><small>Ortalama</small><strong>@Model.AveragePrice.ToString("N2", Tr) ₺</strong></div>
+                        <div><small>En pahalı</small><strong>@Model.MaxPrice.ToString("N2", Tr) ₺</strong></div>
+                    </div>
+                </section>
+
+                <div class="span-7 bd-kpis">
+                    <div class="bd-kpi" style="--tone: var(--c1)">
+                        <span class="bd-kpi-icon"><i class='bx bx-package'></i></span>
+                        <p class="bd-kpi-label">Katalogdaki ürün</p>
+                        <p class="bd-kpi-value">@Model.ProductCount</p>
+                        <p class="bd-kpi-note">@Model.CategoryCount kategoride</p>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c3)">
+                        <span class="bd-kpi-icon"><i class='bx bx-slider-alt'></i></span>
+                        <p class="bd-kpi-label">Ürün seçeneği</p>
+                        <p class="bd-kpi-value">@Model.AvailableVariantCount <small>/ @Model.VariantCount</small></p>
+                        <p class="bd-kpi-note">satışta / toplam</p>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c2)">
+                        <span class="bd-kpi-icon"><i class='bx bx-error-circle'></i></span>
+                        <p class="bd-kpi-label">Seçeneksiz ürün</p>
+                        <p class="bd-kpi-value">@Model.ProductsWithoutVariants</p>
+                        <p class="bd-kpi-note">Sadece standart haliyle satılıyor</p>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c6)">
+                        <span class="bd-kpi-icon"><i class='bx bx-user-check'></i></span>
+                        <p class="bd-kpi-label">Onaylı kullanıcı</p>
+                        <p class="bd-kpi-value">@Model.ConfirmedUserCount <small>/ @Model.UserCount</small></p>
+                        <p class="bd-kpi-note">@Model.DeletedUserCount silinmiş hesap</p>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c5)">
+                        <span class="bd-kpi-icon"><i class='bx bx-envelope'></i></span>
+                        <p class="bd-kpi-label">Bekleyen mesaj</p>
+                        <p class="bd-kpi-value">@Model.UnreadMessageCount</p>
+                        <p class="bd-kpi-note">@Model.MessageCount mesajdan</p>
+                    </div>
+                    <div class="bd-kpi" style="--tone: var(--c4)">
+                        <span class="bd-kpi-icon"><i class='bx bxs-coupon'></i></span>
+                        <p class="bd-kpi-label">Aktif kupon</p>
+                        <p class="bd-kpi-value">@Model.ActiveCouponCount <small>/ @Model.CouponCount</small></p>
+                        <p class="bd-kpi-note">Sepette müşteriye görünenler</p>
+                    </div>
+                </div>
+            </div>
+
+            @* Sitede neler var *@
+            <section class="bd-card" style="margin-bottom: 20px">
+                <div class="bd-card-head">
+                    <div>
+                        <h2 class="bd-card-title">Sitede neler var</h2>
+                        <p class="bd-card-sub">Her kutucuk ilgili yönetim sayfasına gider</p>
+                    </div>
+                </div>
+                <div class="bd-tiles">
+                    @foreach (var tile in tiles)
+                    {
+                        if (tile.Url is not null)
+                        {
+                            <a class="bd-tile" href="@tile.Url" style="--tone: var(@tile.Tone)">
+                                <span class="bd-tile-icon"><i class='bx @tile.Icon'></i></span>
+                                <span class="bd-tile-count">@tile.Count</span>
+                                <span class="bd-tile-label">@tile.Label</span>
+                                @if (tile.Note is not null)
+                                {
+                                    <span class="bd-tile-note">@tile.Note</span>
+                                }
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="bd-tile" style="--tone: var(@tile.Tone)">
+                                <span class="bd-tile-icon"><i class='bx @tile.Icon'></i></span>
+                                <span class="bd-tile-count">@tile.Count</span>
+                                <span class="bd-tile-label">@tile.Label</span>
+                                @if (tile.Note is not null)
+                                {
+                                    <span class="bd-tile-note">@tile.Note</span>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </section>
+
+            @* Kategori dağılımı + fiyat aralıkları *@
+            <div class="bd-grid">
+                <section class="span-7 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Kategorilere göre ürün</h2>
+                            <p class="bd-card-sub">Her kategoride kaç ürün var</p>
+                        </div>
+                    </div>
+                    <div id="bdCatProducts" class="bd-chart"></div>
+                </section>
+
+                <section class="span-5 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Fiyat dağılımı</h2>
+                            <p class="bd-card-sub">Ürünlerin fiyat aralıkları</p>
+                        </div>
+                    </div>
+                    <div id="bdPrices" class="bd-chart"></div>
+                </section>
+            </div>
+
+            @* Son 6 ay + roller *@
+            <div class="bd-grid">
+                <section class="span-8 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Son 6 ayın hareketi</h2>
+                            <p class="bd-card-sub">Blog, yorum, iletişim mesajı ve ödenen sipariş</p>
+                        </div>
+                    </div>
+                    <div id="bdActivity" class="bd-chart is-tall"></div>
+                </section>
+
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Kullanıcı rolleri</h2>
+                            <p class="bd-card-sub">Rol bazında hesap sayısı</p>
+                        </div>
+                    </div>
+                    <div id="bdRoles" class="bd-chart"></div>
+                </section>
+            </div>
+
+            @* Kategori tablosu + mesajlar *@
+            <div class="bd-grid">
+                <section class="span-8 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">Kategori detayı</h2>
+                            <p class="bd-card-sub">Ürün, seçenek ve fiyat aralıkları</p>
+                        </div>
+                        <a href="/Admin/Category/Index" class="bd-card-link">Kategoriler <i class='bx bx-right-arrow-alt'></i></a>
+                    </div>
+                    @if (!Model.Categories.Any())
+                    {
+                        <div class="bd-empty"><i class='bx bx-category'></i>Henüz kategori yok</div>
+                    }
+                    else
+                    {
+                        <div class="bd-table-wrap">
+                            <table class="bd-table">
+                                <thead>
+                                    <tr><th>Kategori</th><th class="num">Ürün</th><th class="num">Seçenek</th><th class="num">En ucuz</th><th class="num">Ortalama</th><th class="num">En pahalı</th></tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <tr>
+                                            <td><strong>@category.Name</strong></td>
+                                            <td class="num">@category.ProductCount</td>
+                                            <td class="num">@category.VariantCount</td>
+                                            <td class="num">@category.MinPrice.ToString("N2", Tr) ₺</td>
+                                            <td class="num">@category.AveragePrice.ToString("N2", Tr) ₺</td>
+                                            <td class="num">@category.MaxPrice.ToString("N2", Tr) ₺</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </section>
+
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">İletişim mesajları</h2>
+                            <p class="bd-card-sub">Durum ve son gelenler</p>
+                        </div>
+                        <a href="/Admin/ContactMessage/Index" class="bd-card-link">Tümü <i class='bx bx-right-arrow-alt'></i></a>
+                    </div>
+                    <div id="bdMessages" class="bd-chart is-small"></div>
+                    @if (Model.RecentMessages.Any())
+                    {
+                        <ul class="bd-list">
+                            @foreach (var message in Model.RecentMessages)
+                            {
+                                <li>
+                                    <div class="bd-list-main"><strong>@message.Subject</strong><small>@message.NameSurname, @message.CreatedAt.ToLocalTime().ToString("dd MMM", Tr)</small></div>
+                                    <div class="bd-list-side"><span class="bd-pill is-@message.Status.ToString().ToLower()">@MessageStatusText(message.Status)</span></div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </section>
+            </div>
+
+            @* En pahalı / en ucuz / en çok yorum alan bloglar *@
+            <div class="bd-grid">
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head"><h2 class="bd-card-title">En pahalı 5 ürün</h2></div>
+                    <ol class="bd-rank">
+                        @foreach (var (product, index) in Model.MostExpensive.Select((p, i) => (p, i)))
+                        {
+                            <li>
+                                <span class="bd-rank-no">@(index + 1)</span>
+                                @if (product.ImageUrl is not null)
+                                {
+                                    <img src="@product.ImageUrl" alt="" loading="lazy">
+                                }
+                                else
+                                {
+
+                                    <span class="ph"></span>
+                                }
+                                <div class="bd-rank-main"><strong>@product.Name</strong><small>@product.Category</small></div>
+                                <div class="bd-rank-num"><strong>@product.Price.ToString("N2", Tr) ₺</strong></div>
+                            </li>
+                        }
+                    </ol>
+                </section>
+
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head"><h2 class="bd-card-title">En ucuz 5 ürün</h2></div>
+                    <ol class="bd-rank">
+                        @foreach (var (product, index) in Model.Cheapest.Select((p, i) => (p, i)))
+                        {
+                            <li>
+                                <span class="bd-rank-no">@(index + 1)</span>
+                                @if (product.ImageUrl is not null)
+                                {
+                                    <img src="@product.ImageUrl" alt="" loading="lazy">
+                                }
+                                else
+                                {
+
+                                    <span class="ph"></span>
+                                }
+                                <div class="bd-rank-main"><strong>@product.Name</strong><small>@product.Category</small></div>
+                                <div class="bd-rank-num"><strong>@product.Price.ToString("N2", Tr) ₺</strong></div>
+                            </li>
+                        }
+                    </ol>
+                </section>
+
+                <section class="span-4 bd-card">
+                    <div class="bd-card-head">
+                        <div>
+                            <h2 class="bd-card-title">En çok yorum alan bloglar</h2>
+                        </div>
+                        <a href="/Admin/Blog/Index" class="bd-card-link">Bloglar <i class='bx bx-right-arrow-alt'></i></a>
+                    </div>
+                    @if (!Model.MostCommentedBlogs.Any())
+                    {
+                        <div class="bd-empty"><i class='bx bx-news'></i>Henüz blog yok</div>
+                    }
+                    else
+                    {
+                        <ul class="bd-bars" style="margin-top: 0">
+                            @foreach (var blog in Model.MostCommentedBlogs)
+                            {
+                                <li style="--tone: var(--c4)">
+                                    <div class="row"><span>@blog.Name</span><strong>@blog.Value.ToString("0") yorum</strong></div>
+                                    <div class="bd-bar"><span style="width: @Pct(blog.Value / maxBlogComments * 100)"></span></div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </section>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/js/bagery-dashboard.js" defer></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const D = window.BageryDash;
+
+        const data = @Json.Serialize(new
+        {
+                categories = Model.Categories.Select(c => new { name = c.Name, count = c.ProductCount }),
+                prices = Model.PriceBuckets,
+                activity = Model.Activity,
+                roles = Model.Roles,
+                messages = Model.MessageStatuses
+        });
+
+        // Kategorilere göre ürün (yatay, her çubuk ayrı renk)
+        D.chart('#bdCatProducts', c => ({
+            chart: { type: 'bar', height: Math.max(260, data.categories.length * 44) },
+            series: [{ name: 'Ürün', data: data.categories.map(x => x.count) }],
+            colors: c.list,
+            plotOptions: { bar: { horizontal: true, distributed: true, borderRadius: 5, barHeight: '62%' } },
+            xaxis: { categories: data.categories.map(x => x.name), labels: { formatter: D.count } },
+            legend: { show: false },
+            tooltip: { y: { formatter: v => D.count(v) + ' ürün' } }
+        }));
+
+        // Fiyat dağılımı
+        D.chart('#bdPrices', c => ({
+            chart: { type: 'bar', height: 280 },
+            series: [{ name: 'Ürün', data: data.prices.map(x => x.value) }],
+            colors: [c.c3],
+            plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
+            xaxis: { categories: data.prices.map(x => x.name) },
+            yaxis: { labels: { formatter: D.count } },
+            tooltip: { y: { formatter: v => D.count(v) + ' ürün' } }
+        }));
+
+        // Son 6 ay: dört seri yan yana
+        D.chart('#bdActivity', c => ({
+            chart: { type: 'bar', height: 340 },
+            series: [
+                { name: 'Blog', data: data.activity.map(x => x.blogs) },
+                { name: 'Yorum', data: data.activity.map(x => x.comments) },
+                { name: 'Mesaj', data: data.activity.map(x => x.messages) },
+                { name: 'Ödenen sipariş', data: data.activity.map(x => x.orders) }
+            ],
+            colors: [c.c4, c.c1, c.c3, c.ink],
+            plotOptions: { bar: { borderRadius: 4, columnWidth: '64%' } },
+            xaxis: { categories: data.activity.map(x => x.label) },
+            yaxis: { labels: { formatter: D.count } },
+            legend: { position: 'top', horizontalAlign: 'right' }
+        }));
+
+        // Kullanıcı rolleri
+        const roleValues = data.roles.map(x => x.value);
+        D.chart('#bdRoles', c => ({
+            chart: { type: 'donut', height: 290 },
+            series: D.hasData(roleValues) ? roleValues : [],
+            labels: data.roles.map(x => x.name),
+            colors: c.list,
+            stroke: { width: 3, colors: [c.card] },
+            legend: { position: 'bottom' },
+            plotOptions: { pie: { donut: { size: '66%', labels: { show: true, value: { color: c.ink }, total: { show: true, label: 'Hesap', color: c.muted } } } } }
+        }));
+
+        // Mesaj durumları
+        const messageValues = data.messages.map(x => x.value);
+        D.chart('#bdMessages', c => ({
+            chart: { type: 'donut', height: 210 },
+            series: D.hasData(messageValues) ? messageValues : [],
+            labels: data.messages.map(x => x.name),
+            colors: [c.c5, c.muted, c.ink],
+            stroke: { width: 3, colors: [c.card] },
+            legend: { position: 'right' },
+            plotOptions: { pie: { donut: { size: '62%' } } }
+        }));
+    });
+</script>
