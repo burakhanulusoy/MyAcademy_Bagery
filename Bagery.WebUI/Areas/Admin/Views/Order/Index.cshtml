@@ -1,0 +1,139 @@
+﻿@using Bagery.WebUI.Enums
+@using Bagery.WebUI.MediatorPattern.Results.OrderResults
+@model GetAdminOrdersQueryResult
+@{
+    ViewData["Title"] = "Siparişler";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@functions {
+    // Durum -> admin temasındaki Bootstrap rozet rengi
+    static string BadgeClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Paid => "bg-success",
+        OrderStatus.Failed => "bg-danger",
+        _ => "bg-warning text-dark"
+    };
+
+    // Seçili filtre butonu dolu, diğerleri çerçeveli görünsün
+    string FilterClass(OrderStatus? status) => Model.SelectedStatus == status ? "btn-primary" : "btn-outline-primary";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+            <div class="breadcrumb-title pe-3">Sipariş Yönetimi</div>
+        </div>
+
+        @* ÖZET KARTLARI *@
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
+            <div class="col">
+                <div class="card mb-0">
+                    <div class="card-body">
+                        <p class="mb-1 text-secondary">Toplam ciro (ödenen)</p>
+                        <h4 class="mb-0">@Model.PaidTotal.ToString("N2") ₺</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-0">
+                    <div class="card-body">
+                        <p class="mb-1 text-secondary">Ödenen sipariş</p>
+                        <h4 class="mb-0 text-success">@Model.PaidCount</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-0">
+                    <div class="card-body">
+                        <p class="mb-1 text-secondary">Bekleyen</p>
+                        <h4 class="mb-0 text-warning">@Model.PendingCount</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-0">
+                    <div class="card-body">
+                        <p class="mb-1 text-secondary">Başarısız</p>
+                        <h4 class="mb-0 text-danger">@Model.FailedCount</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Bekleyen sipariş = PayTR bildirimi gelmemiş; uzun sürerse PayTR panelinden bakılmalı *@
+        @if (Model.PendingCount > 0)
+        {
+            <div class="alert alert-warning">
+                @Model.PendingCount sipariş PayTR bildirimini bekliyor. Uzun süredir bekleyen varsa PayTR panelinde "Mağaza Bildirimleri"ni kontrol edin.
+            </div>
+        }
+
+        @* FİLTRE *@
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="/Admin/Order/Index" class="btn btn-sm @FilterClass(null)">Tümü (@Model.TotalCount)</a>
+            <a href="/Admin/Order/Index?status=Paid" class="btn btn-sm @FilterClass(OrderStatus.Paid)">Ödendi (@Model.PaidCount)</a>
+            <a href="/Admin/Order/Index?status=Pending" class="btn btn-sm @FilterClass(OrderStatus.Pending)">Bekliyor (@Model.PendingCount)</a>
+            <a href="/Admin/Order/Index?status=Failed" class="btn btn-sm @FilterClass(OrderStatus.Failed)">Başarısız (@Model.FailedCount)</a>
+        </div>
+
+        @* TABLO *@
+        <div class="card">
+            <div class="card-body">
+                @if (!Model.Orders.Any())
+                {
+                    <p class="mb-0 text-secondary">Bu durumda sipariş yok.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Sipariş no</th>
+                                    <th>Müşteri</th>
+                                    <th class="text-center">Adet</th>
+                                    <th class="text-end">Tutar</th>
+                                    <th>Durum</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.Orders)
+                                {
+                                    <tr>
+                                        @* Veritabanında UTC; Türkiye saatine çeviriyoruz *@
+                                        <td>@order.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+
+                                        @* 32 karakter uzun; ilk 8'i yeterli, üzerine gelince tamamı görünür *@
+                                        <td title="@order.OrderNo"><code>@order.OrderNo.Substring(0, 8)</code></td>
+
+                                        <td>
+                                            @order.FullName<br>
+                                            <small class="text-secondary">@order.Email</small>
+                                        </td>
+                                        <td class="text-center">@order.ItemCount</td>
+                                        <td class="text-end">
+                                            @order.PaidPrice.ToString("N2") ₺
+                                            @if (order.InstallmentCount > 0)
+                                            {
+                                                <br>
+                                                <small class="text-secondary">@order.InstallmentCount taksit</small>
+                                            }
+                                        </td>
+                                        <td><span class="badge @BadgeClass(order.Status)">@order.Status.ToTurkish()</span></td>
+                                        <td class="text-end">
+                                            <a href="/Admin/Order/Detail?orderNo=@order.OrderNo" class="btn btn-sm btn-outline-secondary">Detay</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

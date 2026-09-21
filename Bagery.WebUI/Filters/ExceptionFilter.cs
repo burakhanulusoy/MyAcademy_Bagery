@@ -31,6 +31,10 @@ namespace Bagery.WebUI.Filters
                     context.ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
+            else if (context.Exception is BusinessException businessException) // YENİ PAYTR İÇİN
+            {
+                context.ModelState.AddModelError(string.Empty, businessException.Message);
+            }
             else
             {
                 return;

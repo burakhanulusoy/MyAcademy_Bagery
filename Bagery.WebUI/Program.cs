@@ -35,6 +35,8 @@ app.UseHttpsRedirection();
 app.UseStatusCodePagesWithReExecute("/User/PageNotFound", "?code={0}");
 app.UseRouting();
 
+app.UseSession();  ///Session çalýþmasý için
+
 app.UseAuthentication();
 app.UseAuthorization();
 

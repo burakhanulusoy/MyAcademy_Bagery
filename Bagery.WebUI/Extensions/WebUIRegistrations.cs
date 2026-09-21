@@ -7,10 +7,13 @@ using Bagery.WebUI.Repositories.CategoryRepositories;
 using Bagery.WebUI.Repositories.ProductRepositories;
 using Bagery.WebUI.Repositories.ProductVariantRepositories;
 using Bagery.WebUI.Services;
+using Bagery.WebUI.Services.CartServices;
 using Bagery.WebUI.Services.EmailServices;
+using Bagery.WebUI.Services.PayTRServices;
 using Bagery.WebUI.UOW;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -108,6 +111,25 @@ namespace Bagery.WebUI.Extensions
 
 
             services.AddHttpContextAccessor();
+
+
+            // YENİ ---------- SEPET (Session) ----------
+            services.AddDistributedMemoryCache(); // session verisi sunucu RAM'inde tutulur
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".Bagery.Session";   // tarayıcıdaki çerezin adı
+                options.IdleTimeout = TimeSpan.FromHours(2); // 2 saat işlem yapılmazsa sepet silinir
+                options.Cookie.HttpOnly = true;            // JS bu çereze erişemez (güvenlik)
+                options.Cookie.IsEssential = true;         // çerez onayı olmasa da çalışsın
+            });
+            services.AddScoped<ICartService, CartService>(); // Scrutor sadece "...Repository"leri buluyor, bunu elle kaydediyoruz
+
+            // YENİ ---------- PAYTR ----------
+            services.AddHttpClient<IPayTRService, PayTRService>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(30); // PayTR 30 sn cevap vermezse vazgeç
+            });
+
 
         }
 

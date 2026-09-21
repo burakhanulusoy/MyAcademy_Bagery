@@ -28,12 +28,16 @@ namespace Bagery.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginUserCommand command)
+        public async Task<IActionResult> Login(LoginUserCommand command, string? returnUrl = null)
         {
             try
             {
                 var userRoles = await _mediator.Send(command);
-
+                // YENİ: [Authorize] bir sayfadan gelindiyse (ör. /Payment/Checkout) oraya geri dön
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return LocalRedirect(returnUrl);
+                }
                 if (userRoles.Contains("Admin"))
                 {
                     return RedirectToAction("Index", "Banner", new { area = "Admin" });

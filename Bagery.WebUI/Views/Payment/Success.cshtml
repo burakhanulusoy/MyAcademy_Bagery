@@ -1,0 +1,94 @@
+﻿@using Bagery.WebUI.Enums
+@using Bagery.WebUI.MediatorPattern.Results.OrderResults
+@model GetMyOrderQueryResult
+@{
+    ViewData["Title"] = "Sipariş Durumu";
+    Layout = "~/Views/Shared/_WebUILayout.cshtml";
+}
+
+<section class="page-title centred"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
+    <div class="auto-container">
+        <div class="content-box">
+            <div class="title"><h1>Sipariş durumu</h1></div>
+        </div>
+    </div>
+</section>
+
+<section class="payment-result">
+    <div class="auto-container">
+        <div class="result-box">
+
+            @if (Model is null)
+            {
+                @* Yanlış numara ya da başka kullanıcının siparişi *@
+                <div class="result-icon is-error"><i class="fas fa-times"></i></div>
+                <h2>Sipariş bulunamadı</h2>
+                <p>Bu sipariş hesabınıza ait değil ya da bağlantı hatalı.</p>
+            }
+            else if (Model.Status == OrderStatus.Paid)
+            {
+                <div class="result-icon is-success"><i class="fas fa-check"></i></div>
+                <h2>Ödemeniz alındı</h2>
+                <p>Siparişiniz hazırlanmaya başlanacak.</p>
+            }
+            else if (Model.Status == OrderStatus.Pending)
+            {
+                @* Tarayıcı callback'ten önce geldi (Adım 9'daki çizim) *@
+                <div class="result-icon"><i class="far fa-clock"></i></div>
+                <h2>Ödemeniz onaylanıyor</h2>
+                <p>Bankanızdan onay geldi, PayTR'nin bildirimi bekleniyor. Birkaç saniye sonra durumu yenileyin.</p>
+            }
+            else
+            {
+                @* Failed: callback önce gelip "başarısız" dedi *@
+                <div class="result-icon is-error"><i class="fas fa-times"></i></div>
+                <h2>Ödeme tamamlanamadı</h2>
+                <p>@Model.StatusMessage</p>
+            }
+
+            @if (Model is not null)
+            {
+                <ul class="order-summary">
+                    <li><span>Sipariş no</span><span>@Model.OrderNo</span></li>
+                    @* Veritabanında UTC tutuluyor; ToLocalTime ile Türkiye saatine çeviriyoruz *@
+                    <li><span>Tarih</span><span>@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span></li>
+
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <li>
+                            <span>@item.ProductName@(item.VariantName is null ? "" : $" ({item.VariantName})") x @item.Quantity</span>
+                            <span>@item.LineTotal.ToString("N2") ₺</span>
+                        </li>
+                    }
+
+                    <li><span>Ara toplam</span><span>@Model.TotalPrice.ToString("N2") ₺</span></li>
+                    @if (Model.CouponPrice > 0)
+                    {
+                        <li><span>İndirim (@Model.CouponCode)</span><span>−@Model.CouponPrice.ToString("N2") ₺</span></li>
+                    }
+                    <li><span>Kargo</span><span>@(Model.ShippingPrice == 0 ? "Ücretsiz" : Model.ShippingPrice.ToString("N2") + " ₺")</span></li>
+                    @if (Model.InstallmentCount > 0)
+                    {
+                        <li><span>Taksit</span><span>@Model.InstallmentCount taksit</span></li>
+                    }
+                    <li class="total"><span>Ödenen tutar</span><span>@Model.PaidPrice.ToString("N2") ₺</span></li>
+                    <li><span>Teslimat</span><span>@Model.FullName, @Model.Address</span></li>
+                </ul>
+            }
+
+            <div class="btn-row">
+                @if (Model?.Status == OrderStatus.Pending)
+                {
+                    <button type="button" class="theme-btn-one" onclick="location.reload()">Durumu yenile</button>
+                }
+                @if (Model?.Status == OrderStatus.Failed)
+                {
+                    <a href="/Payment/Checkout" class="theme-btn-one">Tekrar dene</a>
+                }
+                <a href="/Product/Shop" class="theme-btn-two">Alışverişe devam et</a>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,250 @@
+﻿@using Bagery.WebUI.MediatorPattern.Results.CheckoutResults
+@using Microsoft.Extensions.Hosting
+@model GetCheckoutQueryResult
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env 
+@{
+    ViewData["Title"] = "Ödeme";
+    Layout = "~/Views/Shared/_WebUILayout.cshtml";
+}
+
+<section class="page-title centred"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
+    <div class="auto-container">
+        <div class="content-box">
+            <div class="title"><h1>Ödeme</h1></div>
+        </div>
+    </div>
+</section>
+
+<section class="checkout-section checkout-page">
+    <div class="container">
+        @* Tek form: teslimat + kart alanlarının hepsi "name" ile toplanıp gönderilir *@
+        <form id="paymentForm" novalidate>
+            <div class="row">
+
+                @* SOL: teslimat bilgileri (AppUser'dan dolu gelir) *@
+                <div class="col-lg-6 col-md-12 col-sm-12 left-column">
+                    <div class="inner-box">
+                        <div class="billing-info">
+                            <h4 class="sub-title">Teslimat bilgileri</h4>
+                            <div class="billing-form">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                                        <label for="FullName">Ad soyad*</label>
+                                        <input type="text" id="FullName" name="FullName" value="@Model.FullName" autocomplete="name">
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                        <label for="Email">E-posta</label>
+                                        @* name yok: e-posta formdan alınmaz, handler AppUser'dan okur *@
+                                        <input type="email" id="Email" value="@Model.Email" readonly>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                        <label for="PhoneNumber">Telefon*</label>
+                                        <input type="text" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber"
+                                               inputmode="tel" autocomplete="tel" placeholder="0555 555 55 55">
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                                        <label for="Address">Teslimat adresi*</label>
+                                        <textarea id="Address" name="Address" autocomplete="street-address">@Model.Address</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="additional-info">
+                            <div class="note-book">
+                                <label for="Note">Sipariş notu</label>
+                                <textarea id="Note" name="Note" placeholder="Ör. zile basmayın, kapıya bırakın"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* SAĞ: sipariş özeti + kart *@
+                <div class="col-lg-6 col-md-12 col-sm-12 right-column">
+                    <div class="inner-box">
+                        <div class="order-info">
+                            <h4 class="sub-title">Siparişiniz</h4>
+                            <div class="order-product">
+                                <ul class="order-list clearfix" id="orderList"></ul> @* JS dolduruyor *@
+                            </div>
+                        </div>
+
+                        <div class="payment-info">
+                            <h4 class="sub-title">Kart bilgileri</h4>
+                            <div class="payment-inner billing-form">
+                                <div class="form-group">
+                                    <label for="CardOwner">Kart üzerindeki isim*</label>
+                                    <input type="text" id="CardOwner" name="CardOwner" autocomplete="cc-name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="CardNumber">Kart numarası*</label>
+                                    <input type="text" id="CardNumber" name="CardNumber" inputmode="numeric"
+                                           autocomplete="cc-number" placeholder="0000 0000 0000 0000" maxlength="23">
+                                </div>
+                                <div class="card-row">
+                                    <div class="form-group">
+                                        <label for="ExpiryMonth">Ay*</label>
+                                        <input type="text" id="ExpiryMonth" name="ExpiryMonth" inputmode="numeric"
+                                               autocomplete="cc-exp-month" placeholder="AA" maxlength="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ExpiryYear">Yıl*</label>
+                                        <input type="text" id="ExpiryYear" name="ExpiryYear" inputmode="numeric"
+                                               autocomplete="cc-exp-year" placeholder="YY" maxlength="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Cvv">CVV*</label>
+                                        <input type="text" id="Cvv" name="Cvv" inputmode="numeric"
+                                               autocomplete="cc-csc" maxlength="4">
+                                    </div>
+                                </div>
+
+                                @* Kart numarasının ilk 8 hanesi yazılınca görünür *@
+                                <div id="installmentBox" hidden>
+                                    <label>Taksit seçenekleri</label>
+                                    <div class="installment-list" id="installmentList"></div>
+                                </div>
+
+                                <div class="btn-box">
+                                    <button type="submit" id="payBtn" class="theme-btn-one">Ödemeyi tamamla</button>
+                                </div>
+                                <div id="paymentError" class="payment-error" role="alert" hidden></div>
+
+                                @if (Env.IsDevelopment())
+                                {
+                                    @* PAY_TR'deki yorum satırlarında duran PayTR test kartı; canlıda görünmez *@
+                                    <p class="test-card-hint">Test kartı: 9792 0303 9444 0796, 12 / 30, CVV 000</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const cartApi = window.BageryCart;
+            const form = document.getElementById('paymentForm');
+            const payBtn = document.getElementById('payBtn');
+            const errorBox = document.getElementById('paymentError');
+            const cardNumberInput = document.getElementById('CardNumber');
+            const installmentBox = document.getElementById('installmentBox');
+            const installmentList = document.getElementById('installmentList');
+            let lastBin = ''; // aynı 8 hane için PayTR'ye tekrar tekrar sorulmasın
+
+            function showError(message) {
+                errorBox.textContent = message || '';
+                errorBox.hidden = !message;
+            }
+
+            // ---------- 1) Sipariş özeti (temanın order-list yapısı) ----------
+            async function loadSummary() {
+                const result = await cartApi.get();
+                if (!result.success) { showError(result.message); return; }
+
+                const cart = result.cart;
+                if (cart.items.length === 0) { window.location.href = '/Cart/Index'; return; }
+
+                const rows = cart.items.map(item => `
+                    <li>
+                        <div class="single-box clearfix">
+                            <img src="${cartApi.escapeHtml(item.imageUrl)}" alt="">
+                            <h6>${cartApi.escapeHtml(item.productName)}${item.variantName ? ' (' + cartApi.escapeHtml(item.variantName) + ')' : ''} x ${item.quantity}</h6>
+                            <span>${cartApi.formatPrice(item.lineTotal)}</span>
+                        </div>
+                    </li>`).join('');
+
+                const couponRow = cart.couponCode
+                    ? `<li class="sub-total clearfix"><h6>İndirim (${cartApi.escapeHtml(cart.couponCode)})</h6><span>−${cartApi.formatPrice(cart.couponDiscount)}</span></li>`
+                    : '';
+
+                document.getElementById('orderList').innerHTML = `
+                    <li class="title clearfix"><p>Ürün</p><span>Tutar</span></li>
+                    ${rows}
+                    <li class="sub-total clearfix"><h6>Ara toplam</h6><span>${cartApi.formatPrice(cart.subTotal)}</span></li>
+                    ${couponRow}
+                    <li class="sub-total clearfix"><h6>Kargo</h6><span>${cart.shippingPrice === 0 ? 'Ücretsiz' : cartApi.formatPrice(cart.shippingPrice)}</span></li>
+                    <li class="order-total clearfix"><h6>Ödenecek tutar</h6><span>${cartApi.formatPrice(cart.paidPrice)}</span></li>`;
+            }
+
+            // ---------- 2) Kart numarası: 4'erli boşluk + ilk 8 hanede taksitleri getir ----------
+            cardNumberInput.addEventListener('input', function () {
+                const digits = this.value.replace(/\D/g, '').slice(0, 19); // sadece rakam, en fazla 19
+                this.value = digits.replace(/(.{4})/g, '$1 ').trim();       // "9792 0303 9444 0796"
+
+                const bin = digits.slice(0, 8);
+                if (bin.length < 8) {
+                    lastBin = '';
+                    installmentBox.hidden = true;
+                    installmentList.innerHTML = ''; // seçim kalmazsa sunucuya InstallmentCount=0 (tek çekim) gider
+                    return;
+                }
+                if (bin !== lastBin) {
+                    lastBin = bin;
+                    loadInstallments(bin);
+                }
+            });
+
+            async function loadInstallments(bin) {
+                installmentBox.hidden = false;
+                installmentList.innerHTML = '<p class="installment-hint">Taksit seçenekleri yükleniyor...</p>';
+
+                const result = await cartApi.post('/Payment/Installments', { binNumber: bin }); // Adım 7.5
+
+                if (bin !== lastBin) return; // bu sırada kart numarası değiştiyse eski cevabı gösterme
+
+                if (!result.success) {
+                    installmentList.innerHTML = `<p class="installment-hint">${cartApi.escapeHtml(result.message)}</p>`;
+                    return;
+                }
+
+                // name="InstallmentCount" -> formla birlikte seçilen taksit sayısı gider; ilk satır (tek çekim) seçili
+                installmentList.innerHTML = result.installments.map((x, i) => `
+                    <label>
+                        <span>
+                            <input type="radio" name="InstallmentCount" value="${x.installmentCount}" ${i === 0 ? 'checked' : ''}>
+                            ${x.installmentCount === 0 ? 'Tek çekim' : x.installmentCount + ' taksit'}
+                        </span>
+                        <span>${x.installmentCount === 0
+                            ? cartApi.formatPrice(x.totalPrice)
+                            : x.installmentCount + ' x ' + cartApi.formatPrice(x.monthlyPrice) + ' = ' + cartApi.formatPrice(x.totalPrice)}</span>
+                    </label>`).join('');
+            }
+
+            // ---------- 3) Ödemeyi tamamla ----------
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault(); // sayfa yenilenmesin, fetch ile gönderiyoruz
+                showError('');
+
+                payBtn.disabled = true; // çift tıklamada iki ödeme başlatılmasın
+                payBtn.textContent = 'İşleniyor...';
+
+                // name'i olan bütün alanları { FullName: "...", CardNumber: "...", ... } nesnesine çevirir
+                const data = Object.fromEntries(new FormData(form));
+                data.CardNumber = (data.CardNumber || '').replace(/\s/g, ''); // boşlukları at
+
+                const result = await cartApi.post('/Payment/Create', data);
+
+                if (result.success) {
+                    // PAY_TR'deki yöntem: PayTR'nin döndürdüğü 3D Secure sayfasını ekrana bas
+                    document.open();
+                    document.write(result.redirectHtml);
+                    document.close();
+                    return;
+                }
+
+                payBtn.disabled = false;
+                payBtn.textContent = 'Ödemeyi tamamla';
+                showError(result.message);
+                loadSummary(); // fiyat değiştiği için hata geldiyse özet de güncellensin
+            });
+
+            loadSummary(); // sayfa açılınca sipariş özetini getir
+        })();
+    </script>
+}

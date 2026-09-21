@@ -15,6 +15,7 @@ namespace Bagery.WebUI.Entities
         public string? Address { get; set; }
         public IList<Blog> Blogs { get; set; }
         public IList<Comment> Comments { get; set; }
+        public IList<Order> Orders { get; set; }
 
     }
 }

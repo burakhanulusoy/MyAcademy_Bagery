@@ -1,4 +1,5 @@
-﻿@model GetProductByIdQueryResult
+﻿@using System.Globalization @* YENİ: fiyatı JS'e noktalı yazmak için *@
+@model GetProductByIdQueryResult
 @{
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_WebUILayout.cshtml";
@@ -128,7 +129,8 @@
                 <div class="col-lg-6 col-md-12 col-sm-12 content-column">
                     <div class="product-details">
                         <h2>@Model.ProductName</h2>
-                        <h3>@Model.Price ₺</h3>
+                        @* DEĞİŞTİ: seçenek seçilince JS fiyatı güncelleyebilsin diye span'e aldık *@
+                        <h3><span id="productPrice" data-base-price="@Model.Price.ToString(CultureInfo.InvariantCulture)">@Model.Price.ToString("N2")</span> ₺</h3>
                         <div class="customer-rating clearfix">
                             <ul class="rating pull-left">
                                 <li><i class="icon-Star"></i></li>
@@ -144,33 +146,51 @@
                         <div class="text">
                             <p>@Model.Description</p>
                         </div>
+                        @* YENİ: seçenekler butondan ÖNCE seçilsin diye buraya aldık (eskiden aşağıda "Seçenekler:" listesindeydi) *@
+                        @{
+                            var availableVariants = Model.ProductVariants.Where(x => x.IsAvailable).ToList(); // satışta olmayan seçenek gösterilmesin
+                        }
+                        @if (availableVariants.Any())
+                        {
+                            <div class="variant-box">
+                                <p>Seçenekler:</p>
+                                <div class="variant-options">
+                                    @* value boş = seçenek yok; cart.js boş değeri göndermez, handler null alır *@
+                                    <label><input type="radio" name="variantId" value="" data-extra-price="0" checked> Standart</label>
+                                    @foreach (var variant in availableVariants)
+                                    {
+                                        <label>
+                                            <input type="radio" name="variantId" value="@variant.Id"
+                                                   data-extra-price="@variant.AdditionalPrice.ToString(CultureInfo.InvariantCulture)">
+                                            @variant.OptionName
+                                            @if (variant.AdditionalPrice > 0)
+                                            {
+                                                <text>(+@variant.AdditionalPrice.ToString("N2") ₺)</text>
+                                            }
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        }
+
                         <div class="addto-cart-box">
                             <ul class="clearfix">
-                                <li><input type="text" name="quantity" placeholder="1"></li>
+                                @* DEĞİŞTİ: id verdik, placeholder yerine gerçek değer 1 *@
+                                <li><input type="text" id="quantity" value="1" inputmode="numeric" maxlength="2" aria-label="Adet"></li>
                                 <li><a href="#"><i class="far fa-heart"></i></a></li>
-                                <li><button type="button" class="theme-btn-one" data-product-id="@Model.Id">Sepete Ekle</button></li>
+                                @* DEĞİŞTİ: sadece id eklendi *@
+                                <li><button type="button" id="addToCartBtn" class="theme-btn-one" data-product-id="@Model.Id">Sepete Ekle</button></li>
                             </ul>
                         </div>
+
+
+
                         <div class="other-links">
                             <ul class="category list">
                                 <li>Kategori:</li>
                                 <li><a href="#">@Model.Category.CategoryName</a></li>
                             </ul>
-                            <ul class="tags list">
-                                <li>Seçenekler:</li>
-                                @foreach (var variant in Model.ProductVariants)
-                                {
-                                    <li>
-                                        <a href="#">
-                                            @variant.OptionName
-                                            @if (variant.AdditionalPrice > 0)
-                                            {
-                                                <text>(+@variant.AdditionalPrice ₺)</text>
-                                            }
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
+                            
                         </div>
                     </div>
                 </div>
@@ -372,3 +392,51 @@
         </div>
     </div>
 </section>
+
+
+
+
+
+
+
+
+@section Scripts {
+    <script>
+        (function () {
+            const btn = document.getElementById('addToCartBtn');
+            const qtyInput = document.getElementById('quantity');
+            const priceEl = document.getElementById('productPrice');
+            const basePrice = parseFloat(priceEl.dataset.basePrice);
+
+            // Seçenek değişince ekrandaki fiyatı güncelle.
+            // Bu SADECE görüntü; sepete eklenen fiyatı sunucu kendi hesaplıyor (Adım 4).
+            document.querySelectorAll('input[name="variantId"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    const total = basePrice + parseFloat(this.dataset.extraPrice || '0');
+                    priceEl.textContent = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                });
+            });
+
+            btn.addEventListener('click', async function () {
+                const quantity = parseInt(qtyInput.value, 10);
+                if (!Number.isInteger(quantity) || quantity < 1) {
+                    BageryCart.toast('Geçerli bir adet girin.', false);
+                    return;
+                }
+
+                const selected = document.querySelector('input[name="variantId"]:checked');
+                const variantId = selected ? selected.value : null; // seçenek yoksa null
+
+                btn.disabled = true; // çift tıklamada ürün iki kez eklenmesin
+                const result = await BageryCart.add(btn.dataset.productId, quantity, variantId);
+                btn.disabled = false;
+
+                // Başarılıysa mesajın yanında "Sepete git" linki çıkar
+                BageryCart.toast(result.message, result.success,
+                    result.success ? { href: '/Cart/Index', text: 'Sepete git' } : null);
+
+                if (result.success) qtyInput.value = 1;
+            });
+        })();
+    </script>
+}

@@ -28,6 +28,12 @@ namespace Bagery.WebUI.Context
                 }
 
             }
+            modelBuilder.Entity<Order>()
+            .HasIndex(x => x.OrderNo)
+            .IsUnique();//biz siparişi orderId degılde paytr de araken no ya gre arayacagız onun için eklendı bu 
+
+
+
         }
 
 
@@ -62,6 +68,10 @@ namespace Bagery.WebUI.Context
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Testimonial> Testimonials { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Installment> Installments { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
 
 
     }

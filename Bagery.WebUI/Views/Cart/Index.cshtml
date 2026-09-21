@@ -1,0 +1,182 @@
+﻿@using Bagery.WebUI.Models.CartModels
+@using System.Globalization
+@{
+    ViewData["Title"] = "Sepetim";
+    Layout = "~/Views/Shared/_WebUILayout.cshtml";
+}
+
+@* Başlık alanı: Detail.cshtml'deki ile aynı yapı *@
+<section class="page-title centred"
+         style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
+    <div class="auto-container">
+        <div class="content-box">
+            <div class="title"><h1>Sepetim</h1></div>
+        </div>
+    </div>
+</section>
+
+<section class="cart-section cart-page">
+    <div class="auto-container">
+
+        @* Sepet boşken görünür *@
+        <div id="cartEmpty" class="cart-empty" hidden>
+            <h3>Sepetiniz boş</h3>
+            <p>Mağazamızdan beğendiğiniz ürünleri sepete ekleyebilirsiniz.</p>
+            <a href="/Product/Shop" class="theme-btn-one">Mağazaya git</a>
+        </div>
+
+        @* Sepette ürün varken görünür *@
+        <div id="cartContent" hidden>
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 table-column">
+                    <div class="table-outer">
+                        <table class="cart-table">
+                            <thead class="cart-header">
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th class="prod-column">Ürün</th>
+                                    <th>&nbsp;</th>
+                                    <th>&nbsp;</th>
+                                    <th class="price">Fiyat</th>
+                                    <th class="quantity">Adet</th>
+                                    <th>Tutar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartRows"></tbody> @* JS dolduruyor *@
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="othre-content clearfix">
+                @* Kupon yokken giriş kutusu, varken "Kupon: X Kaldır" görünür *@
+                <div class="coupon-box pull-left clearfix" id="couponForm">
+                    <input type="text" id="couponInput" placeholder="HOSGELDIN50" autocomplete="off" aria-label="Kupon kodu">
+                    <button type="button" id="applyCouponBtn" class="theme-btn-one">Kuponu uygula<i class="flaticon-right-1"></i></button>
+                </div>
+                <div class="coupon-applied pull-right" id="couponApplied" hidden>
+                    Kupon: <strong id="couponCodeText"></strong>
+                    <button type="button" id="removeCouponBtn">Kaldır</button>
+                </div>
+            </div>
+
+            <div class="cart-total">
+                <div class="row">
+                    <div class="col-xl-5 col-lg-12 col-md-12 offset-xl-7 cart-column">
+                        <div class="total-cart-box clearfix">
+                            <h4>Sepet toplamı</h4>
+                            <ul class="list clearfix">
+                                <li>Ara toplam:<span id="subTotal"></span></li>
+                                <li id="discountRow" hidden>İndirim:<span id="discount"></span></li>
+                                <li>Kargo:<span id="shipping"></span></li>
+                                <li>Ödenecek tutar:<span id="paidPrice"></span></li>
+                            </ul>
+                            <p class="shipping-hint" id="shippingHint"></p>
+                            @* Adım 8'e kadar bu link 404 verir, normal *@
+                            <a href="/Payment/Checkout" class="theme-btn-one">Ödemeye geç</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const cartApi = window.BageryCart;
+            // Adım 3'teki sabit, JS'e noktalı biçimde yazılıyor
+            const freeShippingLimit = @Cart.FreeShippingLimit.ToString(CultureInfo.InvariantCulture);
+
+            // Sunucudan gelen sepeti ekrana çizer. Her işlemden sonra yeniden çağrılır.
+            function render(cart) {
+                const isEmpty = !cart || cart.items.length === 0;
+                document.getElementById('cartEmpty').hidden = !isEmpty;
+                document.getElementById('cartContent').hidden = isEmpty;
+                if (isEmpty) return;
+
+                document.getElementById('cartRows').innerHTML = cart.items.map(item => {
+                    const name = cartApi.escapeHtml(item.productName) +
+                        (item.variantName ? `<br><small>${cartApi.escapeHtml(item.variantName)}</small>` : '');
+                    // Butonlar hangi satıra ait olduğunu bu iki değerden anlıyor
+                    const key = `data-product="${item.productId}" data-variant="${item.variantId ?? ''}"`;
+                    return `
+                        <tr>
+                            <td colspan="4" class="prod-column">
+                                <div class="column-box">
+                                    <button type="button" class="remove-btn js-remove" ${key} aria-label="Sepetten çıkar">
+                                        <i class="fal fa-times"></i>
+                                    </button>
+                                    <div class="prod-thumb">
+                                        <a href="/Product/Detail/${item.productId}"><img src="${cartApi.escapeHtml(item.imageUrl)}" alt=""></a>
+                                    </div>
+                                    <div class="prod-title">${name}</div>
+                                </div>
+                            </td>
+                            <td class="price">${cartApi.formatPrice(item.unitPrice)}</td>
+                            <td class="qty">
+                                <div class="qty-stepper">
+                                    <button type="button" class="js-decrease" ${key} aria-label="Azalt">−</button>
+                                    <span>${item.quantity}</span>
+                                    <button type="button" class="js-increase" ${key} aria-label="Artır">+</button>
+                                </div>
+                            </td>
+                            <td class="sub-total">${cartApi.formatPrice(item.lineTotal)}</td>
+                        </tr>`;
+                }).join('');
+
+                document.getElementById('subTotal').textContent = cartApi.formatPrice(cart.subTotal);
+                document.getElementById('shipping').textContent = cart.shippingPrice === 0 ? 'Ücretsiz' : cartApi.formatPrice(cart.shippingPrice);
+                document.getElementById('paidPrice').textContent = cartApi.formatPrice(cart.paidPrice);
+
+                const hasCoupon = !!cart.couponCode;
+                document.getElementById('discountRow').hidden = !hasCoupon;
+                document.getElementById('discount').textContent = '−' + cartApi.formatPrice(cart.couponDiscount);
+                document.getElementById('couponForm').hidden = hasCoupon;
+                document.getElementById('couponApplied').hidden = !hasCoupon;
+                document.getElementById('couponCodeText').textContent = cart.couponCode || '';
+
+                document.getElementById('shippingHint').textContent = cart.shippingPrice > 0
+                    ? `${cartApi.formatPrice(freeShippingLimit)} üzeri siparişlerde kargo ücretsiz.`
+                    : '';
+            }
+
+            // Her işlem aynı kalıpla çalışır: istek at, hata varsa göster, yoksa sepeti yeniden çiz
+            async function run(promise) {
+                const result = await promise;
+                if (result.success === false) {
+                    cartApi.toast(result.message, false);
+                    return;
+                }
+                if (result.message) cartApi.toast(result.message, true);
+                render(result.cart);
+            }
+
+            // Tek dinleyici ile tüm satır butonları (açıklaması aşağıda)
+            document.getElementById('cartRows').addEventListener('click', function (e) {
+                const btn = e.target.closest('button[data-product]');
+                if (!btn) return;
+                const productId = btn.dataset.product;
+                const variantId = btn.dataset.variant || null;
+
+                if (btn.classList.contains('js-increase')) run(cartApi.add(productId, 1, variantId)); // + = 1 adet daha ekle
+                else if (btn.classList.contains('js-decrease')) run(cartApi.decrease(productId, variantId));
+                else if (btn.classList.contains('js-remove')) run(cartApi.remove(productId, variantId));
+            });
+
+            document.getElementById('applyCouponBtn').addEventListener('click', function () {
+                const code = document.getElementById('couponInput').value.trim();
+                if (!code) { cartApi.toast('Kupon kodunu girin.', false); return; }
+                run(cartApi.applyCoupon(code));
+            });
+
+            document.getElementById('removeCouponBtn').addEventListener('click', function () {
+                run(cartApi.removeCoupon());
+            });
+
+            run(cartApi.get()); // sayfa açılınca sepeti getir
+        })();
+    </script>
+}

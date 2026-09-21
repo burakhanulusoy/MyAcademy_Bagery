@@ -31,7 +31,7 @@
         <link href="~/Bagery Pack/Bagery/assets/css/global.css" rel="stylesheet">
         <link href="~/Bagery Pack/Bagery/assets/css/style.css" rel="stylesheet">
         <link href="~/Bagery Pack/Bagery/assets/css/responsive.css" rel="stylesheet">
-
+        <link href="~/css/bagery-cart.css" rel="stylesheet"> @* YENİ: sepet stilleri *@
     </head>
 
 
@@ -197,9 +197,10 @@
                                 </div>
                             </li>
                             <li class="cart-btn">
-                                <a href="shop-1.html" style="background-image: url(~/Bagery Pack/Bagery/assets/images/icons/icon-bg-6.png);">
+                                <a href="/Cart/Index" style="background-image: url(~/Bagery Pack/Bagery/assets/images/icons/icon-bg-6.png);">
+                                    @* DEĞİŞTİ: shop-1.html yerine *@
                                     <i class="icon-Bag"></i>
-                                    <span>3</span>
+                                    <span class="cart-count"></span> @* DEĞİŞTİ: sabit 3 yerine, cart.js dolduruyor *@
                                 </a>
                             </li>
                         </ul>
@@ -234,9 +235,10 @@
                                 </div>
                             </li>
                             <li class="cart-btn">
-                                <a href="shop-1.html" style="background-image: url(~/Bagery Pack/Bagery/assets/images/icons/icon-bg-1.png);">
+                                <a href="/Cart/Index" style="background-image: url(~/Bagery Pack/Bagery/assets/images/icons/icon-bg-6.png);">
+                                    @* DEĞİŞTİ: shop-1.html yerine *@
                                     <i class="icon-Bag"></i>
-                                    <span>3</span>
+                                    <span class="cart-count"></span> @* DEĞİŞTİ: sabit 3 yerine, cart.js dolduruyor *@
                                 </a>
                             </li>
                         </ul>
@@ -392,6 +394,10 @@
         <script src="~/Bagery Pack/Bagery/assets/js/nav-tool.js"></script>
         <script src="~/Bagery Pack/Bagery/assets/js/bxslider.js"></script>
         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+        <script src="~/js/cart.js"></script> @* YENİ: sepet fonksiyonları *@
+        @await RenderSectionAsync("Scripts", required: false) @* YENİ: sayfaların kendi script'leri buraya gelir *@
+
+
         <!-- main-js -->
         <script src="~/Bagery Pack/Bagery/assets/js/script.js"></script>
         <style>
