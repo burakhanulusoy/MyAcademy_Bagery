@@ -1,0 +1,1751 @@
+﻿/* =========================================================
+   Bagery sepet + ödeme tasarımı
+   Sadece .bg-shop içindeki sayfaları etkiler.
+   ========================================================= */
+
+.bg-shop {
+    /* Tema renkleri tek yerde; bir rengi değiştirmek istersen buradan */
+    --ink: #2b3c6b; /* lacivert: başlık, metin, fiyat */
+    --ink-soft: #4a5a86;
+    --accent: #e3a087; /* şeftali: vurgu, buton */
+    --accent-strong: #cf7f62; /* butonun üzerine gelince */
+    --blush: #fcf5f3; /* pudra: yumuşak zemin */
+    --line: #efe7e3; /* çizgiler, kenarlıklar */
+    --text: #2a2a2a;
+    --muted: #8b8b8b;
+    --success: #2f7d52;
+    --danger: #a8323a;
+    padding: 70px 0 110px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+}
+
+    .bg-shop [hidden] {
+        display: none !important;
+    }
+    /* tema bazı öğelere display veriyor; hidden her zaman gizlesin */
+    .bg-shop h2 {
+        font-family: 'Rubik', sans-serif;
+    }
+
+
+/* ---------- Adım göstergesi: Sepet → Ödeme → Onay ---------- */
+.bg-steps {
+    display: flex;
+    align-items: center;
+    max-width: 560px;
+    margin: 0 auto 50px;
+    padding: 0;
+    list-style: none;
+}
+
+    .bg-steps li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        font-family: 'Rubik', sans-serif;
+        font-size: 15px;
+        color: var(--muted);
+    }
+
+        .bg-steps li:last-child {
+            flex: 0 0 auto;
+        }
+
+        .bg-steps li:not(:last-child)::after {
+            content: "";
+            flex: 1;
+            height: 2px;
+            margin: 0 14px;
+            background: var(--line);
+        }
+        /* adımlar arası çizgi */
+        .bg-steps li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: inherit;
+        }
+
+    .bg-steps .num {
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 2px solid var(--line);
+        background: #fff;
+        font-weight: 500;
+    }
+
+    .bg-steps .is-current {
+        color: var(--ink);
+    }
+
+        .bg-steps .is-current .num {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: #fff;
+        }
+
+    .bg-steps .is-done {
+        color: var(--ink);
+    }
+
+        .bg-steps .is-done .num {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .bg-steps .is-done::after {
+            background: var(--accent) !important;
+        }
+/* tamamlanan adımın çizgisi renkli */
+
+
+/* ---------- Sayfa düzeni: solda içerik, sağda özet ---------- */
+.bg-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 32px;
+    align-items: start;
+}
+
+.bg-stack {
+    display: grid;
+    gap: 24px;
+}
+
+@media (max-width: 991px) {
+    .bg-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.bg-panel {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.bg-panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.bg-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 22px;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--ink);
+}
+
+.bg-panel-head .bg-panel-title {
+    margin-bottom: 0;
+}
+
+.bg-count {
+    font-size: 15px;
+    color: var(--muted);
+}
+
+.step-no { /* ödeme sayfasındaki "1 Teslimat", "2 Kart" numaraları */
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--blush);
+    color: var(--accent-strong);
+    font-size: 15px;
+}
+
+
+/* ---------- Sepet satırları ---------- */
+.bg-items {
+    margin-top: 10px;
+}
+
+.bg-item {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto 110px 36px;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.bg-item-img {
+    display: block;
+    width: 96px;
+    height: 96px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--blush);
+}
+
+    .bg-item-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .3s ease;
+    }
+
+    .bg-item-img:hover img {
+        transform: scale(1.05);
+    }
+
+.bg-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.bg-item-name {
+    font-family: 'Rubik', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--ink);
+}
+
+    .bg-item-name:hover {
+        color: var(--accent-strong);
+    }
+
+.bg-item-variant {
+    align-self: flex-start;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--blush);
+    color: var(--accent-strong);
+    font-size: 13px;
+}
+
+.bg-item-unit {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.bg-item-total {
+    text-align: right;
+    font-family: 'Rubik', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.bg-item-remove {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+
+    .bg-item-remove:hover {
+        background: #fbeaea;
+        color: var(--danger);
+    }
+
+/* Adet: - 2 + */
+.bg-qty {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+}
+
+    .bg-qty button {
+        width: 32px;
+        height: 32px;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--ink);
+        font-size: 12px;
+        cursor: pointer;
+        transition: background .2s;
+    }
+
+        .bg-qty button:hover {
+            background: var(--blush);
+        }
+
+    .bg-qty span {
+        min-width: 34px;
+        text-align: center;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+/* Telefonda satır iki kata iner: üstte resim-ad-sil, altta adet-tutar */
+@media (max-width: 640px) {
+    .bg-panel {
+        padding: 22px;
+    }
+
+    .bg-item {
+        grid-template-columns: 76px minmax(0, 1fr) 36px;
+        grid-template-areas: "img info remove" "img qty total";
+        gap: 10px 14px;
+    }
+
+    .bg-item-img {
+        grid-area: img;
+        width: 76px;
+        height: 76px;
+    }
+
+    .bg-item-info {
+        grid-area: info;
+    }
+
+    .bg-qty {
+        grid-area: qty;
+        justify-self: start;
+    }
+
+    .bg-item-total {
+        grid-area: total;
+    }
+
+    .bg-item-remove {
+        grid-area: remove;
+    }
+}
+
+.bg-link-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+    .bg-link-back:hover {
+        color: var(--accent-strong);
+    }
+
+
+/* ---------- Sağdaki özet (kaydırınca sabit kalır) ---------- */
+.bg-summary {
+    position: sticky;
+    top: 110px;
+}
+/* 110px: temanın yapışkan header'ının altında kalsın */
+@media (max-width: 991px) {
+    .bg-summary {
+        position: static;
+    }
+}
+
+/* Ücretsiz kargo çubuğu */
+.bg-ship {
+    margin-bottom: 22px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--blush);
+}
+
+    .bg-ship p {
+        margin: 0 0 10px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-soft);
+    }
+
+    .bg-ship strong {
+        color: var(--ink);
+    }
+
+.bg-ship-track {
+    height: 6px;
+    border-radius: 999px;
+    background: #fff;
+    overflow: hidden;
+}
+
+    .bg-ship-track span {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--accent);
+        transition: width .5s ease;
+    }
+
+.bg-ship.is-free .bg-ship-track span {
+    background: var(--success);
+}
+
+.bg-ship.is-free strong {
+    color: var(--success);
+}
+
+/* Kupon */
+.bg-coupon {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--line);
+}
+
+.bg-coupon-row {
+    display: flex;
+    gap: 8px;
+}
+
+    .bg-coupon-row input {
+        flex: 1;
+        min-width: 0;
+        height: 46px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+        .bg-coupon-row input::placeholder {
+            text-transform: none;
+            letter-spacing: 0;
+            color: #b5b5b5;
+        }
+
+        .bg-coupon-row input:focus {
+            outline: none;
+            border-color: var(--ink);
+            box-shadow: 0 0 0 3px rgba(227, 160, 135, .25);
+        }
+
+    .bg-coupon-row button {
+        height: 46px;
+        padding: 0 18px;
+        border: 1px solid var(--ink);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--ink);
+        font-weight: 700;
+        cursor: pointer;
+        transition: background .2s, color .2s;
+    }
+
+        .bg-coupon-row button:hover {
+            background: var(--ink);
+            color: #fff;
+        }
+
+.bg-coupon-applied {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #eef7f1;
+    color: var(--success);
+    font-size: 14px;
+}
+
+    .bg-coupon-applied button {
+        border: 0;
+        background: none;
+        color: var(--danger);
+        font-weight: 700;
+        cursor: pointer;
+    }
+/* Aktif kupon listesi (ViewComponent) özet kutusunda alt alta */
+.bg-summary .active-coupons {
+    margin-top: 14px;
+}
+
+.bg-summary .active-coupons-title {
+    font-size: 13px;
+}
+
+.bg-summary .active-coupons ul {
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bg-summary .active-coupons li {
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* Tutarlar */
+.bg-totals {
+    margin: 0 0 22px;
+}
+
+    .bg-totals > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 0;
+        font-size: 15px;
+    }
+
+    .bg-totals dt {
+        font-weight: 400;
+        color: var(--muted);
+    }
+
+    .bg-totals dd {
+        margin: 0;
+        font-weight: 600;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+    }
+
+        .bg-totals dd.is-discount {
+            color: var(--success);
+        }
+
+    .bg-totals .bg-grand {
+        align-items: baseline;
+        margin-top: 10px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+    }
+
+        .bg-totals .bg-grand dt {
+            font-family: 'Rubik', sans-serif;
+            font-size: 17px;
+            color: var(--ink);
+        }
+
+        .bg-totals .bg-grand dd {
+            font-family: 'Rubik', sans-serif;
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+/* Ana buton */
+.bg-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 56px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff !important;
+    font-family: 'Rubik', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+}
+
+    .bg-btn:hover {
+        background: var(--accent-strong);
+    }
+
+    .bg-btn:active {
+        transform: translateY(1px);
+    }
+
+    .bg-btn[disabled] {
+        opacity: .65;
+        cursor: wait;
+    }
+
+.bg-btn-inline {
+    display: inline-flex;
+    width: auto;
+    padding: 0 34px;
+}
+/* Klavyeyle gezenler nerede olduğunu görsün */
+.bg-shop a:focus-visible, .bg-shop button:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+}
+
+.bg-trust {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 14px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+    .bg-trust i {
+        margin-top: 3px;
+        color: var(--success);
+    }
+
+
+/* ---------- Boş sepet ---------- */
+.bg-empty {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 30px 0;
+    text-align: center;
+}
+
+.bg-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: var(--blush);
+    color: var(--accent);
+    font-size: 40px;
+}
+
+.bg-empty h2 {
+    margin-bottom: 10px;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.bg-empty p {
+    margin-bottom: 26px;
+    color: var(--muted);
+}
+
+
+/* ---------- Ödeme formu ---------- */
+.bg-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.bg-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.bg-span-2 {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 575px) {
+    .bg-grid-2 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.bg-field label, .bg-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.bg-field .optional {
+    font-weight: 400;
+    color: var(--muted);
+}
+
+.bg-field input, .bg-field textarea {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    font-size: 15px;
+    color: var(--text);
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.bg-field input {
+    height: 50px;
+}
+
+.bg-field textarea {
+    min-height: 90px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+    .bg-field input:focus, .bg-field textarea:focus {
+        outline: none;
+        border-color: var(--ink);
+        box-shadow: 0 0 0 3px rgba(227, 160, 135, .25);
+    }
+
+.bg-field input[readonly] {
+    background: #f8f6f5;
+    color: var(--muted);
+}
+
+/* Kart önizlemesi: yazdıkça güncellenir */
+.bg-card-wrap {
+    margin-bottom: 26px;
+}
+
+.bg-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 1.586; /* gerçek kart oranı */
+    padding: 22px 24px;
+    border-radius: 16px;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Rubik', sans-serif;
+}
+
+    .bg-card::after { /* sağ üstte şeftali daire: kartı düz lacivert bir kutudan ayırır */
+        content: "";
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: var(--accent);
+        opacity: .18;
+    }
+
+    .bg-card > * {
+        position: relative;
+        z-index: 1;
+    }
+
+.bg-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bg-card-chip {
+    width: 42px;
+    height: 30px;
+    border-radius: 6px;
+    background: var(--accent);
+}
+
+.bg-card-type {
+    font-size: 12px;
+    letter-spacing: 1px;
+    opacity: .75;
+}
+
+.bg-card-number {
+    font-size: 21px;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.bg-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+    .bg-card-bottom small {
+        display: block;
+        margin-bottom: 2px;
+        font-family: 'Nunito', sans-serif;
+        font-size: 10px;
+        letter-spacing: 1px;
+        opacity: .65;
+    }
+
+    .bg-card-bottom span {
+        display: block;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+        letter-spacing: .5px;
+    }
+
+@media (max-width: 400px) {
+    .bg-card-number {
+        font-size: 17px;
+    }
+}
+
+/* Taksit seçenekleri */
+.bg-inst {
+    margin-top: 24px;
+}
+
+.bg-checkout .installment-list {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+}
+
+    .bg-checkout .installment-list label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+        padding: 13px 16px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: border-color .2s, background .2s;
+    }
+
+        .bg-checkout .installment-list label:hover {
+            border-color: var(--accent);
+        }
+
+        .bg-checkout .installment-list label:has(input:checked) {
+            border-color: var(--accent);
+            background: var(--blush);
+        }
+
+    .bg-checkout .installment-list input {
+        margin-right: 10px;
+        accent-color: var(--accent-strong);
+    }
+
+.bg-checkout .installment-hint {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* Özetteki küçük ürün listesi (resmin köşesinde adet rozeti) */
+.bg-mini-items {
+    display: grid;
+    gap: 14px;
+    max-height: 320px;
+    margin: 0 0 22px;
+    padding: 4px 4px 0 0;
+    overflow-y: auto;
+    list-style: none;
+}
+
+    .bg-mini-items li {
+        display: grid;
+        grid-template-columns: 58px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 14px;
+    }
+
+.bg-mini-img {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    border-radius: 10px;
+    background: var(--blush);
+}
+
+    .bg-mini-img img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+    .bg-mini-img em {
+        position: absolute;
+        top: -7px;
+        right: -7px;
+        display: grid;
+        place-items: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-style: normal;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+.bg-mini-name {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text);
+}
+
+    .bg-mini-name small {
+        display: block;
+        font-weight: 400;
+        color: var(--muted);
+    }
+
+.bg-mini-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.bg-alert {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #fbeaea;
+    color: var(--danger);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.bg-test-hint {
+    margin: 12px 0 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* Hareket hassasiyeti olan kullanıcılar için animasyonları kapat */
+@media (prefers-reduced-motion: reduce) {
+    .bg-ship-track span, .bg-item-img img, .bg-btn {
+        transition: none;
+    }
+}
+
+/* =========================================================
+   Giriş bilgilendirme penceresi
+   ========================================================= */
+.bg-dialog {
+    width: min(460px, calc(100% - 32px)); padding: 0; border: 0; border-radius: 20px;
+    color: var(--text); box-shadow: 0 24px 60px rgba(20, 28, 55, .25);
+}
+.bg-dialog::backdrop { background: rgba(20, 28, 55, .55); } /* arkadaki sayfayı karartır */
+.bg-dialog[open] { animation: bg-pop .25s ease-out; }
+@keyframes bg-pop { from { opacity: 0; transform: translateY(8px) scale(.97); } }
+
+.bg-dialog-inner { position: relative; padding: 38px 32px 30px; text-align: center; }
+.bg-dialog-close {
+    position: absolute; top: 14px; right: 14px; width: 36px; height: 36px;
+    border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer;
+}
+.bg-dialog-close:hover { background: var(--blush); color: var(--ink); }
+.bg-dialog-icon {
+    display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 18px;
+    border-radius: 50%; background: var(--blush); color: var(--accent-strong); font-size: 28px;
+}
+.bg-dialog h2 { margin: 0 0 10px; font-size: 24px; font-weight: 500; color: var(--ink); }
+.bg-dialog p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-soft); }
+.bg-dialog-points { display: grid; gap: 8px; margin: 20px 0 0; padding: 14px 16px; list-style: none; text-align: left; border-radius: 12px; background: var(--blush); }
+.bg-dialog-points li { display: flex; gap: 10px; font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+.bg-dialog-points i { margin-top: 4px; color: var(--success); }
+.bg-dialog-actions { display: grid; gap: 10px; margin-top: 24px; }
+
+/* İkincil buton (beyaz zemin, lacivert çerçeve) */
+.bg-btn-outline { border: 1px solid var(--ink); background: #fff; color: var(--ink) !important; }
+.bg-btn-outline:hover { background: var(--ink); color: #fff !important; }
+
+
+/* =========================================================
+   Sipariş sonucu (Success)
+   ========================================================= */
+.bg-hero { max-width: 720px; margin: 0 auto 32px; text-align: center; }
+.bg-hero h2 { margin: 14px 0 10px; font-size: 32px; font-weight: 500; line-height: 1.25; color: var(--ink); }
+.bg-hero > p { max-width: 520px; margin: 0 auto; font-size: 16px; line-height: 1.6; color: var(--muted); }
+.bg-paid-badge {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 26px;
+    padding: 6px 14px; border-radius: 999px; background: #eef7f1; color: var(--success); font-size: 14px; font-weight: 700;
+}
+
+/* Kurye sahnesi */
+.bg-courier-stage { overflow: hidden; padding: 30px 20px 0; border-radius: 20px; background: var(--blush); }
+.bg-courier { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto; }
+.bg-courier .ink { fill: var(--ink); }
+.bg-courier .accent { fill: var(--accent); }
+.bg-courier .accent-strong { fill: var(--accent-strong); }
+.bg-courier .white { fill: #fff; }
+.bg-courier .tire { fill: #fff; stroke: var(--ink); stroke-width: 7; }
+.bg-courier .stroke-ink { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+.bg-courier .stroke-accent { fill: none; stroke: var(--accent-strong); stroke-linecap: round; }
+.bg-courier .dash { fill: #fff; opacity: .7; }
+.bg-courier .speed line { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+
+/* Hareketler */
+.bg-drive-in { transform-box: view-box; animation: bg-drive-in 1.1s cubic-bezier(.2, .8, .2, 1) both; } /* soldan gelir, bir kez */
+.bg-bob { animation: bg-bob .45s ease-in-out infinite alternate; }                                     /* yolda hafif sallanma */
+.bg-wheel { transform-box: fill-box; transform-origin: center; animation: bg-spin .5s linear infinite; } /* tekerlek kendi merkezinde döner */
+.bg-road-dashes { animation: bg-road .5s linear infinite; }                                           /* yol çizgileri akar */
+.bg-speed line { animation: bg-speed .9s ease-out infinite; }
+.bg-speed line:nth-child(2) { animation-delay: .15s; }
+.bg-speed line:nth-child(3) { animation-delay: .3s; }
+
+@keyframes bg-drive-in { from { transform: translateX(-110%); } to { transform: translateX(0); } }
+@keyframes bg-bob { to { transform: translateY(-3px); } }
+@keyframes bg-spin { to { transform: rotate(360deg); } }
+@keyframes bg-road { to { transform: translateX(-56px); } } /* çizgiler arası mesafe kadar kayar -> kesintisiz döngü */
+@keyframes bg-speed { 0% { opacity: 0; transform: translateX(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateX(-24px); } }
+
+/* Tahmini varış kutusu */
+.bg-eta {
+    display: inline-flex; align-items: center; gap: 14px; margin-top: 24px;
+    padding: 14px 24px; border-radius: 14px; background: var(--ink); color: #fff; text-align: left;
+}
+.bg-eta i { font-size: 24px; color: var(--accent); }
+.bg-eta small { display: block; font-size: 11px; letter-spacing: 1px; opacity: .7; }
+.bg-eta strong { font-family: 'Rubik', sans-serif; font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* Takip çizelgesi: Ödeme alındı → Hazırlandı → Yolda → Teslim */
+.bg-track { display: grid; grid-template-columns: repeat(4, 1fr); margin: 36px 0 0; padding: 0; list-style: none; }
+.bg-track li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.bg-track li::before { content: ""; position: absolute; top: 13px; left: -50%; width: 100%; height: 2px; background: var(--line); } /* önceki adımdan gelen çizgi */
+.bg-track li:first-child::before { display: none; }
+.bg-track .dot {
+    position: relative; z-index: 1; display: grid; place-items: center;
+    width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); background: #fff; font-size: 11px;
+}
+.bg-track .is-done, .bg-track .is-current { color: var(--ink); }
+.bg-track .is-done::before, .bg-track .is-current::before { background: var(--accent); }
+.bg-track .is-done .dot { border-color: var(--accent); background: var(--accent); color: #fff; }
+.bg-track .is-current { font-weight: 700; }
+.bg-track .is-current .dot { border-color: var(--accent); }
+.bg-track .is-current .dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: bg-pulse 1.2s ease-in-out infinite; }
+@keyframes bg-pulse { 50% { transform: scale(1.5); opacity: .45; } }
+
+/* Bekleme / hata durum ikonu */
+.bg-state-icon { display: grid; place-items: center; width: 96px; height: 96px; margin: 0 auto; border-radius: 50%; font-size: 38px; }
+.bg-state-icon.is-wait { background: var(--blush); color: var(--accent-strong); }
+.bg-state-icon.is-wait i { animation: bg-spin 1.4s linear infinite; }
+.bg-state-icon.is-error { background: #fbeaea; color: var(--danger); }
+
+/* Fiş görünümünde sipariş özeti */
+.bg-receipt { max-width: 720px; margin: 0 auto; }
+.bg-receipt-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.bg-receipt-head .bg-panel-title { margin: 0; }
+.bg-receipt-no { font-size: 13px; color: var(--muted); }
+.bg-receipt-no code { padding: 2px 8px; border-radius: 6px; background: var(--blush); color: var(--ink); }
+.bg-lines { margin: 0 0 12px; padding: 0; list-style: none; }
+.bg-lines li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.bg-lines .qty { margin-left: 6px; color: var(--muted); }
+.bg-lines .variant { display: block; font-size: 13px; color: var(--muted); }
+.bg-lines li > span:last-child { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.bg-address { display: flex; gap: 12px; margin-top: 8px; padding: 14px 16px; border-radius: 12px; background: var(--blush); font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+.bg-address i { margin-top: 3px; color: var(--accent-strong); }
+.bg-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
+.bg-actions .bg-btn { width: auto; padding: 0 30px; }
+
+@media (max-width: 575px) {
+    .bg-hero h2 { font-size: 26px; }
+    .bg-track li { font-size: 12px; }
+}
+
+/* Hareket hassasiyeti olan kullanıcılar: tüm animasyonlar durur, kurye yerinde görünür */
+@media (prefers-reduced-motion: reduce) {
+    .bg-dialog[open], .bg-drive-in, .bg-bob, .bg-wheel, .bg-road-dashes, .bg-speed line,
+    .bg-track .is-current .dot::after, .bg-state-icon.is-wait i { animation: none; }
+}
+
+/* ---------- Motokurye sahnesi ---------- */
+.bg-moto {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #1f2c52;
+    box-shadow: 0 20px 50px rgba(31, 44, 82, .25);
+}
+
+.bg-moto-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Renkler: m- önekli sınıflar sadece bu çizime ait (temadaki sınıflarla çakışmasın) */
+.bg-moto .m-sky {
+    fill: #1f2c52;
+}
+
+.bg-moto .m-stars circle {
+    fill: #fff;
+    opacity: .5;
+}
+
+.bg-moto .m-moon {
+    fill: #f6d9cd;
+    opacity: .9;
+}
+
+.bg-moto .m-far rect {
+    fill: #26365f;
+}
+/* binalar: gökyüzünden bir ton açık */
+.bg-moto .m-window {
+    fill: var(--accent);
+    opacity: .55;
+}
+/* yanan pencereler */
+.bg-moto .m-halo {
+    fill: var(--ink);
+}
+
+.bg-moto .m-curb {
+    fill: #33447a;
+}
+
+.bg-moto .m-road {
+    fill: #16213f;
+}
+
+.bg-moto .m-dash rect {
+    fill: #fff;
+    opacity: .3;
+}
+
+.bg-moto .m-speed path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.bg-moto .m-shadow {
+    fill: #0b1226;
+    opacity: .5;
+}
+
+.bg-moto .m-metal {
+    fill: #9aa3b8;
+}
+
+.bg-moto .m-tire {
+    fill: #0f172e;
+}
+
+.bg-moto .m-rim {
+    fill: #c9d1e6;
+}
+
+.bg-moto .m-hub {
+    fill: var(--accent);
+}
+
+.bg-moto .m-spokes {
+    fill: none;
+    stroke: #0f172e;
+    stroke-width: 3;
+}
+
+.bg-moto .m-body {
+    fill: #f7f1ec;
+}
+
+.bg-moto .m-body-shade {
+    fill: #d8cdc6;
+}
+/* gövdenin gölgeli alt kısmı: hacim hissi */
+.bg-moto .m-stripe {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 5;
+    stroke-linecap: round;
+}
+
+.bg-moto .m-tail {
+    fill: var(--accent);
+}
+
+.bg-moto .m-seat {
+    fill: #0f172e;
+}
+
+.bg-moto .m-lamp {
+    fill: #ffe7a8;
+}
+
+.bg-moto .m-glass {
+    fill: #cfe0f5;
+    opacity: .55;
+}
+
+.bg-moto .m-bar {
+    fill: none;
+    stroke: #0f172e;
+    stroke-width: 6;
+    stroke-linecap: round;
+}
+
+.bg-moto .m-box {
+    fill: var(--accent);
+}
+
+.bg-moto .m-box-shade {
+    fill: var(--accent-strong);
+}
+
+.bg-moto .m-logo * {
+    fill: #fff;
+}
+
+.bg-moto .m-pants {
+    fill: none;
+    stroke: #3d4f84;
+    stroke-width: 17;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.bg-moto .m-boot {
+    fill: #0f172e;
+}
+
+.bg-moto .m-jacket {
+    fill: #d9876a;
+}
+
+.bg-moto .m-jacket-shade {
+    fill: #bf6f54;
+}
+
+.bg-moto .m-collar {
+    fill: #f7f1ec;
+}
+
+.bg-moto .m-arm {
+    fill: none;
+    stroke: #d9876a;
+    stroke-width: 14;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.bg-moto .m-glove {
+    fill: #0f172e;
+}
+
+.bg-moto .m-helmet {
+    fill: #f7f1ec;
+}
+
+.bg-moto .m-helmet-shade {
+    fill: #d8cdc6;
+}
+
+.bg-moto .m-visor {
+    fill: #1f2c52;
+}
+
+.bg-moto .m-visor-shine {
+    stroke: #cfe0f5;
+    stroke-width: 3;
+    stroke-linecap: round;
+    opacity: .8;
+}
+
+.bg-moto .m-helmet-stripe {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 6;
+    stroke-linecap: round;
+}
+
+/* Hareketler */
+.bg-moto-drive {
+    transform-box: view-box;
+    animation: bg-moto-in 1.3s cubic-bezier(.2, .8, .2, 1) both;
+}
+/* soldan giriş */
+.bg-moto-bob {
+    animation: bg-moto-bob .35s ease-in-out infinite alternate;
+}
+/* motor titreşimi */
+.bg-moto-wheel {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bg-moto-spin .4s linear infinite;
+}
+
+.bg-moto-city {
+    animation: bg-moto-city 40s linear infinite;
+}
+/* şehir: çok yavaş */
+.bg-moto-dashes {
+    animation: bg-moto-road .4s linear infinite;
+}
+/* yol: hızlı */
+.bg-moto-speed path {
+    animation: bg-moto-speed .9s ease-out infinite;
+}
+
+    .bg-moto-speed path:nth-child(2) {
+        animation-delay: .2s;
+    }
+
+    .bg-moto-speed path:nth-child(3) {
+        animation-delay: .4s;
+    }
+
+    .bg-moto-speed path:nth-child(4) {
+        animation-delay: .6s;
+    }
+
+.bg-moto-twinkle {
+    animation: bg-moto-twinkle 3s ease-in-out infinite alternate;
+}
+
+.bg-moto-beam {
+    animation: bg-moto-beam 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes bg-moto-in {
+    from {
+        transform: translateX(-110%);
+    }
+}
+
+@keyframes bg-moto-bob {
+    to {
+        transform: translateY(-2px);
+    }
+}
+
+@keyframes bg-moto-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes bg-moto-city {
+    to {
+        transform: translateX(-640px);
+    }
+}
+/* 640 = silüetin tekrar aralığı -> kesintisiz */
+@keyframes bg-moto-road {
+    to {
+        transform: translateX(-80px);
+    }
+}
+/* 80 = yol çizgileri arası */
+@keyframes bg-moto-speed {
+    0% {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    30% {
+        opacity: .9;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+}
+
+@keyframes bg-moto-twinkle {
+    to {
+        opacity: .35;
+    }
+}
+
+@keyframes bg-moto-beam {
+    to {
+        opacity: .7;
+    }
+}
+
+/* Sol üstteki tahmini varış kartı */
+.bg-moto-card {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: #fff;
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(11, 18, 38, .35);
+}
+
+    .bg-moto-card .ico {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: var(--accent);
+        color: #fff;
+    }
+
+    .bg-moto-card small {
+        display: block;
+        font-size: 11px;
+        letter-spacing: .6px;
+        color: var(--muted);
+    }
+
+    .bg-moto-card strong {
+        font-family: 'Rubik', sans-serif;
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+    }
+
+@media (max-width: 575px) {
+    .bg-moto-card {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+    }
+
+        .bg-moto-card .ico {
+            display: none;
+        }
+
+        .bg-moto-card strong {
+            font-size: 15px;
+        }
+}
+
+/* "Ödemeniz onaylanıyor" ikonunun dönmesi için */
+@keyframes bg-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bg-moto-drive, .bg-moto-bob, .bg-moto-wheel, .bg-moto-city, .bg-moto-dashes,
+    .bg-moto-speed path, .bg-moto-twinkle, .bg-moto-beam {
+        animation: none;
+    }
+}
+
+/* =========================================================
+   Komik sahne: kutudan kaçan cupcake
+   ========================================================= */
+
+/* Yeni parçaların renkleri */
+.bg-moto .m-cup-wrap {
+    fill: var(--accent-strong);
+}
+
+.bg-moto .m-cup-line {
+    fill: none;
+    stroke: #b5654b;
+    stroke-width: 1.5;
+}
+
+.bg-moto .m-cup-cream {
+    fill: #fff;
+}
+
+.bg-moto .m-cup-pink {
+    fill: none;
+    stroke: #f6c1cf;
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+.bg-moto .m-cup-cherry {
+    fill: #d64550;
+}
+
+.bg-moto .m-eye {
+    fill: #fff;
+}
+
+.bg-moto .m-alert * {
+    fill: #ffd166;
+}
+
+.bg-moto .m-sweat * {
+    fill: #9fd3ff;
+}
+
+.bg-moto .m-pop path {
+    fill: none;
+    stroke: #ffd166;
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+/* Animasyon dışındaki hal: bunlar gizli (hareket azaltılmışsa da gizli kalır) */
+.bg-moto .m-cupcake, .bg-moto .m-pop, .bg-moto .m-reach, .bg-moto .m-alert, .bg-moto .m-sweat {
+    opacity: 0;
+}
+
+/* Hepsi aynı 5 sn'lik döngüde: kurye girdikten 1.5 sn sonra başlar ve sonsuza kadar tekrarlar.
+   Aynı süre + aynı gecikme = her parça doğru anda doğru yerde olur. */
+.m-lid, .m-cupcake, .m-pop, .m-reach, .m-alert, .m-sweat, .m-eyes, .m-wobble {
+    transform-box: fill-box;
+    animation-duration: 5s;
+    animation-delay: 1.5s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+}
+
+.m-lid {
+    transform-origin: 0% 100%;
+    animation-name: bg-gag-lid;
+}
+/* menteşe: kapağın sol alt köşesi */
+.m-cupcake {
+    transform-origin: center;
+    animation-name: bg-gag-cupcake;
+    animation-timing-function: linear;
+}
+
+.m-pop {
+    transform-origin: center;
+    animation-name: bg-gag-pop;
+}
+
+.m-reach {
+    transform-origin: 100% 100%;
+    animation-name: bg-gag-reach;
+}
+/* omuzdan büyüyerek uzanır */
+.m-alert {
+    transform-origin: 50% 100%;
+    animation-name: bg-gag-alert;
+}
+
+.m-sweat {
+    animation-name: bg-gag-sweat;
+}
+
+.m-eyes {
+    transform-origin: center;
+    animation-name: bg-gag-eyes;
+}
+
+.m-wobble {
+    transform-origin: 50% 100%;
+    animation-name: bg-gag-wobble;
+}
+/* tekerleklerin olduğu yerden yalpalar */
+
+/* Kapak: açılır, cupcake dönene kadar açık kalır, "tak" diye kapanır (hafif sekerek) */
+@keyframes bg-gag-lid {
+    0%, 30% {
+        transform: rotate(0deg);
+    }
+
+    34%, 72% {
+        transform: rotate(-110deg);
+    }
+
+    78% {
+        transform: rotate(10deg);
+    }
+
+    81%, 100% {
+        transform: rotate(0deg);
+    }
+}
+
+/* Cupcake: kutudan çıkar -> havada takla -> kuryenin eline düşer -> kutuya geri
+   (translate değerleri kutunun içindeki başlangıç noktasına göre) */
+@keyframes bg-gag-cupcake {
+    0%, 31% {
+        opacity: 0;
+        transform: translate(0px, 10px) scale(.6) rotate(0deg);
+    }
+
+    34% {
+        opacity: 1;
+        transform: translate(0px, -12px) scale(1) rotate(0deg);
+    }
+
+    44% {
+        opacity: 1;
+        transform: translate(24px, -62px) scale(1) rotate(200deg);
+    }
+
+    55%, 64% {
+        opacity: 1;
+        transform: translate(56px, -34px) scale(1) rotate(360deg);
+    }
+    /* elde */
+    70% {
+        opacity: 1;
+        transform: translate(26px, -52px) scale(1) rotate(380deg);
+    }
+
+    76% {
+        opacity: 1;
+        transform: translate(0px, -6px) scale(1) rotate(360deg);
+    }
+
+    79%, 100% {
+        opacity: 0;
+        transform: translate(0px, 10px) scale(.6) rotate(360deg);
+    }
+    /* kutuya girdi */
+}
+
+@keyframes bg-gag-pop {
+    0%, 31% {
+        opacity: 0;
+        transform: scale(.3);
+    }
+
+    35% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    41%, 100% {
+        opacity: 0;
+        transform: scale(1.4);
+    }
+}
+
+@keyframes bg-gag-reach {
+    0%, 44% {
+        opacity: 0;
+        transform: scale(.3);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+
+    53%, 66% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    72%, 100% {
+        opacity: 0;
+        transform: scale(.3);
+    }
+}
+
+@keyframes bg-gag-alert {
+    0%, 36% {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(1.35);
+    }
+    /* "boing" diye büyüyüp oturur */
+    44%, 60% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    64%, 100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+@keyframes bg-gag-sweat {
+    0%, 40% {
+        opacity: 0;
+        transform: translate(0px, 0px);
+    }
+
+    44% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+
+    62% {
+        opacity: 1;
+        transform: translate(-4px, 10px);
+    }
+
+    66%, 100% {
+        opacity: 0;
+        transform: translate(-6px, 14px);
+    }
+}
+
+@keyframes bg-gag-eyes {
+    0%, 36% {
+        transform: translate(0px, 0px) scale(1, 1);
+    }
+
+    40%, 62% {
+        transform: translate(-4px, 0px) scale(1.6, 1.6);
+    }
+    /* panik: kocaman, arkaya bakıyor */
+    66%, 76% {
+        transform: translate(0px, 0px) scale(1, 1);
+    }
+
+    79%, 86% {
+        transform: translate(0px, 0px) scale(1.1, .25);
+    }
+    /* oh be: gözler kısılır */
+    90%, 100% {
+        transform: translate(0px, 0px) scale(1, 1);
+    }
+}
+
+@keyframes bg-gag-wobble {
+    0%, 38% {
+        transform: rotate(0deg);
+    }
+
+    42% {
+        transform: rotate(-3deg);
+    }
+
+    46% {
+        transform: rotate(3deg);
+    }
+
+    50% {
+        transform: rotate(-2deg);
+    }
+
+    54% {
+        transform: rotate(2deg);
+    }
+
+    58%, 100% {
+        transform: rotate(0deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .m-lid, .m-cupcake, .m-pop, .m-reach, .m-alert, .m-sweat, .m-eyes, .m-wobble {
+        animation: none;
+    }
+}

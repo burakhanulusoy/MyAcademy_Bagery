@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_WebUILayout.cshtml";
 }
 
-@* Başlık alanı: Detail.cshtml'deki ile aynı yapı *@
 <section class="page-title centred"
          style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
     <div class="auto-container">
@@ -15,137 +14,165 @@
     </div>
 </section>
 
-<section class="cart-section cart-page">
+<section class="bg-shop bg-cart">
     <div class="auto-container">
 
-        @* Sepet boşken görünür *@
-        <div id="cartEmpty" class="cart-empty" hidden>
-            <h3>Sepetiniz boş</h3>
-            <p>Mağazamızdan beğendiğiniz ürünleri sepete ekleyebilirsiniz.</p>
-            <a href="/Product/Shop" class="theme-btn-one">Mağazaya git</a>
+        @* Adım göstergesi: Sepet → Ödeme → Onay *@
+        <ol class="bg-steps" aria-label="Sipariş adımları">
+            <li class="is-current"><span class="num">1</span><span>Sepet</span></li>
+            <li><span class="num">2</span><span>Ödeme</span></li>
+            <li><span class="num">3</span><span>Onay</span></li>
+        </ol>
+
+        @* Sepet boşken *@
+        <div id="cartEmpty" class="bg-empty" hidden>
+            <div class="bg-empty-icon"><i class="fas fa-shopping-basket" aria-hidden="true"></i></div>
+            <h2>Sepetiniz boş</h2>
+            <p>Taze ürünlerimize göz atın, beğendiklerinizi sepete ekleyin.</p>
+            <a href="/Product/Shop" class="bg-btn bg-btn-inline">Mağazaya git</a>
         </div>
 
-        @* Sepette ürün varken görünür *@
-        <div id="cartContent" hidden>
-            <div class="row clearfix">
-                <div class="col-lg-12 col-md-12 col-sm-12 table-column">
-                    <div class="table-outer">
-                        <table class="cart-table">
-                            <thead class="cart-header">
-                                <tr>
-                                    <th>&nbsp;</th>
-                                    <th class="prod-column">Ürün</th>
-                                    <th>&nbsp;</th>
-                                    <th>&nbsp;</th>
-                                    <th class="price">Fiyat</th>
-                                    <th class="quantity">Adet</th>
-                                    <th>Tutar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cartRows"></tbody> @* JS dolduruyor *@
-                        </table>
+        @* Sepette ürün varken: solda ürünler, sağda özet *@
+        <div id="cartContent" class="bg-layout" hidden>
+
+            <div class="bg-panel">
+                <div class="bg-panel-head">
+                    <h2 class="bg-panel-title">Sepetim</h2>
+                    <span class="bg-count" id="itemCount"></span>
+                </div>
+                <div id="cartRows" class="bg-items"></div> @* JS dolduruyor *@
+                <a href="/Product/Shop" class="bg-link-back"><i class="fas fa-arrow-left" aria-hidden="true"></i> Alışverişe devam et</a>
+            </div>
+
+            <aside class="bg-panel bg-summary">
+                <h2 class="bg-panel-title">Sipariş özeti</h2>
+
+                @* Ücretsiz kargoya ne kadar kaldı *@
+                <div class="bg-ship" id="shipBox">
+                    <p id="shipText"></p>
+                    <div class="bg-ship-track"><span id="shipBar"></span></div>
+                </div>
+
+                <div class="bg-coupon">
+                    <div class="bg-coupon-row" id="couponForm">
+                        <input type="text" id="couponInput" placeholder="Kupon kodu" autocomplete="off" aria-label="Kupon kodu">
+                        <button type="button" id="applyCouponBtn">Uygula</button>
                     </div>
-                </div>
-            </div>
-
-            <div class="othre-content clearfix">
-                @* Kupon yokken giriş kutusu, varken "Kupon: X Kaldır" görünür *@
-                <div class="coupon-box pull-left clearfix" id="couponForm">
-                    <input type="text" id="couponInput" placeholder="HOSGELDIN50" autocomplete="off" aria-label="Kupon kodu">
-                    <button type="button" id="applyCouponBtn" class="theme-btn-one">Kuponu uygula<i class="flaticon-right-1"></i></button>
-                </div>
-                <div class="coupon-applied pull-right" id="couponApplied" hidden>
-                    Kupon: <strong id="couponCodeText"></strong>
-                    <button type="button" id="removeCouponBtn">Kaldır</button>
-                </div>
-            </div>
-
-            @await Component.InvokeAsync("_ActiveCouponsViewComponents") @* YENİ: aktif kuponlar *@
-
-            <div class="cart-total">
-                <div class="row">
-                    <div class="col-xl-5 col-lg-12 col-md-12 offset-xl-7 cart-column">
-                        <div class="total-cart-box clearfix">
-                            <h4>Sepet toplamı</h4>
-                            <ul class="list clearfix">
-                                <li>Ara toplam:<span id="subTotal"></span></li>
-                                <li id="discountRow" hidden>İndirim:<span id="discount"></span></li>
-                                <li>Kargo:<span id="shipping"></span></li>
-                                <li>Ödenecek tutar:<span id="paidPrice"></span></li>
-                            </ul>
-                            <p class="shipping-hint" id="shippingHint"></p>
-                            @* Adım 8'e kadar bu link 404 verir, normal *@
-                            <a href="/Payment/Checkout" class="theme-btn-one">Ödemeye geç</a>
-                        </div>
+                    <div class="bg-coupon-applied" id="couponApplied" hidden>
+                        <span><i class="fas fa-tag" aria-hidden="true"></i> <strong id="couponCodeText"></strong> uygulandı</span>
+                        <button type="button" id="removeCouponBtn">Kaldır</button>
                     </div>
+                    @await Component.InvokeAsync("_ActiveCouponsViewComponents")
                 </div>
-            </div>
+
+                <dl class="bg-totals">
+                    <div><dt>Ara toplam</dt><dd id="subTotal"></dd></div>
+                    <div id="discountRow" hidden><dt>İndirim</dt><dd id="discount" class="is-discount"></dd></div>
+                    <div><dt>Kargo</dt><dd id="shipping"></dd></div>
+                    <div class="bg-grand"><dt>Toplam</dt><dd id="paidPrice"></dd></div>
+                </dl>
+
+                @* id="goCheckout": giriş yapmamışsa JS bu linki yakalayıp önce pencereyi açar *@
+                <a href="/Payment/Checkout" id="goCheckout" class="bg-btn">Ödemeye geç <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                <p class="bg-trust"><i class="fas fa-lock" aria-hidden="true"></i> Ödemeler PayTR altyapısıyla, 3D Secure doğrulamasıyla alınır.</p>
+            </aside>
         </div>
 
     </div>
+
+    @* Giriş yapmamış kullanıcıya "neden giriş" penceresi (giriş yapmışsa hiç basılmaz) *@
+    @if (User.Identity?.IsAuthenticated != true)
+    {
+        <dialog class="bg-dialog" id="loginDialog" aria-labelledby="loginDialogTitle">
+            <div class="bg-dialog-inner">
+                <button type="button" class="bg-dialog-close" data-close aria-label="Kapat"><i class="fas fa-times"></i></button>
+
+                <div class="bg-dialog-icon"><i class="fas fa-lock" aria-hidden="true"></i></div>
+                <h2 id="loginDialogTitle">Ödeme için giriş yapın</h2>
+                <p>
+                    Siparişinizi hesabınıza bağlayabilmemiz, faturanızı e-postanıza gönderebilmemiz ve
+                    siparişinizi <strong>Siparişlerim</strong> sayfasından takip edebilmeniz için giriş yapmanız gerekiyor.
+                </p>
+
+                <ul class="bg-dialog-points">
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Sepetiniz kaybolmaz, giriş yapınca ödeme sayfasına dönersiniz.</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Hesabınız yoksa hemen kayıt olabilirsiniz.</li>
+                </ul>
+
+                <div class="bg-dialog-actions">
+                    @* ReturnUrl: girişten sonra doğrudan ödeme sayfasına dönsün *@
+                    <a href="/User/Login?ReturnUrl=%2FPayment%2FCheckout" class="bg-btn">Giriş yap</a>
+                    <a href="/User/RegisterUser" class="bg-btn bg-btn-outline">Kayıt ol</a>
+                </div>
+            </div>
+        </dialog>
+    }
+
 </section>
 
 @section Scripts {
     <script>
         (function () {
             const cartApi = window.BageryCart;
-            // Adım 3'teki sabit, JS'e noktalı biçimde yazılıyor
+            const fp = cartApi.formatPrice;   // kısaltma: fiyat biçimle
+            const esc = cartApi.escapeHtml;   // kısaltma: metni güvenli bas
             const freeShippingLimit = @Cart.FreeShippingLimit.ToString(CultureInfo.InvariantCulture);
 
-            // Sunucudan gelen sepeti ekrana çizer. Her işlemden sonra yeniden çağrılır.
+            // Sunucudan gelen sepeti ekrana çizer; her işlemden sonra yeniden çağrılır
             function render(cart) {
                 const isEmpty = !cart || cart.items.length === 0;
                 document.getElementById('cartEmpty').hidden = !isEmpty;
                 document.getElementById('cartContent').hidden = isEmpty;
                 if (isEmpty) return;
 
+                document.getElementById('itemCount').textContent = cart.totalQuantity + ' ürün';
+
+                // Ürün satırları
                 document.getElementById('cartRows').innerHTML = cart.items.map(item => {
-                    const name = cartApi.escapeHtml(item.productName) +
-                        (item.variantName ? `<br><small>${cartApi.escapeHtml(item.variantName)}</small>` : '');
-                    // Butonlar hangi satıra ait olduğunu bu iki değerden anlıyor
                     const key = `data-product="${item.productId}" data-variant="${item.variantId ?? ''}"`;
+                    const variant = item.variantName ? `<span class="bg-item-variant">${esc(item.variantName)}</span>` : '';
                     return `
-                        <tr>
-                            <td colspan="4" class="prod-column">
-                                <div class="column-box">
-                                    <button type="button" class="remove-btn js-remove" ${key} aria-label="Sepetten çıkar">
-                                        <i class="fal fa-times"></i>
-                                    </button>
-                                    <div class="prod-thumb">
-                                        <a href="/Product/Detail/${item.productId}"><img src="${cartApi.escapeHtml(item.imageUrl)}" alt=""></a>
-                                    </div>
-                                    <div class="prod-title">${name}</div>
-                                </div>
-                            </td>
-                            <td class="price">${cartApi.formatPrice(item.unitPrice)}</td>
-                            <td class="qty">
-                                <div class="qty-stepper">
-                                    <button type="button" class="js-decrease" ${key} aria-label="Azalt">−</button>
-                                    <span>${item.quantity}</span>
-                                    <button type="button" class="js-increase" ${key} aria-label="Artır">+</button>
-                                </div>
-                            </td>
-                            <td class="sub-total">${cartApi.formatPrice(item.lineTotal)}</td>
-                        </tr>`;
+                        <article class="bg-item">
+                            <a class="bg-item-img" href="/Product/Detail/${item.productId}"><img src="${esc(item.imageUrl)}" alt=""></a>
+                            <div class="bg-item-info">
+                                <a class="bg-item-name" href="/Product/Detail/${item.productId}">${esc(item.productName)}</a>
+                                ${variant}
+                                <span class="bg-item-unit">${fp(item.unitPrice)} / adet</span>
+                            </div>
+                            <div class="bg-qty">
+                                <button type="button" class="js-decrease" ${key} aria-label="Azalt"><i class="fas fa-minus"></i></button>
+                                <span>${item.quantity}</span>
+                                <button type="button" class="js-increase" ${key} aria-label="Artır"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <strong class="bg-item-total">${fp(item.lineTotal)}</strong>
+                            <button type="button" class="bg-item-remove js-remove" ${key} aria-label="Sepetten çıkar"><i class="fas fa-times"></i></button>
+                        </article>`;
                 }).join('');
 
-                document.getElementById('subTotal').textContent = cartApi.formatPrice(cart.subTotal);
-                document.getElementById('shipping').textContent = cart.shippingPrice === 0 ? 'Ücretsiz' : cartApi.formatPrice(cart.shippingPrice);
-                document.getElementById('paidPrice').textContent = cartApi.formatPrice(cart.paidPrice);
+                // Ücretsiz kargo çubuğu: ara toplam / limit oranında dolar
+                const free = cart.shippingPrice === 0;
+                const percent = Math.min(cart.subTotal / freeShippingLimit * 100, 100);
+                document.getElementById('shipBox').classList.toggle('is-free', free);
+                document.getElementById('shipBar').style.width = (free ? 100 : percent) + '%';
+                document.getElementById('shipText').innerHTML = free
+                    ? '<strong>Kargonuz ücretsiz.</strong>'
+                    : `Ücretsiz kargo için <strong>${fp(Math.max(freeShippingLimit - cart.subTotal, 0.01))}</strong> daha ekleyin.`;
 
+                // Tutarlar
+                document.getElementById('subTotal').textContent = fp(cart.subTotal);
+                document.getElementById('shipping').textContent = free ? 'Ücretsiz' : fp(cart.shippingPrice);
+                document.getElementById('paidPrice').textContent = fp(cart.paidPrice);
+
+                // Kupon
                 const hasCoupon = !!cart.couponCode;
                 document.getElementById('discountRow').hidden = !hasCoupon;
-                document.getElementById('discount').textContent = '−' + cartApi.formatPrice(cart.couponDiscount);
+                document.getElementById('discount').textContent = '−' + fp(cart.couponDiscount);
                 document.getElementById('couponForm').hidden = hasCoupon;
                 document.getElementById('couponApplied').hidden = !hasCoupon;
                 document.getElementById('couponCodeText').textContent = cart.couponCode || '';
-
-                document.getElementById('shippingHint').textContent = cart.shippingPrice > 0
-                    ? `${cartApi.formatPrice(freeShippingLimit)} üzeri siparişlerde kargo ücretsiz.`
-                    : '';
             }
 
-            // Her işlem aynı kalıpla çalışır: istek at, hata varsa göster, yoksa sepeti yeniden çiz
+            // İstek at; hata varsa göster, yoksa sepeti yeniden çiz
             async function run(promise) {
                 const result = await promise;
                 if (result.success === false) {
@@ -156,27 +183,49 @@
                 render(result.cart);
             }
 
-            // Tek dinleyici ile tüm satır butonları (açıklaması aşağıda)
+            // Tek dinleyici: satırlar her render'da yeniden çizildiği için
             document.getElementById('cartRows').addEventListener('click', function (e) {
-                const btn = e.target.closest('button[data-product]');
+                const btn = e.target.closest('button[data-product]'); // ikona tıklansa da butonu bulur
                 if (!btn) return;
                 const productId = btn.dataset.product;
                 const variantId = btn.dataset.variant || null;
 
-                if (btn.classList.contains('js-increase')) run(cartApi.add(productId, 1, variantId)); // + = 1 adet daha ekle
+                if (btn.classList.contains('js-increase')) run(cartApi.add(productId, 1, variantId));
                 else if (btn.classList.contains('js-decrease')) run(cartApi.decrease(productId, variantId));
                 else if (btn.classList.contains('js-remove')) run(cartApi.remove(productId, variantId));
             });
 
+            // Kupon
+            const couponInput = document.getElementById('couponInput');
+
             document.getElementById('applyCouponBtn').addEventListener('click', function () {
-                const code = document.getElementById('couponInput').value.trim();
-                if (!code) { cartApi.toast('Kupon kodunu girin.', false); return; }
+                const code = couponInput.value.trim();
+                if (!code) { cartApi.toast('Kupon kodunu yazın.', false); return; }
                 run(cartApi.applyCoupon(code));
+                couponInput.value = '';
+            });
+
+            couponInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') document.getElementById('applyCouponBtn').click(); // Enter ile de uygulansın
             });
 
             document.getElementById('removeCouponBtn').addEventListener('click', function () {
                 run(cartApi.removeCoupon());
             });
+
+            // Giriş yapmamışsa "Ödemeye geç" önce bilgilendirme penceresini açsın
+            const loginDialog = document.getElementById('loginDialog'); // giriş yapılmışsa sayfada yok -> null
+            if (loginDialog) {
+                document.getElementById('goCheckout').addEventListener('click', function (e) {
+                    e.preventDefault();       // doğrudan giriş sayfasına atlamasın
+                    loginDialog.showModal();  // arkadaki sayfa kararır ve tıklanamaz
+                });
+
+                // X butonuna ya da pencerenin dışındaki karartmaya tıklanınca kapansın (Esc zaten kapatıyor)
+                loginDialog.addEventListener('click', function (e) {
+                    if (e.target === loginDialog || e.target.closest('[data-close]')) loginDialog.close();
+                });
+            }
 
             run(cartApi.get()); // sayfa açılınca sepeti getir
         })();

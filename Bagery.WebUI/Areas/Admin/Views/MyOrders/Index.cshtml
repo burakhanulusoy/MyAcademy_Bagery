@@ -4,73 +4,82 @@
 @{
     ViewData["Title"] = "Siparişlerim";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-}
-@functions {
-    static string BadgeClass(OrderStatus status) => status switch
-    {
-        OrderStatus.Paid => "bg-success",
-        OrderStatus.Failed => "bg-danger",
-        _ => "bg-warning text-dark"
-    };
+
+    // Üstteki özet: sadece ödenmiş siparişlerin toplamı "harcama" sayılır
+    var totalSpent = Model.Where(x => x.Status == OrderStatus.Paid).Sum(x => x.PaidPrice);
 }
 
 <div class="page-content-wrapper">
     <div class="page-content">
+        <div class="bo">
 
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
-            <div class="breadcrumb-title pe-3">Siparişlerim</div>
-        </div>
+            <header class="bo-head">
+                <div>
+                    <p class="bo-eyebrow">Hesabım</p>
+                    <h1 class="bo-title">Siparişlerim</h1>
+                    @if (Model.Any())
+                    {
+                        <div class="bo-chips">
+                            <span class="bo-chip"><i class='bx bx-receipt'></i> @Model.Count sipariş</span>
+                            <span class="bo-chip is-dark"><i class='bx bx-wallet'></i> Toplam @totalSpent.ToString("N2") ₺</span>
+                        </div>
+                    }
+                </div>
+                <a href="/Product/Shop" class="bo-btn is-ghost"><i class='bx bx-store'></i> Alışverişe devam et</a>
+            </header>
 
-        <div class="card">
-            <div class="card-body">
-                @if (!Model.Any())
-                {
-                    <p class="text-secondary mb-3">Henüz siparişiniz yok.</p>
-                    <a href="/Product/Shop" class="btn btn-primary">Mağazaya git</a>
-                }
-                else
-                {
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Tarih</th>
-                                    <th>Sipariş no</th>
-                                    <th>Ürünler</th>
-                                    <th class="text-end">Tutar</th>
-                                    <th>Durum</th>
-                                    <th class="text-end">İşlem</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var order in Model)
-                                {
-                                    // "Caffè Latte" veya "Caffè Latte ve 2 ürün daha"
-                                    var title = order.ProductLineCount > 1
-                                    ? $"{order.FirstProductName} ve {order.ProductLineCount - 1} ürün daha"
-                                    : order.FirstProductName;
-
-                                    <tr>
-                                        <td>@order.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td title="@order.OrderNo"><code>@order.OrderNo.Substring(0, 8)</code></td>
-                                        <td>@title</td>
-                                        <td class="text-end">@order.PaidPrice.ToString("N2") ₺</td>
-                                        <td><span class="badge @BadgeClass(order.Status)">@order.Status.ToTurkish()</span></td>
-                                        <td class="text-end">
-                                            <a href="/Admin/MyOrders/Detail?orderNo=@order.OrderNo" class="btn btn-sm btn-outline-secondary">Detay</a>
-                                            @if (order.Status == OrderStatus.Paid)
-                                            {
-                                                <a href="/Admin/MyOrders/Invoice?orderNo=@order.OrderNo&download=true" class="btn btn-sm btn-outline-primary">PDF fatura</a>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+            @if (!Model.Any())
+            {
+                <div class="bo-card">
+                    <div class="bo-empty">
+                        <div class="icon"><i class='bx bx-shopping-bag'></i></div>
+                        <h3>Henüz siparişiniz yok</h3>
+                        <p>Verdiğiniz siparişler ve faturaları burada listelenir.</p>
+                        <a href="/Product/Shop" class="bo-btn">Mağazaya git</a>
                     </div>
-                }
-            </div>
-        </div>
+                </div>
+            }
+            else
+            {
+                <div class="bo-cards">
+                    @foreach (var order in Model)
+                    {
+                        // "Caffè Latte" veya "Caffè Latte ve 2 ürün daha"
+                        var title = order.ProductLineCount > 1
+                        ? $"{order.FirstProductName} ve {order.ProductLineCount - 1} ürün daha"
+                        : order.FirstProductName;
 
+                        <article class="bo-order">
+                            <div class="bo-order-top">
+                                <span class="bo-code">#@order.OrderNo.Substring(0, 8).ToUpperInvariant()</span>
+                                <span class="bo-pill is-@order.Status.ToString().ToLower()">@order.Status.ToTurkish()</span>
+                            </div>
+
+                            <h3 class="bo-order-title">@title</h3>
+                            <span class="bo-order-date"><i class='bx bx-calendar'></i> @order.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy, HH:mm")</span>
+
+                            <div class="bo-order-bottom">
+                                <div>
+                                    <small>Tutar</small>
+                                    <div class="bo-order-price">@order.PaidPrice.ToString("N2") ₺</div>
+                                </div>
+                                <div class="bo-order-actions">
+                                    @if (order.Status == OrderStatus.Paid)
+                                    {
+                                        <a href="/Admin/MyOrders/Invoice?orderNo=@order.OrderNo&download=true" class="bo-btn is-sm is-ghost" title="PDF fatura indir">
+                                            <i class='bx bx-download'></i> PDF
+                                        </a>
+                                    }
+                                    <a href="/Admin/MyOrders/Detail?orderNo=@order.OrderNo" class="bo-btn is-sm">
+                                        Detay <i class='bx bx-right-arrow-alt'></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+
+        </div>
     </div>
 </div>

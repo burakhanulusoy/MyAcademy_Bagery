@@ -6,95 +6,87 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 @functions {
-    // Durum -> admin temasındaki Bootstrap rozet rengi
-    static string BadgeClass(OrderStatus status) => status switch
-    {
-        OrderStatus.Paid => "bg-success",
-        OrderStatus.Failed => "bg-danger",
-        _ => "bg-warning text-dark"
-    };
+    // "Burak Han Ulusoy" -> "BH"
+    static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                          .Take(2)
+                          .Select(p => char.ToUpper(p[0], new System.Globalization.CultureInfo("tr-TR"))));
 
-    // Seçili filtre butonu dolu, diğerleri çerçeveli görünsün
-    string FilterClass(OrderStatus? status) => Model.SelectedStatus == status ? "btn-primary" : "btn-outline-primary";
+    // Seçili filtre koyu görünsün
+    string Active(OrderStatus? status) => Model.SelectedStatus == status ? "is-active" : "";
 }
 
 <div class="page-content-wrapper">
     <div class="page-content">
+        <div class="bo">
 
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
-            <div class="breadcrumb-title pe-3">Sipariş Yönetimi</div>
-        </div>
+            <header class="bo-head">
+                <div>
+                    <p class="bo-eyebrow">Yönetim</p>
+                    <h1 class="bo-title">Siparişler</h1>
+                    <p class="bo-sub">Toplam @Model.TotalCount sipariş</p>
+                </div>
+            </header>
 
-        @* ÖZET KARTLARI *@
-        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
-            <div class="col">
-                <div class="card mb-0">
-                    <div class="card-body">
-                        <p class="mb-1 text-secondary">Toplam ciro (ödenen)</p>
-                        <h4 class="mb-0">@Model.PaidTotal.ToString("N2") ₺</h4>
-                    </div>
+            @* Özet: ciro kartı büyük ve siyah, diğerleri çerçeveli *@
+            <div class="bo-stats">
+                <div class="bo-stat is-hero">
+                    <div class="label"><i class='bx bx-wallet'></i> Toplam ciro</div>
+                    <div class="value">@Model.PaidTotal.ToString("N2") <small>₺</small></div>
+                    <div class="foot">Sadece ödemesi onaylanan siparişler</div>
+                </div>
+                <div class="bo-stat">
+                    <div class="label"><i class='bx bx-check-circle'></i> Ödenen</div>
+                    <div class="value">@Model.PaidCount</div>
+                </div>
+                <div class="bo-stat">
+                    <div class="label"><i class='bx bx-time-five'></i> Bekleyen</div>
+                    <div class="value">@Model.PendingCount</div>
+                </div>
+                <div class="bo-stat">
+                    <div class="label"><i class='bx bx-x-circle'></i> Başarısız</div>
+                    <div class="value">@Model.FailedCount</div>
                 </div>
             </div>
-            <div class="col">
-                <div class="card mb-0">
-                    <div class="card-body">
-                        <p class="mb-1 text-secondary">Ödenen sipariş</p>
-                        <h4 class="mb-0 text-success">@Model.PaidCount</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card mb-0">
-                    <div class="card-body">
-                        <p class="mb-1 text-secondary">Bekleyen</p>
-                        <h4 class="mb-0 text-warning">@Model.PendingCount</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card mb-0">
-                    <div class="card-body">
-                        <p class="mb-1 text-secondary">Başarısız</p>
-                        <h4 class="mb-0 text-danger">@Model.FailedCount</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        @* Bekleyen sipariş = PayTR bildirimi gelmemiş; uzun sürerse PayTR panelinden bakılmalı *@
-        @if (Model.PendingCount > 0)
-        {
-            <div class="alert alert-warning">
-                @Model.PendingCount sipariş PayTR bildirimini bekliyor. Uzun süredir bekleyen varsa PayTR panelinde "Mağaza Bildirimleri"ni kontrol edin.
+            @if (Model.PendingCount > 0)
+            {
+                <div class="bo-notice">
+                    <i class='bx bx-info-circle'></i>
+                    <span><strong>@Model.PendingCount sipariş</strong> PayTR bildirimini bekliyor. Uzun süredir bekleyen varsa PayTR panelinde "Mağaza Bildirimleri"ni kontrol edin.</span>
+                </div>
+            }
+
+            <div class="bo-toolbar">
+                <nav class="bo-segment" aria-label="Durum filtresi">
+                    <a href="/Admin/Order/Index" class="@Active(null)">Tümü <span class="count">@Model.TotalCount</span></a>
+                    <a href="/Admin/Order/Index?status=Paid" class="@Active(OrderStatus.Paid)">Ödendi <span class="count">@Model.PaidCount</span></a>
+                    <a href="/Admin/Order/Index?status=Pending" class="@Active(OrderStatus.Pending)">Bekliyor <span class="count">@Model.PendingCount</span></a>
+                    <a href="/Admin/Order/Index?status=Failed" class="@Active(OrderStatus.Failed)">Başarısız <span class="count">@Model.FailedCount</span></a>
+                </nav>
             </div>
-        }
 
-        @* FİLTRE *@
-        <div class="d-flex flex-wrap gap-2 mb-3">
-            <a href="/Admin/Order/Index" class="btn btn-sm @FilterClass(null)">Tümü (@Model.TotalCount)</a>
-            <a href="/Admin/Order/Index?status=Paid" class="btn btn-sm @FilterClass(OrderStatus.Paid)">Ödendi (@Model.PaidCount)</a>
-            <a href="/Admin/Order/Index?status=Pending" class="btn btn-sm @FilterClass(OrderStatus.Pending)">Bekliyor (@Model.PendingCount)</a>
-            <a href="/Admin/Order/Index?status=Failed" class="btn btn-sm @FilterClass(OrderStatus.Failed)">Başarısız (@Model.FailedCount)</a>
-        </div>
-
-        @* TABLO *@
-        <div class="card">
-            <div class="card-body">
+            <div class="bo-card">
                 @if (!Model.Orders.Any())
                 {
-                    <p class="mb-0 text-secondary">Bu durumda sipariş yok.</p>
+                    <div class="bo-empty">
+                        <div class="icon"><i class='bx bx-receipt'></i></div>
+                        <h3>Bu durumda sipariş yok</h3>
+                        <p>Başka bir filtre seçin ya da tüm siparişlere dönün.</p>
+                        <a href="/Admin/Order/Index" class="bo-btn">Tüm siparişler</a>
+                    </div>
                 }
                 else
                 {
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
+                    <div class="bo-table-wrap">
+                        <table class="bo-table">
+                            <thead>
                                 <tr>
-                                    <th>Tarih</th>
-                                    <th>Sipariş no</th>
+                                    <th>Sipariş</th>
                                     <th>Müşteri</th>
-                                    <th class="text-center">Adet</th>
-                                    <th class="text-end">Tutar</th>
+                                    <th>Tarih</th>
+                                    <th class="num">Adet</th>
+                                    <th class="num">Tutar</th>
                                     <th>Durum</th>
                                     <th></th>
                                 </tr>
@@ -102,29 +94,34 @@
                             <tbody>
                                 @foreach (var order in Model.Orders)
                                 {
+                                    var created = order.CreatedAt.ToLocalTime(); // veritabanında UTC
+
                                     <tr>
-                                        @* Veritabanında UTC; Türkiye saatine çeviriyoruz *@
-                                        <td>@order.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
-
-                                        @* 32 karakter uzun; ilk 8'i yeterli, üzerine gelince tamamı görünür *@
-                                        <td title="@order.OrderNo"><code>@order.OrderNo.Substring(0, 8)</code></td>
-
+                                        <td><span class="bo-code" title="@order.OrderNo">#@order.OrderNo.Substring(0, 8).ToUpperInvariant()</span></td>
                                         <td>
-                                            @order.FullName<br>
-                                            <small class="text-secondary">@order.Email</small>
+                                            <div class="bo-person">
+                                                <span class="bo-avatar">@Initials(order.FullName)</span>
+                                                <div>
+                                                    <strong>@order.FullName</strong>
+                                                    <small>@order.Email</small>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td class="text-center">@order.ItemCount</td>
-                                        <td class="text-end">
-                                            @order.PaidPrice.ToString("N2") ₺
+                                        <td class="bo-date">
+                                            @created.ToString("dd MMM yyyy")
+                                            <small>@created.ToString("HH:mm")</small>
+                                        </td>
+                                        <td class="num">@order.ItemCount</td>
+                                        <td class="num">
+                                            <span class="bo-amount">@order.PaidPrice.ToString("N2") ₺</span>
                                             @if (order.InstallmentCount > 0)
                                             {
-                                                <br>
-                                                <small class="text-secondary">@order.InstallmentCount taksit</small>
+                                                <small>@order.InstallmentCount taksit</small>
                                             }
                                         </td>
-                                        <td><span class="badge @BadgeClass(order.Status)">@order.Status.ToTurkish()</span></td>
-                                        <td class="text-end">
-                                            <a href="/Admin/Order/Detail?orderNo=@order.OrderNo" class="btn btn-sm btn-outline-secondary">Detay</a>
+                                        <td><span class="bo-pill is-@order.Status.ToString().ToLower()">@order.Status.ToTurkish()</span></td>
+                                        <td class="num">
+                                            <a href="/Admin/Order/Detail?orderNo=@order.OrderNo" class="bo-go" aria-label="Sipariş detayı"><i class='bx bx-right-arrow-alt'></i></a>
                                         </td>
                                     </tr>
                                 }
@@ -133,7 +130,7 @@
                     </div>
                 }
             </div>
-        </div>
 
+        </div>
     </div>
 </div>

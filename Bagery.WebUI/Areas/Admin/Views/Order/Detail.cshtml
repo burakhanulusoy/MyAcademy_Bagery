@@ -5,123 +5,139 @@
     ViewData["Title"] = "Sipariş Detayı";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
-    var badgeClass = Model.Status switch
-    {
-        OrderStatus.Paid => "bg-success",
-        OrderStatus.Failed => "bg-danger",
-        _ => "bg-warning text-dark"
-    };
+    // Taksitte karttan çekilen tutar sepet toplamından fazladır; aradaki fark vade farkı
+    var installmentFee = Model.PaidPrice - (Model.TotalPrice + Model.ShippingPrice - Model.CouponPrice);
+}
+@functions {
+    static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                          .Take(2)
+                          .Select(p => char.ToUpper(p[0], new System.Globalization.CultureInfo("tr-TR"))));
 }
 
 <div class="page-content-wrapper">
     <div class="page-content">
+        <div class="bo">
 
-        @* ÜST: sipariş no + durum + geri dön *@
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
-            <div>
-                <h5 class="mb-2">Sipariş <code>@Model.OrderNo</code></h5>
-                <span class="badge @badgeClass">@Model.Status.ToTurkish()</span>
-                @* PayTR'den gelen mesaj: başarısızsa bankanın sebebi burada *@
-                <small class="text-secondary ms-2">@Model.StatusMessage</small>
-            </div>
-            <a href="/Admin/Order/Index" class="btn btn-outline-secondary">Siparişlere dön</a>
-        </div>
-
-        <div class="row g-3 mb-3">
-
-            @* MÜŞTERİ VE TESLİMAT *@
-            <div class="col-lg-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h6 class="mb-3">Müşteri ve teslimat</h6>
-                        <table class="table table-sm mb-0">
-                            <tr><td class="text-secondary">Ad soyad</td><td>@Model.FullName</td></tr>
-                            <tr><td class="text-secondary">E-posta</td><td>@Model.Email</td></tr>
-                            <tr><td class="text-secondary">Telefon</td><td>@Model.PhoneNumber</td></tr>
-                            <tr><td class="text-secondary">Adres</td><td>@Model.Address</td></tr>
-                            <tr><td class="text-secondary">Sipariş notu</td><td>@(Model.Note ?? "-")</td></tr>
-                            @* Teslimat adı ile hesap sahibi farklı olabilir *@
-                            <tr><td class="text-secondary">Siparişi veren hesap</td><td>@Model.AppUserFullName (@Model.AppUserEmail)</td></tr>
-                        </table>
+            @* Siyah başlık alanı *@
+            <section class="bo-hero">
+                <div>
+                    <p class="bo-eyebrow">Sipariş</p>
+                    <div class="bo-hero-row">
+                        <span class="bo-hero-no">#@Model.OrderNo.Substring(0, 8).ToUpperInvariant()</span>
+                        <span class="bo-pill is-@Model.Status.ToString().ToLower()">@Model.Status.ToTurkish()</span>
+                    </div>
+                    <div class="bo-hero-meta">
+                        <span><i class='bx bx-calendar'></i> @Model.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy, HH:mm")</span>
+                        <span><i class='bx bx-barcode'></i> <span class="mono">@Model.OrderNo</span></span>
                     </div>
                 </div>
-            </div>
-
-            @* ÖDEME *@
-            <div class="col-lg-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h6 class="mb-3">Ödeme</h6>
-                        <table class="table table-sm mb-0">
-                            <tr><td class="text-secondary">Sipariş tarihi</td><td>@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td></tr>
-                            @* PaidAt sadece ödenen siparişlerde dolu *@
-                            <tr><td class="text-secondary">Ödeme tarihi</td><td>@(Model.PaidAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "-")</td></tr>
-                            <tr><td class="text-secondary">Ara toplam</td><td>@Model.TotalPrice.ToString("N2") ₺</td></tr>
-                            @if (Model.CouponPrice > 0)
-                            {
-                                <tr><td class="text-secondary">İndirim (@Model.CouponCode)</td><td>−@Model.CouponPrice.ToString("N2") ₺</td></tr>
-                            }
-                            <tr><td class="text-secondary">Kargo</td><td>@(Model.ShippingPrice == 0 ? "Ücretsiz" : Model.ShippingPrice.ToString("N2") + " ₺")</td></tr>
-                            <tr><td class="text-secondary">Taksit</td><td>@(Model.InstallmentCount == 0 ? "Tek çekim" : $"{Model.InstallmentCount} taksit ({Model.CardBrand})")</td></tr>
-                            <tr><td class="text-secondary fw-bold">Ödenen tutar</td><td class="fw-bold">@Model.PaidPrice.ToString("N2") ₺</td></tr>
-                        </table>
-                    </div>
+                <div class="bo-hero-actions">
+                    <a href="mailto:@Model.Email" class="bo-btn is-ghost"><i class='bx bx-envelope'></i> Müşteriye yaz</a>
+                    <a href="/Admin/Order/Index" class="bo-btn"><i class='bx bx-arrow-back'></i> Siparişler</a>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        @* ÜRÜNLER *@
-        <div class="card">
-            <div class="card-body">
-                <h6 class="mb-3">Ürünler</h6>
-                <div class="table-responsive">
-                    <table class="table align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th style="width:64px"></th>
-                                <th>Ürün</th>
-                                <th class="text-end">Birim fiyat</th>
-                                <th class="text-center">Adet</th>
-                                <th class="text-end">Tutar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div class="bo-grid">
+
+                @* SOL: ürünler + zaman çizelgesi *@
+                <div class="bo-stack">
+                    <section class="bo-section">
+                        <h2 class="bo-section-title"><i class='bx bx-package'></i> Ürünler <span class="count">@Model.OrderItems.Sum(x => x.Quantity) adet</span></h2>
+                        <ul class="bo-items">
                             @foreach (var item in Model.OrderItems)
                             {
-                                <tr>
-                                    <td><img src="@item.ImageUrl" alt="" width="48" height="48" style="object-fit:cover;border-radius:6px"></td>
-                                    <td>
-                                        @item.ProductName
-                                        @if (item.VariantName is not null)
-                                        {
-                                            <br>
-                                            <small class="text-secondary">@item.VariantName</small>
-                                        }
-                                    </td>
-                                    <td class="text-end">@item.UnitPrice.ToString("N2") ₺</td>
-                                    <td class="text-center">@item.Quantity</td>
-                                    <td class="text-end">@item.LineTotal.ToString("N2") ₺</td>
-                                </tr>
+                                <li class="bo-item">
+                                    <img src="@item.ImageUrl" alt="">
+                                    <div>
+                                        <div class="name">@item.ProductName <span class="bo-qty">@item.Quantity adet</span></div>
+                                        <div class="meta">@(item.VariantName ?? "Standart"), birim @item.UnitPrice.ToString("N2") ₺</div>
+                                    </div>
+                                    <div class="total">@item.LineTotal.ToString("N2") ₺</div>
+                                </li>
                             }
-                        </tbody>
-                    </table>
+                        </ul>
+                    </section>
+
+                    <section class="bo-section">
+                        <h2 class="bo-section-title"><i class='bx bx-git-commit'></i> Süreç</h2>
+                        <ol class="bo-timeline">
+                            <li class="is-done">
+                                <span class="dot"></span>
+                                <strong>Sipariş oluşturuldu</strong>
+                                <small>@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+                            </li>
+                            @if (Model.Status == OrderStatus.Paid)
+                            {
+                                <li class="is-done">
+                                    <span class="dot"></span>
+                                    <strong>Ödeme onaylandı</strong>
+                                    <small>@(Model.PaidAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm")), PayTR bildirimi</small>
+                                </li>
+                            }
+                            else if (Model.Status == OrderStatus.Pending)
+                            {
+                                <li class="is-current">
+                                    <span class="dot"></span>
+                                    <strong>PayTR bildirimi bekleniyor</strong>
+                                    <small>Uzun sürerse PayTR panelinden kontrol edin</small>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="is-fail">
+                                    <span class="dot"></span>
+                                    <strong>Ödeme başarısız</strong>
+                                    <small>@Model.StatusMessage</small>
+                                </li>
+                            }
+                        </ol>
+                    </section>
                 </div>
+
+                @* SAĞ: müşteri + ödeme *@
+                <div class="bo-stack">
+                    <section class="bo-section">
+                        <h2 class="bo-section-title"><i class='bx bx-user'></i> Müşteri</h2>
+                        <div class="bo-person is-lg">
+                            <span class="bo-avatar">@Initials(Model.FullName)</span>
+                            <div>
+                                <strong>@Model.FullName</strong>
+                                @* Teslimat adı ile siparişi veren hesap farklı olabilir *@
+                                <small>Hesap: @Model.AppUserFullName</small>
+                            </div>
+                        </div>
+                        <ul class="bo-info">
+                            <li><i class='bx bx-envelope'></i><div><small>E-posta</small><a href="mailto:@Model.Email">@Model.Email</a></div></li>
+                            <li><i class='bx bx-phone'></i><div><small>Telefon</small><a href="tel:@Model.PhoneNumber">@Model.PhoneNumber</a></div></li>
+                            <li><i class='bx bx-map'></i><div><small>Teslimat adresi</small><span>@Model.Address</span></div></li>
+                            @if (!string.IsNullOrWhiteSpace(Model.Note))
+                            {
+                                <li><i class='bx bx-note'></i><div><small>Sipariş notu</small><span>@Model.Note</span></div></li>
+                            }
+                        </ul>
+                    </section>
+
+                    <section class="bo-section is-strong">
+                        <h2 class="bo-section-title"><i class='bx bx-credit-card'></i> Ödeme</h2>
+                        <ul class="bo-receipt">
+                            <li><span>Ara toplam</span><span>@Model.TotalPrice.ToString("N2") ₺</span></li>
+                            @if (Model.CouponPrice > 0)
+                            {
+                                <li><span>İndirim (@Model.CouponCode)</span><span>−@Model.CouponPrice.ToString("N2") ₺</span></li>
+                            }
+                            <li><span>Kargo</span><span>@(Model.ShippingPrice == 0 ? "Ücretsiz" : Model.ShippingPrice.ToString("N2") + " ₺")</span></li>
+                            @if (installmentFee > 0)
+                            {
+                                <li><span>Vade farkı</span><span>@installmentFee.ToString("N2") ₺</span></li>
+                            }
+                            <li><span>Ödeme şekli</span><span>@(Model.InstallmentCount == 0 ? "Tek çekim" : $"{Model.InstallmentCount} taksit ({Model.CardBrand})")</span></li>
+                            <li class="is-total"><span>Ödenen</span><span>@Model.PaidPrice.ToString("N2") ₺</span></li>
+                        </ul>
+                    </section>
+                </div>
+
             </div>
         </div>
-
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

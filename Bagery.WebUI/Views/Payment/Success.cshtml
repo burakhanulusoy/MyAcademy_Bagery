@@ -15,80 +15,287 @@
     </div>
 </section>
 
-<section class="payment-result">
+<section class="bg-shop bg-result">
     <div class="auto-container">
-        <div class="result-box">
 
-            @if (Model is null)
-            {
-                @* Yanlış numara ya da başka kullanıcının siparişi *@
-                <div class="result-icon is-error"><i class="fas fa-times"></i></div>
+        <ol class="bg-steps" aria-label="Sipariş adımları">
+            <li class="is-done"><span class="num"><i class="fas fa-check" aria-hidden="true"></i></span><span>Sepet</span></li>
+            <li class="is-done"><span class="num"><i class="fas fa-check" aria-hidden="true"></i></span><span>Ödeme</span></li>
+            <li class="is-current"><span class="num">3</span><span>Onay</span></li>
+        </ol>
+
+        @if (Model is null)
+        {
+            @* Yanlış numara ya da başka kullanıcının siparişi *@
+            <div class="bg-hero">
+                <div class="bg-state-icon is-error"><i class="fas fa-times" aria-hidden="true"></i></div>
                 <h2>Sipariş bulunamadı</h2>
                 <p>Bu sipariş hesabınıza ait değil ya da bağlantı hatalı.</p>
-            }
-            else if (Model.Status == OrderStatus.Paid)
-            {
-                <div class="result-icon is-success"><i class="fas fa-check"></i></div>
-                <h2>Ödemeniz alındı</h2>
-                <p>Siparişiniz hazırlanmaya başlanacak.</p>
-            }
-            else if (Model.Status == OrderStatus.Pending)
-            {
-                @* Tarayıcı callback'ten önce geldi (Adım 9'daki çizim) *@
-                <div class="result-icon"><i class="far fa-clock"></i></div>
+            </div>
+        }
+        else if (Model.Status == OrderStatus.Paid)
+        {
+            // Tahmini varış: ödeme saati + 15-20 dk (sabit tahmin)
+            var etaFrom = (Model.PaidAt ?? Model.CreatedAt).ToLocalTime().AddMinutes(15);
+            var etaTo = etaFrom.AddMinutes(5);
+
+            <div class="bg-hero">
+
+                <div class="bg-moto">
+                    <svg class="bg-moto-svg" viewBox="0 0 640 300" role="img" aria-label="Motokurye kutudan fırlayan cupcake'i havada yakalıyor">
+                        <defs>
+                            @* Far ışığı: öne doğru soluklaşır *@
+                            <linearGradient id="bgMotoBeam" x1="0" x2="1">
+                                <stop offset="0" stop-color="#ffe7a8" stop-opacity=".55" />
+                                <stop offset="1" stop-color="#ffe7a8" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+
+                        @* Gece gökyüzü, yıldızlar, ay *@
+                        <rect class="m-sky" width="640" height="300" />
+                        <g class="m-stars bg-moto-twinkle">
+                            <circle cx="40" cy="30" r="1.5" /><circle cx="120" cy="60" r="1" /><circle cx="210" cy="24" r="1.5" /><circle cx="350" cy="18" r="1" />
+                            <circle cx="480" cy="40" r="1" /><circle cx="560" cy="22" r="1.5" /><circle cx="600" cy="80" r="1" />
+                        </g>
+                        <circle class="m-moon" cx="540" cy="70" r="26" />
+
+                        @* Şehir silüeti: iki kopya yan yana, 640 birim kayınca başa döner *@
+                        <g class="bg-moto-city">
+                            <g class="m-far">
+                                <rect x="0" y="130" width="50" height="130" /><rect x="56" y="100" width="40" height="160" /><rect x="102" y="140" width="60" height="120" /><rect x="168" y="110" width="36" height="150" />
+                                <rect x="210" y="150" width="64" height="110" /><rect x="280" y="96" width="44" height="164" /><rect x="330" y="128" width="54" height="132" /><rect x="390" y="112" width="38" height="148" />
+                                <rect x="434" y="146" width="62" height="114" /><rect x="502" y="104" width="46" height="156" /><rect x="554" y="132" width="50" height="128" /><rect x="610" y="116" width="40" height="144" />
+                                <rect x="640" y="130" width="50" height="130" /><rect x="696" y="100" width="40" height="160" /><rect x="742" y="140" width="60" height="120" /><rect x="808" y="110" width="36" height="150" />
+                                <rect x="850" y="150" width="64" height="110" /><rect x="920" y="96" width="44" height="164" /><rect x="970" y="128" width="54" height="132" /><rect x="1030" y="112" width="38" height="148" />
+                                <rect x="1074" y="146" width="62" height="114" /><rect x="1142" y="104" width="46" height="156" /><rect x="1194" y="132" width="50" height="128" /><rect x="1250" y="116" width="40" height="144" />
+                            </g>
+                            <rect class="m-window" x="64" y="112" width="6" height="8" /><rect class="m-window" x="80" y="130" width="6" height="8" /><rect class="m-window" x="64" y="150" width="6" height="8" />
+                            <rect class="m-window" x="176" y="124" width="6" height="8" /><rect class="m-window" x="190" y="144" width="6" height="8" />
+                            <rect class="m-window" x="290" y="110" width="6" height="8" /><rect class="m-window" x="306" y="128" width="6" height="8" /><rect class="m-window" x="290" y="148" width="6" height="8" />
+                            <rect class="m-window" x="398" y="126" width="6" height="8" /><rect class="m-window" x="412" y="160" width="6" height="8" />
+                            <rect class="m-window" x="512" y="118" width="6" height="8" /><rect class="m-window" x="528" y="138" width="6" height="8" /><rect class="m-window" x="512" y="158" width="6" height="8" />
+                            <rect class="m-window" x="618" y="130" width="6" height="8" />
+                            <rect class="m-window" x="704" y="112" width="6" height="8" /><rect class="m-window" x="720" y="130" width="6" height="8" /><rect class="m-window" x="704" y="150" width="6" height="8" />
+                            <rect class="m-window" x="816" y="124" width="6" height="8" /><rect class="m-window" x="830" y="144" width="6" height="8" />
+                            <rect class="m-window" x="930" y="110" width="6" height="8" /><rect class="m-window" x="946" y="128" width="6" height="8" /><rect class="m-window" x="930" y="148" width="6" height="8" />
+                            <rect class="m-window" x="1038" y="126" width="6" height="8" /><rect class="m-window" x="1052" y="160" width="6" height="8" />
+                            <rect class="m-window" x="1152" y="118" width="6" height="8" /><rect class="m-window" x="1168" y="138" width="6" height="8" /><rect class="m-window" x="1152" y="158" width="6" height="8" />
+                            <rect class="m-window" x="1258" y="130" width="6" height="8" />
+                        </g>
+
+                        @* Kuryenin arkasındaki büyük daire *@
+                        <circle class="m-halo" cx="320" cy="170" r="118" />
+
+                        @* Yol *@
+                        <rect class="m-curb" x="0" y="240" width="640" height="6" />
+                        <rect class="m-road" x="0" y="246" width="640" height="54" />
+                        <g class="m-dash bg-moto-dashes">
+                            <rect x="0" y="270" width="40" height="4" rx="2" /><rect x="80" y="270" width="40" height="4" rx="2" /><rect x="160" y="270" width="40" height="4" rx="2" />
+                            <rect x="240" y="270" width="40" height="4" rx="2" /><rect x="320" y="270" width="40" height="4" rx="2" /><rect x="400" y="270" width="40" height="4" rx="2" />
+                            <rect x="480" y="270" width="40" height="4" rx="2" /><rect x="560" y="270" width="40" height="4" rx="2" /><rect x="640" y="270" width="40" height="4" rx="2" />
+                        </g>
+
+                        @* Hız çizgileri *@
+                        <g class="m-speed bg-moto-speed">
+                            <path d="M90 150 H170" /><path d="M60 176 H150" /><path d="M110 202 H180" /><path d="M130 124 H190" />
+                        </g>
+
+                        @* Kurye: drive soldan getirir, transform büyütür/konumlar, bob titretir, wobble panikte yalpalatır *@
+                        <g class="bg-moto-drive">
+                            <g transform="translate(190 44) scale(1.25)">
+                                <ellipse class="m-shadow" cx="150" cy="188" rx="120" ry="6" />
+                                <g class="bg-moto-bob">
+                                    <g class="m-wobble">
+                                        <path class="bg-moto-beam" fill="url(#bgMotoBeam)" d="M234 96 L330 70 L330 140 L234 108 Z" />
+                                        <rect class="m-metal" x="36" y="158" width="46" height="9" rx="4.5" />
+
+                                        @* Tekerlekler *@
+                                        <g class="bg-moto-wheel"><circle class="m-tire" cx="70" cy="160" r="26" /><circle class="m-rim" cx="70" cy="160" r="15" /><path class="m-spokes" d="M70 147 V173 M57 160 H83" /><circle class="m-hub" cx="70" cy="160" r="5" /></g>
+                                        <g class="bg-moto-wheel"><circle class="m-tire" cx="232" cy="160" r="26" /><circle class="m-rim" cx="232" cy="160" r="15" /><path class="m-spokes" d="M232 147 V173 M219 160 H245" /><circle class="m-hub" cx="232" cy="160" r="5" /></g>
+
+                                        @* Scooter gövdesi *@
+                                        <path class="m-body" d="M34 150 C30 128 44 114 66 110 L144 106 C156 106 162 114 162 126 L164 150 C130 156 100 140 84 152 Z" />
+                                        <path class="m-body-shade" d="M34 150 C33 140 36 132 42 126 C70 136 110 132 162 136 L164 150 C130 156 100 140 84 152 Z" />
+                                        <path class="m-stripe" d="M52 124 L150 120" />
+                                        <rect class="m-tail" x="30" y="124" width="8" height="12" rx="3" />
+                                        <path class="m-seat" d="M78 108 C80 98 96 96 118 96 L150 98 C156 99 158 104 156 108 Z" />
+                                        <rect class="m-body-shade" x="158" y="144" width="50" height="9" rx="4" />
+                                        <path class="m-body" d="M200 152 C200 124 206 100 214 84 L226 86 C230 104 236 126 240 150 Z" />
+                                        <path class="m-body-shade" d="M222 88 C228 106 234 128 238 150 L226 150 C224 128 220 106 216 90 Z" />
+                                        <path class="m-body" d="M206 150 C210 136 222 130 236 132 C248 134 256 142 258 150 Z" />
+                                        <ellipse class="m-lamp" cx="232" cy="100" rx="6" ry="8" />
+                                        <path class="m-glass" d="M214 84 L224 56 L232 58 L226 86 Z" />
+                                        <path class="m-bar" d="M214 80 L198 72" />
+
+                                        @* Zıplayan cupcake: kutunun içinde gizli bekler.
+                                           Kutudan ÖNCE çiziliyor ki yükselirken kutunun arkasından çıksın. *@
+                                        <g transform="translate(62 46)">
+                                            <g class="m-cupcake">
+                                                <path class="m-cup-wrap" d="M-11 0 H11 L8 14 H-8 Z" />
+                                                <path class="m-cup-line" d="M-4 1 L-3 13 M4 1 L3 13" />
+                                                <path class="m-cup-cream" d="M-13 1 C-16 -8 -8 -12 -4 -9 C-3 -16 7 -16 7 -9 C12 -12 18 -6 13 1 Z" />
+                                                <path class="m-cup-pink" d="M-7 -4 C-3 -7 3 -7 7 -4" />
+                                                <circle class="m-cup-cherry" cx="1" cy="-15" r="3.5" />
+                                            </g>
+                                        </g>
+
+                                        @* Teslimat kutusu + kapak + Bagery logosu *@
+                                        <rect class="m-box" x="24" y="40" width="76" height="64" rx="10" />
+                                        <path class="m-box-shade" d="M84 40 H90 A10 10 0 0 1 100 50 V94 A10 10 0 0 1 90 104 H84 Z" />
+                                        <g class="m-lid"><rect class="m-box-shade" x="24" y="40" width="76" height="12" rx="6" /></g>
+                                        <g class="m-pop"><path d="M62 30 V22" /><path d="M48 34 L42 28" /><path d="M76 34 L82 28" /></g>
+                                        <g class="m-logo" transform="translate(44 60)">
+                                            <path d="M6 18 h24 l-4 14 h-16 z" /><path d="M3 18 c-3 -9 5 -14 11 -11 c2 -7 12 -7 14 0 c6 -3 14 2 11 11 z" /><circle cx="18" cy="3" r="3" />
+                                        </g>
+
+                                        @* Kurye *@
+                                        <path class="m-pants" d="M112 104 L166 106 L176 142" />
+                                        <path class="m-boot" d="M168 140 H192 C196 140 198 144 196 148 H168 Z" />
+                                        <path class="m-jacket" d="M104 110 C100 84 116 60 146 54 L166 62 C168 88 158 106 140 116 Z" />
+                                        <path class="m-jacket-shade" d="M104 110 C101 90 108 72 122 62 C113 82 113 100 121 117 Z" />
+                                        <path class="m-collar" d="M144 54 L166 62 L160 70 Z" />
+                                        <path class="m-arm" d="M156 68 L182 88 L204 74" />
+                                        <circle class="m-glove" cx="206" cy="73" r="7" />
+                                        @* Yakalayan kol: normalde gizli, panikte kaskın arkasından yukarı uzanır *@
+                                        <g class="m-reach"><path class="m-arm" d="M150 64 L128 50 L118 24" /><circle class="m-glove" cx="118" cy="20" r="7" /></g>
+                                        <circle class="m-helmet" cx="156" cy="34" r="24" />
+                                        <path class="m-helmet-shade" d="M134 44 A24 24 0 0 0 168 56 C150 56 138 52 134 44 Z" />
+                                        <path class="m-visor" d="M158 24 H176 A6 6 0 0 1 180 30 V38 A6 6 0 0 1 174 44 H160 Z" />
+                                        <path class="m-visor-shine" d="M164 28 L172 28" />
+                                        <path class="m-helmet-stripe" d="M136 26 A24 24 0 0 1 166 12" />
+                                        @* Vizördeki gözler *@
+                                        <g class="m-eyes"><ellipse class="m-eye" cx="166" cy="35" rx="2.2" ry="3" /><ellipse class="m-eye" cx="173" cy="35" rx="2.2" ry="3" /></g>
+                                        @* Ünlem + ter damlaları *@
+                                        <g class="m-alert"><rect x="152" y="-22" width="8" height="16" rx="4" /><circle cx="156" cy="0" r="4" /></g>
+                                        <g class="m-sweat"><path d="M130 22 C127 27 127 30 130 30 C133 30 133 27 130 22 Z" /><path d="M124 34 C121 39 121 42 124 42 C127 42 127 39 124 34 Z" /></g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+
+                    @* Sahnenin sol üstünde tahmini varış *@
+                    <div class="bg-moto-card">
+                        <span class="ico"><i class="fas fa-motorcycle" aria-hidden="true"></i></span>
+                        <div>
+                            <small>TAHMİNİ VARIŞ</small>
+                            <strong>@etaFrom.ToString("HH:mm") – @etaTo.ToString("HH:mm")</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <span class="bg-paid-badge"><i class="fas fa-check-circle" aria-hidden="true"></i> Ödemeniz alındı</span>
+                <h2>Siparişiniz yola çıktı</h2>
+                <p>Motokuryemiz siparişinizi taze taze (ve bir daha düşürmeden) kapınıza getiriyor. Yaklaşık 15–20 dakika içinde teslim edilecek.</p>
+
+                <ol class="bg-track" aria-label="Sipariş durumu">
+                    <li class="is-done"><span class="dot"><i class="fas fa-check" aria-hidden="true"></i></span>Ödeme alındı</li>
+                    <li class="is-done"><span class="dot"><i class="fas fa-check" aria-hidden="true"></i></span>Hazırlandı</li>
+                    <li class="is-current" aria-current="step"><span class="dot"></span>Yolda</li>
+                    <li><span class="dot"></span>Teslim</li>
+                </ol>
+            </div>
+        }
+        else if (Model.Status == OrderStatus.Pending)
+        {
+            @* Tarayıcı callback'ten önce geldi; aşağıdaki script sayfayı birkaç kez yeniler *@
+            <div class="bg-hero">
+                <div class="bg-state-icon is-wait"><i class="fas fa-circle-notch" aria-hidden="true"></i></div>
                 <h2>Ödemeniz onaylanıyor</h2>
-                <p>Bankanızdan onay geldi, PayTR'nin bildirimi bekleniyor. Birkaç saniye sonra durumu yenileyin.</p>
-            }
-            else
-            {
-                @* Failed: callback önce gelip "başarısız" dedi *@
-                <div class="result-icon is-error"><i class="fas fa-times"></i></div>
+                <p>Bankanızdan onay geldi, PayTR'nin bildirimi bekleniyor. Sayfa birkaç saniye içinde kendiliğinden güncellenecek.</p>
+            </div>
+        }
+        else
+        {
+            @* Failed: callback önce gelip "başarısız" dedi *@
+            <div class="bg-hero">
+                <div class="bg-state-icon is-error"><i class="fas fa-times" aria-hidden="true"></i></div>
                 <h2>Ödeme tamamlanamadı</h2>
                 <p>@Model.StatusMessage</p>
-            }
+            </div>
+        }
 
-            @if (Model is not null)
-            {
-                <ul class="order-summary">
-                    <li><span>Sipariş no</span><span>@Model.OrderNo</span></li>
-                    @* Veritabanında UTC tutuluyor; ToLocalTime ile Türkiye saatine çeviriyoruz *@
-                    <li><span>Tarih</span><span>@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span></li>
+        @* Fiş görünümünde sipariş özeti *@
+        @if (Model is not null)
+        {
+            <div class="bg-panel bg-receipt">
+                <div class="bg-receipt-head">
+                    <h2 class="bg-panel-title">Sipariş özeti</h2>
+                    <span class="bg-receipt-no">
+                        No <code>@Model.OrderNo.Substring(0, 8).ToUpperInvariant()</code>,
+                        @Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                    </span>
+                </div>
 
+                <ul class="bg-lines">
                     @foreach (var item in Model.OrderItems)
                     {
                         <li>
-                            <span>@item.ProductName@(item.VariantName is null ? "" : $" ({item.VariantName})") x @item.Quantity</span>
+                            <span>
+                                @item.ProductName<span class="qty">x @item.Quantity</span>
+                                @if (item.VariantName is not null)
+                                {
+                                    <span class="variant">@item.VariantName</span>
+                                }
+                            </span>
                             <span>@item.LineTotal.ToString("N2") ₺</span>
                         </li>
                     }
+                </ul>
 
-                    <li><span>Ara toplam</span><span>@Model.TotalPrice.ToString("N2") ₺</span></li>
+                <dl class="bg-totals">
+                    <div><dt>Ara toplam</dt><dd>@Model.TotalPrice.ToString("N2") ₺</dd></div>
                     @if (Model.CouponPrice > 0)
                     {
-                        <li><span>İndirim (@Model.CouponCode)</span><span>−@Model.CouponPrice.ToString("N2") ₺</span></li>
+                        <div><dt>İndirim (@Model.CouponCode)</dt><dd class="is-discount">−@Model.CouponPrice.ToString("N2") ₺</dd></div>
                     }
-                    <li><span>Kargo</span><span>@(Model.ShippingPrice == 0 ? "Ücretsiz" : Model.ShippingPrice.ToString("N2") + " ₺")</span></li>
+                    <div><dt>Kargo</dt><dd>@(Model.ShippingPrice == 0 ? "Ücretsiz" : Model.ShippingPrice.ToString("N2") + " ₺")</dd></div>
                     @if (Model.InstallmentCount > 0)
                     {
-                        <li><span>Taksit</span><span>@Model.InstallmentCount taksit</span></li>
+                        <div><dt>Taksit</dt><dd>@Model.InstallmentCount taksit</dd></div>
                     }
-                    <li class="total"><span>Ödenen tutar</span><span>@Model.PaidPrice.ToString("N2") ₺</span></li>
-                    <li><span>Teslimat</span><span>@Model.FullName, @Model.Address</span></li>
-                </ul>
-            }
+                    <div class="bg-grand"><dt>Ödenen</dt><dd>@Model.PaidPrice.ToString("N2") ₺</dd></div>
+                </dl>
 
-            <div class="btn-row">
-                @if (Model?.Status == OrderStatus.Pending)
-                {
-                    <button type="button" class="theme-btn-one" onclick="location.reload()">Durumu yenile</button>
-                }
-                @if (Model?.Status == OrderStatus.Failed)
-                {
-                    <a href="/Payment/Checkout" class="theme-btn-one">Tekrar dene</a>
-                }
-                <a href="/Product/Shop" class="theme-btn-two">Alışverişe devam et</a>
+                <div class="bg-address">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                    <span><strong>@Model.FullName</strong><br>@Model.Address</span>
+                </div>
             </div>
+        }
 
+        <div class="bg-actions">
+            @if (Model?.Status == OrderStatus.Paid)
+            {
+                <a href="/Admin/MyOrders/Detail?orderNo=@Model.OrderNo" class="bg-btn">Siparişimi görüntüle</a>
+            }
+            @if (Model?.Status == OrderStatus.Pending)
+            {
+                <button type="button" class="bg-btn" onclick="location.reload()">Durumu yenile</button>
+            }
+            @if (Model?.Status == OrderStatus.Failed)
+            {
+                <a href="/Payment/Checkout" class="bg-btn">Tekrar dene</a>
+            }
+            <a href="/Product/Shop" class="bg-btn bg-btn-outline">Alışverişe devam et</a>
         </div>
+
     </div>
 </section>
+
+@section Scripts {
+    @if (Model?.Status == OrderStatus.Pending)
+    {
+        <script>
+            // Callback birkaç saniye içinde gelir: 3 sn arayla en fazla 5 kez yenile, sonra butona bırak
+            (function () {
+                const key = 'pendingReload_' + '@Model.OrderNo';
+                const count = parseInt(sessionStorage.getItem(key) || '0', 10);
+                if (count < 5) {
+                    sessionStorage.setItem(key, count + 1);
+                    setTimeout(() => location.reload(), 3000);
+                }
+            })();
+        </script>
+    }
+}
