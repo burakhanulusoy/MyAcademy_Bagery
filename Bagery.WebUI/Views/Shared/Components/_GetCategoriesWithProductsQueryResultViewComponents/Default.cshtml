@@ -2,60 +2,337 @@
 
 <section class="project-style-two">
     <div class="auto-container">
-        <div class="sortable-masonry">
-            <div class="row clearfix">
-                <div class="col-lg-4 col-md-12 col-sm-12 title-column">
-                    <div class="title-inner">
-                        <div class="sec-title">
-                            <p>Ürün Görsellerimiz</p>
-                            <h2>Lezzetlerimize <br />Göz Atın</h2>
-                        </div>
-                        <div class="filters">
-                            <ul class="filter-tabs filter-btns clearfix">
-                                <li class="active filter" data-role="button" data-filter=".all">
-                                    <span>TÜMÜ</span>
-                                </li>
-                                @foreach (var category in Model)
-                                {
-                                    <li class="filter" data-role="button" data-filter=".cat-@category.Id">
-                                        <span>@category.CategoryName</span>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                        <div class="btn-box">
-                            <a href="/Product/Index" class="theme-btn-one">Tümünü Görün</a>
-                        </div>
+        <div class="row clearfix">
+
+            <!-- SOL TARAF -->
+            <div class="col-lg-4 col-md-12 col-sm-12 title-column">
+                <div class="title-inner">
+
+                    <div class="sec-title">
+                        <p>Ürün Görsellerimiz</p>
+                        <h2>Lezzetlerimize <br />Göz Atın</h2>
                     </div>
-                </div>
-                <div class="col-lg-8 col-md-12 col-sm-12 content-column">
-                    <div class="items-container row clearfix">
-                        @foreach (var category in Model)
-                        {
-                            foreach (var product in category.Products)
+
+                    <div class="filters bagery-filters">
+                        <ul class="filter-tabs clearfix">
+
+                            <li class="active product-filter" data-category="all">
+                                <span>TÜMÜ</span>
+                            </li>
+
+                            @foreach (var category in Model)
                             {
-                                <div class="col-lg-6 col-md-6 col-sm-12 masonry-item small-column all cat-@category.Id">
-                                    <div class="project-block-one">
-                                        <div class="inner-box">
-                                            <figure class="image-box">
-                                                <img src="@product.MainImageUrl" alt="@product.ProductName">
-                                            </figure>
-                                            <div class="lower-content">
-                                                <h3><a href="/Product/Detail/@product.Id">@product.ProductName</a></h3>
-                                                <div class="view-btn">
-                                                    <a href="@product.MainImageUrl" class="lightbox-image" data-fancybox="gallery">
-                                                        <i class="icon-Zoom"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <li class="product-filter" data-category="@category.Id">
+                                    <span>@category.CategoryName</span>
+                                </li>
                             }
-                        }
+
+                        </ul>
                     </div>
+
+                    <div class="btn-box">
+                        <a href="/Product/Index" class="theme-btn-one">
+                            Tümünü Görün
+                        </a>
+                    </div>
+
                 </div>
             </div>
+
+
+            <!-- SAĞ TARAF -->
+            <div class="col-lg-8 col-md-12 col-sm-12 content-column">
+
+                <div class="row clearfix" id="productGallery">
+
+                    @foreach (var category in Model)
+                    {
+                        foreach (var product in category.Products)
+                        {
+                            <div class="col-lg-6 col-md-6 col-sm-12 product-item"
+                                 data-category="@category.Id">
+
+                                <div class="project-block-one">
+                                    <div class="inner-box">
+
+                                        <figure class="image-box product-image">
+                                            <img src="@product.MainImageUrl"
+                                                 alt="@product.ProductName">
+                                        </figure>
+
+                                        <div class="lower-content">
+
+                                            <h3>
+                                                <a href="/Product/Detail/@product.Id">
+                                                    @product.ProductName
+                                                </a>
+                                            </h3>
+
+                                            <div class="view-btn">
+                                                <a href="@product.MainImageUrl"
+                                                   class="lightbox-image"
+                                                   data-fancybox="gallery">
+
+                                                    <i class="icon-Zoom"></i>
+                                                </a>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                    }
+
+                </div>
+
+
+                <div class="product-nav">
+                    <button type="button" id="prevProduct">‹</button>
+                    <span id="productPage"></span>
+                    <button type="button" id="nextProduct">›</button>
+                </div>
+
+            </div>
+
         </div>
     </div>
 </section>
+
+
+<style>
+
+    /* ==============================
+           KATEGORİLER
+        ============================== */
+
+    .bagery-filters {
+        margin-top: 35px;
+        margin-bottom: 45px;
+    }
+
+        .bagery-filters ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .bagery-filters li {
+            position: relative;
+            display: table;
+            margin-bottom: 23px;
+            color: #222;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.4;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+            .bagery-filters li span {
+                position: relative;
+                z-index: 1;
+            }
+
+            .bagery-filters li:hover,
+            .bagery-filters li.active {
+                color: #222;
+            }
+
+                /* Aktif kategorinin altındaki tema çizgisi */
+                .bagery-filters li.active:after {
+                    content: "";
+                    position: absolute;
+                    left: -10px;
+                    right: -10px;
+                    bottom: 1px;
+                    height: 5px;
+                    background: #e9aa94;
+                    z-index: 0;
+                }
+
+
+    /* ==============================
+           ÜRÜNLER
+        ============================== */
+
+    .product-item {
+        display: none;
+        margin-bottom: 30px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 320px;
+        overflow: hidden;
+        margin: 0;
+    }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+
+    /* ==============================
+           SAĞ / SOL
+        ============================== */
+
+    .product-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin-top: 5px;
+    }
+
+        .product-nav button {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: #e9aa94;
+            color: #fff;
+            font-size: 26px;
+            line-height: 44px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+            .product-nav button:hover {
+                background: #222;
+            }
+
+            .product-nav button:disabled {
+                opacity: .35;
+                cursor: default;
+            }
+
+        .product-nav span {
+            min-width: 55px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+
+    @@media(max-width: 767px) {
+
+        .bagery-filters li {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .product-image {
+            height: 280px;
+        }
+    }
+
+</style>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const items = [...document.querySelectorAll(".product-item")];
+        const filters = document.querySelectorAll(".product-filter");
+
+        const prev = document.getElementById("prevProduct");
+        const next = document.getElementById("nextProduct");
+        const pageText = document.getElementById("productPage");
+
+        let category = "all";
+        let page = 0;
+
+        const perPage = 4;
+
+
+        function products() {
+
+            return category === "all"
+                ? items
+                : items.filter(x => x.dataset.category === category);
+        }
+
+
+        function render() {
+
+            const list = products();
+            const total = Math.ceil(list.length / perPage);
+
+            items.forEach(x => x.style.display = "none");
+
+            list
+                .slice(page * perPage, page * perPage + perPage)
+                .forEach(x => x.style.display = "block");
+
+
+            if (total > 1) {
+
+                prev.style.display = "block";
+                next.style.display = "block";
+                pageText.style.display = "block";
+
+                pageText.textContent = `${page + 1} / ${total}`;
+
+            } else {
+
+                prev.style.display = "none";
+                next.style.display = "none";
+                pageText.style.display = "none";
+            }
+
+
+            prev.disabled = page === 0;
+            next.disabled = page >= total - 1;
+        }
+
+
+        filters.forEach(filter => {
+
+            filter.onclick = function () {
+
+                filters.forEach(x => x.classList.remove("active"));
+
+                this.classList.add("active");
+
+                category = this.dataset.category;
+                page = 0;
+
+                render();
+            };
+
+        });
+
+
+        prev.onclick = function () {
+
+            if (page > 0) {
+                page--;
+                render();
+            }
+        };
+
+
+        next.onclick = function () {
+
+            const total = Math.ceil(products().length / perPage);
+
+            if (page < total - 1) {
+                page++;
+                render();
+            }
+        };
+
+
+        render();
+
+    });
+
+</script>

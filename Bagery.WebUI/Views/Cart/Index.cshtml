@@ -1,233 +1,1687 @@
 ﻿@using Bagery.WebUI.Models.CartModels
 @using System.Globalization
+
 @{
     ViewData["Title"] = "Sepetim";
     Layout = "~/Views/Shared/_WebUILayout.cshtml";
 }
 
+
+<!-- SAYFA BAŞLIĞI -->
 <section class="page-title centred"
          style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
+
     <div class="auto-container">
+
         <div class="content-box">
-            <div class="title"><h1>Sepetim</h1></div>
+
+            <div class="title">
+                <h1>Sepetim</h1>
+            </div>
+
         </div>
+
     </div>
+
 </section>
+
+
 
 <section class="bg-shop bg-cart">
+
     <div class="auto-container">
 
-        @* Adım göstergesi: Sepet → Ödeme → Onay *@
+
+        <!-- ADIMLAR -->
         <ol class="bg-steps" aria-label="Sipariş adımları">
-            <li class="is-current"><span class="num">1</span><span>Sepet</span></li>
-            <li><span class="num">2</span><span>Ödeme</span></li>
-            <li><span class="num">3</span><span>Onay</span></li>
+
+            <li class="is-current">
+                <span class="num">1</span>
+                <span>Sepet</span>
+            </li>
+
+            <li>
+                <span class="num">2</span>
+                <span>Ödeme</span>
+            </li>
+
+            <li>
+                <span class="num">3</span>
+                <span>Onay</span>
+            </li>
+
         </ol>
 
-        @* Sepet boşken *@
+
+
+        <!-- SEPET BOŞ -->
         <div id="cartEmpty" class="bg-empty" hidden>
-            <div class="bg-empty-icon"><i class="fas fa-shopping-basket" aria-hidden="true"></i></div>
-            <h2>Sepetiniz boş</h2>
-            <p>Taze ürünlerimize göz atın, beğendiklerinizi sepete ekleyin.</p>
-            <a href="/Product/Shop" class="bg-btn bg-btn-inline">Mağazaya git</a>
-        </div>
 
-        @* Sepette ürün varken: solda ürünler, sağda özet *@
-        <div id="cartContent" class="bg-layout" hidden>
-
-            <div class="bg-panel">
-                <div class="bg-panel-head">
-                    <h2 class="bg-panel-title">Sepetim</h2>
-                    <span class="bg-count" id="itemCount"></span>
-                </div>
-                <div id="cartRows" class="bg-items"></div> @* JS dolduruyor *@
-                <a href="/Product/Shop" class="bg-link-back"><i class="fas fa-arrow-left" aria-hidden="true"></i> Alışverişe devam et</a>
+            <div class="bg-empty-icon">
+                <i class="fas fa-shopping-basket"></i>
             </div>
 
+            <h2>Sepetiniz boş</h2>
+
+            <p>
+                Taze ürünlerimize göz atın,
+                beğendiklerinizi sepete ekleyin.
+            </p>
+
+            <a href="/Product/Shop"
+               class="bg-btn bg-btn-inline">
+
+                Mağazaya git
+
+            </a>
+
+        </div>
+
+
+
+        <!-- SEPET DOLU -->
+        <div id="cartContent"
+             class="bg-layout"
+             hidden>
+
+
+            <!-- ÜRÜNLER -->
+            <div class="bg-panel">
+
+                <div class="bg-panel-head">
+
+                    <h2 class="bg-panel-title">
+                        Sepetim
+                    </h2>
+
+                    <span class="bg-count"
+                          id="itemCount">
+                    </span>
+
+                </div>
+
+
+                <div id="cartRows"
+                     class="bg-items">
+                </div>
+
+
+                <a href="/Product/Shop"
+                   class="bg-link-back">
+
+                    <i class="fas fa-arrow-left"></i>
+
+                    Alışverişe devam et
+
+                </a>
+
+            </div>
+
+
+
+            <!-- SİPARİŞ ÖZETİ -->
             <aside class="bg-panel bg-summary">
-                <h2 class="bg-panel-title">Sipariş özeti</h2>
 
-                @* Ücretsiz kargoya ne kadar kaldı *@
-                <div class="bg-ship" id="shipBox">
+                <h2 class="bg-panel-title">
+                    Sipariş özeti
+                </h2>
+
+
+
+                <!-- KARGO -->
+                <div class="bg-ship"
+                     id="shipBox">
+
                     <p id="shipText"></p>
-                    <div class="bg-ship-track"><span id="shipBar"></span></div>
+
+                    <div class="bg-ship-track">
+                        <span id="shipBar"></span>
+                    </div>
+
                 </div>
 
+
+
+                <!-- KUPON -->
                 <div class="bg-coupon">
-                    <div class="bg-coupon-row" id="couponForm">
-                        <input type="text" id="couponInput" placeholder="Kupon kodu" autocomplete="off" aria-label="Kupon kodu">
-                        <button type="button" id="applyCouponBtn">Uygula</button>
+
+                    <div class="bg-coupon-row"
+                         id="couponForm">
+
+                        <input type="text"
+                               id="couponInput"
+                               placeholder="Kupon kodu"
+                               autocomplete="off"
+                               aria-label="Kupon kodu">
+
+                        <button type="button"
+                                id="applyCouponBtn">
+                            Uygula
+                        </button>
+
                     </div>
-                    <div class="bg-coupon-applied" id="couponApplied" hidden>
-                        <span><i class="fas fa-tag" aria-hidden="true"></i> <strong id="couponCodeText"></strong> uygulandı</span>
-                        <button type="button" id="removeCouponBtn">Kaldır</button>
+
+
+                    <div class="bg-coupon-applied"
+                         id="couponApplied"
+                         hidden>
+
+                        <span>
+
+                            <i class="fas fa-tag"></i>
+
+                            <strong id="couponCodeText"></strong>
+
+                            uygulandı
+
+                        </span>
+
+
+                        <button type="button"
+                                id="removeCouponBtn">
+
+                            Kaldır
+
+                        </button>
+
                     </div>
+
+
                     @await Component.InvokeAsync("_ActiveCouponsViewComponents")
+
                 </div>
 
+
+
+                <!-- FİYATLAR -->
                 <dl class="bg-totals">
-                    <div><dt>Ara toplam</dt><dd id="subTotal"></dd></div>
-                    <div id="discountRow" hidden><dt>İndirim</dt><dd id="discount" class="is-discount"></dd></div>
-                    <div><dt>Kargo</dt><dd id="shipping"></dd></div>
-                    <div class="bg-grand"><dt>Toplam</dt><dd id="paidPrice"></dd></div>
+
+                    <div>
+                        <dt>Ara toplam</dt>
+                        <dd id="subTotal"></dd>
+                    </div>
+
+
+                    <div id="discountRow" hidden>
+
+                        <dt>İndirim</dt>
+
+                        <dd id="discount"
+                            class="is-discount">
+                        </dd>
+
+                    </div>
+
+
+                    <div>
+                        <dt>Kargo</dt>
+                        <dd id="shipping"></dd>
+                    </div>
+
+
+                    <div class="bg-grand">
+
+                        <dt>Toplam</dt>
+
+                        <dd id="paidPrice"></dd>
+
+                    </div>
+
                 </dl>
 
-                @* id="goCheckout": giriş yapmamışsa JS bu linki yakalayıp önce pencereyi açar *@
-                <a href="/Payment/Checkout" id="goCheckout" class="bg-btn">Ödemeye geç <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-                <p class="bg-trust"><i class="fas fa-lock" aria-hidden="true"></i> Ödemeler PayTR altyapısıyla, 3D Secure doğrulamasıyla alınır.</p>
+
+
+                <!-- ÖDEME -->
+                <a href="/Payment/Checkout"
+                   id="goCheckout"
+                   class="bg-btn">
+
+                    Ödemeye geç
+
+                    <i class="fas fa-arrow-right"></i>
+
+                </a>
+
+
+                <p class="bg-trust">
+
+                    <i class="fas fa-lock"></i>
+
+                    Ödemeler PayTR altyapısıyla,
+                    3D Secure doğrulamasıyla alınır.
+
+                </p>
+
+
             </aside>
+
         </div>
 
     </div>
 
-    @* Giriş yapmamış kullanıcıya "neden giriş" penceresi (giriş yapmışsa hiç basılmaz) *@
+
+
+    <!-- ==================================================
+         GİRİŞ YAPMAMIŞ KULLANICI POPUP
+    ================================================== -->
     @if (User.Identity?.IsAuthenticated != true)
     {
-        <dialog class="bg-dialog" id="loginDialog" aria-labelledby="loginDialogTitle">
-            <div class="bg-dialog-inner">
-                <button type="button" class="bg-dialog-close" data-close aria-label="Kapat"><i class="fas fa-times"></i></button>
 
-                <div class="bg-dialog-icon"><i class="fas fa-lock" aria-hidden="true"></i></div>
-                <h2 id="loginDialogTitle">Ödeme için giriş yapın</h2>
-                <p>
-                    Siparişinizi hesabınıza bağlayabilmemiz, faturanızı e-postanıza gönderebilmemiz ve
-                    siparişinizi <strong>Siparişlerim</strong> sayfasından takip edebilmeniz için giriş yapmanız gerekiyor.
-                </p>
+        <dialog class="bg-dialog"
+                id="loginDialog"
+                aria-labelledby="loginDialogTitle">
 
-                <ul class="bg-dialog-points">
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Sepetiniz kaybolmaz, giriş yapınca ödeme sayfasına dönersiniz.</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Hesabınız yoksa hemen kayıt olabilirsiniz.</li>
-                </ul>
 
-                <div class="bg-dialog-actions">
-                    @* ReturnUrl: girişten sonra doğrudan ödeme sayfasına dönsün *@
-                    <a href="/User/Login?ReturnUrl=%2FPayment%2FCheckout" class="bg-btn">Giriş yap</a>
-                    <a href="/User/RegisterUser" class="bg-btn bg-btn-outline">Kayıt ol</a>
+            <div class="login-card">
+
+
+                <!-- KAPAT -->
+                <button type="button"
+                        class="login-close"
+                        data-close
+                        aria-label="Kapat">
+
+                    <i class="fas fa-times"></i>
+
+                </button>
+
+
+
+                <!-- ================================
+                     SOL TARAF - PIXEL ART
+                ================================= -->
+
+                <div class="login-art">
+
+                    <div class="pixel-logo">
+                        BAGERY
+                    </div>
+
+
+                    <svg class="pixel-scene"
+                         viewBox="0 0 320 300"
+                         xmlns="http://www.w3.org/2000/svg"
+                         shape-rendering="crispEdges"
+                         aria-hidden="true">
+
+
+                        <!-- ARKA PLAN -->
+                        <rect width="320"
+                              height="300"
+                              fill="#F2BDA8" />
+
+
+                        <!-- GÜNEŞ -->
+                        <rect x="245"
+                              y="28"
+                              width="34"
+                              height="34"
+                              fill="#FFE1A3" />
+
+                        <rect x="253"
+                              y="20"
+                              width="18"
+                              height="50"
+                              fill="#FFE1A3" />
+
+                        <rect x="237"
+                              y="36"
+                              width="50"
+                              height="18"
+                              fill="#FFE1A3" />
+
+
+
+                        <!-- BULUT -->
+                        <rect x="30"
+                              y="48"
+                              width="75"
+                              height="14"
+                              fill="#FFF8F3" />
+
+                        <rect x="43"
+                              y="36"
+                              width="47"
+                              height="28"
+                              fill="#FFF8F3" />
+
+
+
+                        <!-- BİNA -->
+                        <rect x="42"
+                              y="100"
+                              width="236"
+                              height="148"
+                              fill="#FFF9F5" />
+
+
+
+                        <!-- TABELA -->
+                        <rect x="72"
+                              y="78"
+                              width="176"
+                              height="38"
+                              fill="#253A6B" />
+
+                        <rect x="81"
+                              y="87"
+                              width="158"
+                              height="20"
+                              fill="#FFF4EC" />
+
+
+
+                        <!-- TENTE -->
+                        <rect x="42"
+                              y="116"
+                              width="236"
+                              height="34"
+                              fill="#DC8465" />
+
+                        <rect x="42"
+                              y="116"
+                              width="30"
+                              height="34"
+                              fill="#FFF5EE" />
+
+                        <rect x="102"
+                              y="116"
+                              width="30"
+                              height="34"
+                              fill="#FFF5EE" />
+
+                        <rect x="162"
+                              y="116"
+                              width="30"
+                              height="34"
+                              fill="#FFF5EE" />
+
+                        <rect x="222"
+                              y="116"
+                              width="30"
+                              height="34"
+                              fill="#FFF5EE" />
+
+
+
+                        <!-- SOL VİTRİN -->
+                        <rect x="61"
+                              y="162"
+                              width="94"
+                              height="65"
+                              fill="#253A6B" />
+
+                        <rect x="68"
+                              y="169"
+                              width="80"
+                              height="51"
+                              fill="#B8DFE0" />
+
+
+
+                        <!-- RAF -->
+                        <rect x="74"
+                              y="197"
+                              width="68"
+                              height="5"
+                              fill="#875943" />
+
+
+
+                        <!-- PASTALAR -->
+                        <rect x="80"
+                              y="183"
+                              width="20"
+                              height="8"
+                              fill="#DA9743" />
+
+                        <rect x="85"
+                              y="177"
+                              width="10"
+                              height="17"
+                              fill="#F4BD67" />
+
+
+
+                        <rect x="108"
+                              y="183"
+                              width="22"
+                              height="8"
+                              fill="#DA9743" />
+
+                        <rect x="114"
+                              y="177"
+                              width="10"
+                              height="17"
+                              fill="#F4BD67" />
+
+
+
+                        <!-- KAPI -->
+                        <rect x="176"
+                              y="161"
+                              width="73"
+                              height="87"
+                              fill="#253A6B" />
+
+                        <rect x="184"
+                              y="169"
+                              width="57"
+                              height="70"
+                              fill="#A8D4D5" />
+
+                        <rect x="226"
+                              y="201"
+                              width="7"
+                              height="7"
+                              fill="#FFC85D" />
+
+
+
+                        <!-- MASA -->
+                        <rect x="116"
+                              y="246"
+                              width="85"
+                              height="9"
+                              fill="#253A6B" />
+
+
+
+                        <!-- KAHVE -->
+                        <rect x="140"
+                              y="219"
+                              width="39"
+                              height="26"
+                              fill="#FFFFFF" />
+
+                        <rect x="179"
+                              y="223"
+                              width="12"
+                              height="16"
+                              fill="#FFFFFF" />
+
+                        <rect x="183"
+                              y="228"
+                              width="11"
+                              height="6"
+                              fill="#F2BDA8" />
+
+                        <rect x="145"
+                              y="219"
+                              width="29"
+                              height="6"
+                              fill="#885039" />
+
+
+
+                        <!-- BUHAR -->
+                        <rect x="149"
+                              y="201"
+                              width="5"
+                              height="11"
+                              fill="#FFFFFF" />
+
+                        <rect x="154"
+                              y="194"
+                              width="5"
+                              height="10"
+                              fill="#FFFFFF" />
+
+                        <rect x="166"
+                              y="199"
+                              width="5"
+                              height="11"
+                              fill="#FFFFFF" />
+
+                        <rect x="171"
+                              y="190"
+                              width="5"
+                              height="13"
+                              fill="#FFFFFF" />
+
+
+
+                        <!-- YOL -->
+                        <rect x="0"
+                              y="255"
+                              width="320"
+                              height="45"
+                              fill="#253A6B" />
+
+                        <rect x="0"
+                              y="262"
+                              width="52"
+                              height="7"
+                              fill="#364F83" />
+
+                        <rect x="86"
+                              y="278"
+                              width="58"
+                              height="7"
+                              fill="#364F83" />
+
+                        <rect x="190"
+                              y="263"
+                              width="51"
+                              height="7"
+                              fill="#364F83" />
+
+                        <rect x="274"
+                              y="281"
+                              width="46"
+                              height="7"
+                              fill="#364F83" />
+
+                    </svg>
+
+
+
+                    <div class="pixel-copy">
+
+                        <strong>
+                            Sepetin seni bekliyor.
+                        </strong>
+
+                        <span>
+                            Giriş yap ve kaldığın yerden devam et.
+                        </span>
+
+                    </div>
+
                 </div>
+
+
+
+                <!-- ================================
+                     SAĞ TARAF
+                ================================= -->
+
+                <div class="login-content">
+
+
+                    <span class="login-kicker">
+
+                        <i class="fas fa-lock"></i>
+
+                        GÜVENLİ ÖDEME
+
+                    </span>
+
+
+
+                    <h2 id="loginDialogTitle">
+
+                        Neredeyse
+                        <br />
+                        hazırız.
+
+                    </h2>
+
+
+
+                    <p class="login-description">
+
+                        Siparişini tamamlamak için hesabına giriş yap.
+                        Sepetin aynen korunacak ve giriş yaptıktan sonra
+                        doğrudan ödeme adımına devam edeceksin.
+
+                    </p>
+
+
+
+                    <div class="login-benefits">
+
+
+                        <div class="login-benefit">
+
+                            <span class="benefit-icon">
+                                <i class="fas fa-shopping-basket"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Sepetin kaybolmaz
+                                </strong>
+
+                                <span>
+                                    Seçtiğin ürünler seni beklemeye devam eder.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="login-benefit">
+
+                            <span class="benefit-icon">
+                                <i class="fas fa-receipt"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Siparişlerini takip et
+                                </strong>
+
+                                <span>
+                                    Sipariş durumuna hesabından kolayca ulaş.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- GİRİŞ -->
+                    <a href="/User/Login?ReturnUrl=%2FPayment%2FCheckout"
+                       class="login-primary">
+
+                        <span>Giriş yap</span>
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </a>
+
+
+
+                    <!-- KAYIT -->
+                    <a href="/User/RegisterUser"
+                       class="login-register">
+
+                        Hesabın yok mu?
+
+                        <strong>
+                            Kayıt ol
+                        </strong>
+
+                    </a>
+
+
+
+                    <div class="login-security">
+
+                        <i class="fas fa-shield-alt"></i>
+
+                        PayTR ve 3D Secure ile güvenli ödeme
+
+                    </div>
+
+
+                </div>
+
+
             </div>
+
         </dialog>
+
     }
+
 
 </section>
 
+
+
+<!-- ==================================================
+     POPUP CSS
+================================================== -->
+
+<style>
+
+    .bg-dialog {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        width: min(900px, 94vw);
+        max-width: 900px;
+        margin: auto;
+        overflow: visible;
+    }
+
+
+        .bg-dialog::backdrop {
+            background: rgba(16, 22, 38, .72);
+            backdrop-filter: blur(6px);
+        }
+
+
+        .bg-dialog[open] {
+            display: grid;
+            place-items: center;
+        }
+
+
+
+    /* ANA KART */
+
+    .login-card {
+        position: relative;
+        width: 100%;
+        min-height: 520px;
+        display: grid;
+        grid-template-columns: 42% 58%;
+        overflow: hidden;
+        border-radius: 26px;
+        background: #fff;
+        box-shadow: 0 40px 100px rgba(15, 24, 45, .32);
+    }
+
+
+
+    /* KAPAT */
+
+    .login-close {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        z-index: 20;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: #f6f3f1;
+        color: #777;
+        cursor: pointer;
+        transition: .25s;
+    }
+
+
+        .login-close:hover {
+            background: #253A6B;
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+
+
+    /* ==================================
+           PIXEL ART TARAFI
+        ================================== */
+
+    .login-art {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 38px 28px 28px;
+        background: #F2BDA8;
+        overflow: hidden;
+    }
+
+
+        /* PIXEL GRID */
+
+        .login-art::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient( rgba(255,255,255,.08) 1px, transparent 1px ), linear-gradient( 90deg, rgba(255,255,255,.08) 1px, transparent 1px );
+            background-size: 12px 12px;
+            pointer-events: none;
+        }
+
+
+
+    .pixel-logo {
+        position: relative;
+        z-index: 3;
+        align-self: flex-start;
+        padding: 8px 13px;
+        margin-bottom: 2px;
+        background: #253A6B;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 4px;
+        box-shadow: 6px 6px 0 #CF7455;
+    }
+
+
+
+    .pixel-scene {
+        position: relative;
+        z-index: 2;
+        display: block;
+        width: 100%;
+        max-width: 330px;
+        margin: 0 auto;
+        image-rendering: pixelated;
+        filter: drop-shadow( 0 18px 22px rgba(92, 48, 32, .14) );
+    }
+
+
+
+    .pixel-copy {
+        position: relative;
+        z-index: 3;
+        color: #253A6B;
+        margin-top: 2px;
+    }
+
+
+        .pixel-copy strong {
+            display: block;
+            font-size: 20px;
+            line-height: 1.35;
+            margin-bottom: 5px;
+        }
+
+
+        .pixel-copy span {
+            display: block;
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: .78;
+        }
+
+
+
+    /* ==================================
+           SAĞ TARAF
+        ================================== */
+
+    .login-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 56px 58px 38px;
+    }
+
+
+
+    .login-kicker {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 16px;
+        color: #D37D5C;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+
+
+    .login-content h2 {
+        margin: 0 0 18px;
+        color: #253A6B;
+        font-size: 48px;
+        font-weight: 800;
+        line-height: 1.04;
+    }
+
+
+
+    .login-description {
+        max-width: 430px;
+        margin: 0 0 27px;
+        color: #697591;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+
+
+    /* AVANTAJLAR */
+
+    .login-benefits {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 29px;
+    }
+
+
+
+    .login-benefit {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+
+
+    .benefit-icon {
+        flex: 0 0 40px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: #FFF1EB;
+        color: #D37D5C;
+        font-size: 13px;
+    }
+
+
+
+    .login-benefit strong {
+        display: block;
+        margin-bottom: 3px;
+        color: #253A6B;
+        font-size: 14px;
+    }
+
+
+
+    .login-benefit div > span {
+        display: block;
+        color: #8C95AA;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+
+
+    /* GİRİŞ BUTONU */
+
+    .login-primary {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 22px;
+        border-radius: 12px;
+        background: #E59A7E;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        box-shadow: 0 13px 30px rgba(229, 154, 126, .30);
+        transition: .25s;
+    }
+
+
+        .login-primary:hover {
+            color: #fff;
+            background: #253A6B;
+            transform: translateY(-2px);
+        }
+
+
+        .login-primary i {
+            transition: .25s;
+        }
+
+
+        .login-primary:hover i {
+            transform: translateX(5px);
+        }
+
+
+
+    /* KAYIT */
+
+    .login-register {
+        display: block;
+        margin-top: 17px;
+        text-align: center;
+        color: #7C859A;
+        font-size: 13px;
+    }
+
+
+        .login-register strong {
+            margin-left: 3px;
+            color: #253A6B;
+        }
+
+
+        .login-register:hover strong {
+            color: #D37D5C;
+        }
+
+
+
+    /* GÜVENLİK */
+
+    .login-security {
+        margin-top: 27px;
+        padding-top: 17px;
+        border-top: 1px solid #ECEFF4;
+        text-align: center;
+        color: #9AA1B1;
+        font-size: 11px;
+    }
+
+
+        .login-security i {
+            margin-right: 6px;
+            color: #3FA16A;
+        }
+
+
+
+    /* ==================================
+           TABLET / MOBİL
+        ================================== */
+
+    @@media (max-width: 767px) {
+
+        .bg-dialog {
+            width: min(94vw, 520px);
+        }
+
+
+        .login-card {
+            display: block;
+            max-height: 92vh;
+            overflow-y: auto;
+            border-radius: 20px;
+        }
+
+
+        .login-art {
+            min-height: 250px;
+            padding: 25px 28px 18px;
+        }
+
+
+        .pixel-logo {
+            margin-bottom: -10px;
+        }
+
+
+        .pixel-scene {
+            max-width: 260px;
+            margin: -10px auto -22px;
+        }
+
+
+        .pixel-copy {
+            display: none;
+        }
+
+
+        .login-content {
+            padding: 32px 25px 25px;
+        }
+
+
+            .login-content h2 {
+                font-size: 36px;
+            }
+
+
+        .login-description {
+            line-height: 1.65;
+        }
+    }
+
+</style>
+
+
+
 @section Scripts {
+
     <script>
+
         (function () {
-            const cartApi = window.BageryCart;
-            const fp = cartApi.formatPrice;   // kısaltma: fiyat biçimle
-            const esc = cartApi.escapeHtml;   // kısaltma: metni güvenli bas
-            const freeShippingLimit = @Cart.FreeShippingLimit.ToString(CultureInfo.InvariantCulture);
 
-            // Sunucudan gelen sepeti ekrana çizer; her işlemden sonra yeniden çağrılır
-            function render(cart) {
-                const isEmpty = !cart || cart.items.length === 0;
-                document.getElementById('cartEmpty').hidden = !isEmpty;
-                document.getElementById('cartContent').hidden = isEmpty;
-                if (isEmpty) return;
+            const cartApi =
+                window.BageryCart;
 
-                document.getElementById('itemCount').textContent = cart.totalQuantity + ' ürün';
 
-                // Ürün satırları
-                document.getElementById('cartRows').innerHTML = cart.items.map(item => {
-                    const key = `data-product="${item.productId}" data-variant="${item.variantId ?? ''}"`;
-                    const variant = item.variantName ? `<span class="bg-item-variant">${esc(item.variantName)}</span>` : '';
-                    return `
-                        <article class="bg-item">
-                            <a class="bg-item-img" href="/Product/Detail/${item.productId}"><img src="${esc(item.imageUrl)}" alt=""></a>
-                            <div class="bg-item-info">
-                                <a class="bg-item-name" href="/Product/Detail/${item.productId}">${esc(item.productName)}</a>
-                                ${variant}
-                                <span class="bg-item-unit">${fp(item.unitPrice)} / adet</span>
-                            </div>
-                            <div class="bg-qty">
-                                <button type="button" class="js-decrease" ${key} aria-label="Azalt"><i class="fas fa-minus"></i></button>
-                                <span>${item.quantity}</span>
-                                <button type="button" class="js-increase" ${key} aria-label="Artır"><i class="fas fa-plus"></i></button>
-                            </div>
-                            <strong class="bg-item-total">${fp(item.lineTotal)}</strong>
-                            <button type="button" class="bg-item-remove js-remove" ${key} aria-label="Sepetten çıkar"><i class="fas fa-times"></i></button>
-                        </article>`;
-                }).join('');
+            const fp =
+                cartApi.formatPrice;
 
-                // Ücretsiz kargo çubuğu: ara toplam / limit oranında dolar
-                const free = cart.shippingPrice === 0;
-                const percent = Math.min(cart.subTotal / freeShippingLimit * 100, 100);
-                document.getElementById('shipBox').classList.toggle('is-free', free);
-                document.getElementById('shipBar').style.width = (free ? 100 : percent) + '%';
-                document.getElementById('shipText').innerHTML = free
+
+            const esc =
+                cartApi.escapeHtml;
+
+
+            const freeShippingLimit =
+                @Cart.FreeShippingLimit.ToString(
+                    CultureInfo.InvariantCulture
+                        );
+
+
+
+        /* ==================================
+           SEPETİ EKRANA BAS
+        ================================== */
+
+        function render(cart) {
+
+            const isEmpty =
+                !cart ||
+                cart.items.length === 0;
+
+
+            document
+                .getElementById('cartEmpty')
+                .hidden = !isEmpty;
+
+
+            document
+                .getElementById('cartContent')
+                .hidden = isEmpty;
+
+
+            if (isEmpty)
+                return;
+
+
+
+            document
+                .getElementById('itemCount')
+                .textContent =
+                cart.totalQuantity +
+                ' ürün';
+
+
+
+            /* ÜRÜNLER */
+
+            document
+                .getElementById('cartRows')
+                .innerHTML =
+                cart.items
+                    .map(item => {
+
+
+                        const key =
+                            `data-product="${item.productId}"
+                             data-variant="${item.variantId ?? ''}"`;
+
+
+                        const variant =
+                            item.variantName
+                                ? `<span class="bg-item-variant">
+                                       ${esc(item.variantName)}
+                                   </span>`
+                                : '';
+
+
+                        return `
+
+                            <article class="bg-item">
+
+                                <a class="bg-item-img"
+                                   href="/Product/Detail/${item.productId}">
+
+                                    <img src="${esc(item.imageUrl)}"
+                                         alt="">
+
+                                </a>
+
+
+                                <div class="bg-item-info">
+
+                                    <a class="bg-item-name"
+                                       href="/Product/Detail/${item.productId}">
+
+                                        ${esc(item.productName)}
+
+                                    </a>
+
+
+                                    ${variant}
+
+
+                                    <span class="bg-item-unit">
+
+                                        ${fp(item.unitPrice)}
+                                        / adet
+
+                                    </span>
+
+                                </div>
+
+
+                                <div class="bg-qty">
+
+                                    <button type="button"
+                                            class="js-decrease"
+                                            ${key}
+                                            aria-label="Azalt">
+
+                                        <i class="fas fa-minus"></i>
+
+                                    </button>
+
+
+                                    <span>
+                                        ${item.quantity}
+                                    </span>
+
+
+                                    <button type="button"
+                                            class="js-increase"
+                                            ${key}
+                                            aria-label="Artır">
+
+                                        <i class="fas fa-plus"></i>
+
+                                    </button>
+
+                                </div>
+
+
+                                <strong class="bg-item-total">
+
+                                    ${fp(item.lineTotal)}
+
+                                </strong>
+
+
+                                <button type="button"
+                                        class="bg-item-remove js-remove"
+                                        ${key}
+                                        aria-label="Sepetten çıkar">
+
+                                    <i class="fas fa-times"></i>
+
+                                </button>
+
+                            </article>
+
+                        `;
+
+                    })
+                    .join('');
+
+
+
+            /* KARGO */
+
+            const free =
+                cart.shippingPrice === 0;
+
+
+            const percent =
+                Math.min(
+                    cart.subTotal /
+                    freeShippingLimit *
+                    100,
+                    100
+                );
+
+
+            document
+                .getElementById('shipBox')
+                .classList
+                .toggle(
+                    'is-free',
+                    free
+                );
+
+
+            document
+                .getElementById('shipBar')
+                .style
+                .width =
+                (free ? 100 : percent) +
+                '%';
+
+
+
+            document
+                .getElementById('shipText')
+                .innerHTML =
+                free
                     ? '<strong>Kargonuz ücretsiz.</strong>'
-                    : `Ücretsiz kargo için <strong>${fp(Math.max(freeShippingLimit - cart.subTotal, 0.01))}</strong> daha ekleyin.`;
+                    : `Ücretsiz kargo için
+                       <strong>
+                           ${fp(
+                               Math.max(
+                                   freeShippingLimit -
+                                   cart.subTotal,
+                                   0.01
+                               )
+                           )}
+                       </strong>
+                       daha ekleyin.`;
 
-                // Tutarlar
-                document.getElementById('subTotal').textContent = fp(cart.subTotal);
-                document.getElementById('shipping').textContent = free ? 'Ücretsiz' : fp(cart.shippingPrice);
-                document.getElementById('paidPrice').textContent = fp(cart.paidPrice);
 
-                // Kupon
-                const hasCoupon = !!cart.couponCode;
-                document.getElementById('discountRow').hidden = !hasCoupon;
-                document.getElementById('discount').textContent = '−' + fp(cart.couponDiscount);
-                document.getElementById('couponForm').hidden = hasCoupon;
-                document.getElementById('couponApplied').hidden = !hasCoupon;
-                document.getElementById('couponCodeText').textContent = cart.couponCode || '';
+
+            /* FİYATLAR */
+
+            document
+                .getElementById('subTotal')
+                .textContent =
+                fp(cart.subTotal);
+
+
+            document
+                .getElementById('shipping')
+                .textContent =
+                free
+                    ? 'Ücretsiz'
+                    : fp(cart.shippingPrice);
+
+
+            document
+                .getElementById('paidPrice')
+                .textContent =
+                fp(cart.paidPrice);
+
+
+
+            /* KUPON */
+
+            const hasCoupon =
+                !!cart.couponCode;
+
+
+            document
+                .getElementById('discountRow')
+                .hidden =
+                !hasCoupon;
+
+
+            document
+                .getElementById('discount')
+                .textContent =
+                '−' +
+                fp(cart.couponDiscount);
+
+
+            document
+                .getElementById('couponForm')
+                .hidden =
+                hasCoupon;
+
+
+            document
+                .getElementById('couponApplied')
+                .hidden =
+                !hasCoupon;
+
+
+            document
+                .getElementById('couponCodeText')
+                .textContent =
+                cart.couponCode || '';
+
+        }
+
+
+
+        /* API */
+
+        async function run(promise) {
+
+            const result =
+                await promise;
+
+
+            if (
+                result.success ===
+                false
+            ) {
+
+                cartApi.toast(
+                    result.message,
+                    false
+                );
+
+                return;
             }
 
-            // İstek at; hata varsa göster, yoksa sepeti yeniden çiz
-            async function run(promise) {
-                const result = await promise;
-                if (result.success === false) {
-                    cartApi.toast(result.message, false);
-                    return;
+
+            if (result.message) {
+
+                cartApi.toast(
+                    result.message,
+                    true
+                );
+
+            }
+
+
+            render(result.cart);
+
+        }
+
+
+
+        /* ÜRÜN BUTONLARI */
+
+        document
+            .getElementById('cartRows')
+            .addEventListener(
+                'click',
+                function (e) {
+
+                    const btn =
+                        e.target.closest(
+                            'button[data-product]'
+                        );
+
+
+                    if (!btn)
+                        return;
+
+
+                    const productId =
+                        btn.dataset.product;
+
+
+                    const variantId =
+                        btn.dataset.variant ||
+                        null;
+
+
+
+                    if (
+                        btn.classList
+                            .contains(
+                                'js-increase'
+                            )
+                    ) {
+
+                        run(
+                            cartApi.add(
+                                productId,
+                                1,
+                                variantId
+                            )
+                        );
+
+                    }
+
+                    else if (
+                        btn.classList
+                            .contains(
+                                'js-decrease'
+                            )
+                    ) {
+
+                        run(
+                            cartApi.decrease(
+                                productId,
+                                variantId
+                            )
+                        );
+
+                    }
+
+                    else if (
+                        btn.classList
+                            .contains(
+                                'js-remove'
+                            )
+                    ) {
+
+                        run(
+                            cartApi.remove(
+                                productId,
+                                variantId
+                            )
+                        );
+
+                    }
+
                 }
-                if (result.message) cartApi.toast(result.message, true);
-                render(result.cart);
-            }
+            );
 
-            // Tek dinleyici: satırlar her render'da yeniden çizildiği için
-            document.getElementById('cartRows').addEventListener('click', function (e) {
-                const btn = e.target.closest('button[data-product]'); // ikona tıklansa da butonu bulur
-                if (!btn) return;
-                const productId = btn.dataset.product;
-                const variantId = btn.dataset.variant || null;
 
-                if (btn.classList.contains('js-increase')) run(cartApi.add(productId, 1, variantId));
-                else if (btn.classList.contains('js-decrease')) run(cartApi.decrease(productId, variantId));
-                else if (btn.classList.contains('js-remove')) run(cartApi.remove(productId, variantId));
-            });
 
-            // Kupon
-            const couponInput = document.getElementById('couponInput');
+        /* KUPON */
 
-            document.getElementById('applyCouponBtn').addEventListener('click', function () {
-                const code = couponInput.value.trim();
-                if (!code) { cartApi.toast('Kupon kodunu yazın.', false); return; }
-                run(cartApi.applyCoupon(code));
-                couponInput.value = '';
-            });
+        const couponInput =
+            document
+                .getElementById(
+                    'couponInput'
+                );
 
-            couponInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') document.getElementById('applyCouponBtn').click(); // Enter ile de uygulansın
-            });
 
-            document.getElementById('removeCouponBtn').addEventListener('click', function () {
-                run(cartApi.removeCoupon());
-            });
+        document
+            .getElementById(
+                'applyCouponBtn'
+            )
+            .addEventListener(
+                'click',
+                function () {
 
-            // Giriş yapmamışsa "Ödemeye geç" önce bilgilendirme penceresini açsın
-            const loginDialog = document.getElementById('loginDialog'); // giriş yapılmışsa sayfada yok -> null
-            if (loginDialog) {
-                document.getElementById('goCheckout').addEventListener('click', function (e) {
-                    e.preventDefault();       // doğrudan giriş sayfasına atlamasın
-                    loginDialog.showModal();  // arkadaki sayfa kararır ve tıklanamaz
-                });
+                    const code =
+                        couponInput
+                            .value
+                            .trim();
 
-                // X butonuna ya da pencerenin dışındaki karartmaya tıklanınca kapansın (Esc zaten kapatıyor)
-                loginDialog.addEventListener('click', function (e) {
-                    if (e.target === loginDialog || e.target.closest('[data-close]')) loginDialog.close();
-                });
-            }
 
-            run(cartApi.get()); // sayfa açılınca sepeti getir
-        })();
-    </script>
+                    if (!code) {
+
+                        cartApi.toast(
+                            'Kupon kodunu yazın.',
+                            false
+                        );
+
+                        return;
+                    }
+
+
+                    run(
+                        cartApi.applyCoupon(
+                            code
+                        )
+                    );
+
+
+                    couponInput.value =
+                        '';
+
+                }
+            );
+
+
+
+        couponInput
+            .addEventListener(
+                'keydown',
+                function (e) {
+
+                    if (
+                        e.key ===
+                        'Enter'
+                    ) {
+
+                        document
+                            .getElementById(
+                                'applyCouponBtn'
+                            )
+                            .click();
+
+                    }
+
+                }
+            );
+
+
+
+        document
+            .getElementById(
+                'removeCouponBtn'
+            )
+            .addEventListener(
+                'click',
+                function () {
+
+                    run(
+                        cartApi
+                            .removeCoupon()
+                    );
+
+                }
+            );
+
+
+
+        /* ==================================
+           LOGIN POPUP
+        ================================== */
+
+        const loginDialog =
+            document
+                .getElementById(
+                    'loginDialog'
+                );
+
+
+        if (loginDialog) {
+
+            document
+                .getElementById(
+                    'goCheckout'
+                )
+                .addEventListener(
+                    'click',
+                    function (e) {
+
+                        e.preventDefault();
+
+                        loginDialog
+                            .showModal();
+
+                    }
+                );
+
+
+
+            loginDialog
+                .addEventListener(
+                    'click',
+                    function (e) {
+
+                        if (
+                            e.target ===
+                            loginDialog ||
+                            e.target.closest(
+                                '[data-close]'
+                            )
+                        ) {
+
+                            loginDialog
+                                .close();
+
+                        }
+
+                    }
+                );
+
+        }
+
+
+
+        /* İLK YÜKLEME */
+
+        run(
+            cartApi.get()
+        );
+
+    })();
+
+</script>
+
 }

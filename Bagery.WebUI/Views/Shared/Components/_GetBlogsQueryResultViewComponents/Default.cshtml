@@ -1,7 +1,4 @@
 ﻿@model List<GetBlogsWithUserQueryResult>
-@*
-    blogs component view
-*@
 
 <section class="news-section sec-pad">
     <div class="auto-container">
@@ -15,42 +12,97 @@
         {
             <div class="blog-slider-wrap">
 
-                <button type="button" class="blog-nav blog-nav-prev" id="blogPrev" aria-label="Önceki">
+                <button type="button"
+                        class="blog-nav blog-nav-prev"
+                        id="blogPrev"
+                        aria-label="Önceki">
+
                     <i class="fas fa-angle-left"></i>
                 </button>
 
+
                 <div class="blog-track" id="blogTrack">
+
                     @foreach (var item in Model)
                     {
                         <div class="blog-slide">
+
                             <div class="news-block-one">
                                 <div class="inner-box">
+
                                     <figure class="image-box">
+
                                         <span class="category">Blog</span>
+
                                         <a href="/Blog/Detail/@item.Id">
-                                            <img src="@item.ImageUrl1" alt="@item.Title"
+
+                                            <img src="@item.ImageUrl1"
+                                                 alt="@item.Title"
                                                  onerror="this.src='/images/default-image.png'">
+
                                         </a>
+
                                     </figure>
+
+
                                     <div class="lower-content">
+
                                         <ul class="post-info clearfix">
-                                            <li>@item.CreatedAt.ToString("dd MMM yyyy")</li>
+
+                                            <li>
+                                                @item.CreatedAt.ToString("dd MMM yyyy")
+                                            </li>
+
                                             <li>/</li>
-                                            <li><a href="/Blog/Detail/@item.Id">@(item.AppUser?.FullName ?? "Editör")</a></li>
+
+                                            <li>
+                                                <a href="/Blog/Detail/@item.Id">
+                                                    @(item.AppUser?.FullName ?? "Editör")
+                                                </a>
+                                            </li>
+
                                         </ul>
-                                        <h3><a href="/Blog/Detail/@item.Id">@item.Title</a></h3>
-                                        <p>@item.ShortDescription</p>
+
+
+                                        <h3>
+                                            <a href="/Blog/Detail/@item.Id">
+                                                @item.Title
+                                            </a>
+                                        </h3>
+
+
+                                        <p>
+                                            @item.ShortDescription
+                                        </p>
+
+
                                         <div class="btn-box">
-                                            <a href="/Blog/Detail/@item.Id" class="theme-btn-two">Devamını Oku</a>
+
+                                            <a href="/Blog/Detail/@item.Id"
+                                               class="theme-btn-two">
+
+                                                Devamını Oku
+
+                                            </a>
+
                                         </div>
+
                                     </div>
+
                                 </div>
                             </div>
+
                         </div>
                     }
+
                 </div>
 
-                <button type="button" class="blog-nav blog-nav-next" id="blogNext" aria-label="Sonraki">
+
+                <button type="button"
+                        class="blog-nav blog-nav-next"
+                        id="blogNext"
+                        aria-label="Sonraki">
+
                     <i class="fas fa-angle-right"></i>
                 </button>
 
@@ -60,10 +112,14 @@
     </div>
 </section>
 
+
 <style>
+
     .blog-slider-wrap {
         position: relative;
+        padding: 0 18px;
     }
+
 
     .blog-track {
         display: flex;
@@ -74,14 +130,15 @@
         scroll-snap-type: x mandatory;
         padding: 10px 4px 30px;
         cursor: grab;
-        /* kaydırma çubuğunu gizle */
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
 
+
         .blog-track::-webkit-scrollbar {
             display: none;
         }
+
 
         .blog-track.dragging {
             cursor: grabbing;
@@ -89,16 +146,19 @@
             scroll-snap-type: none;
         }
 
+
     .blog-slide {
         flex: 0 0 calc(33.333% - 20px);
         scroll-snap-align: start;
         display: flex;
     }
 
+
         .blog-slide .news-block-one {
             width: 100%;
             display: flex;
         }
+
 
             .blog-slide .news-block-one .inner-box {
                 width: 100%;
@@ -106,17 +166,20 @@
                 flex-direction: column;
             }
 
+
         .blog-slide .image-box img {
             width: 100%;
             height: 240px;
             object-fit: cover;
         }
 
+
         .blog-slide .lower-content {
             display: flex;
             flex-direction: column;
             flex: 1 1 auto;
         }
+
 
         .blog-slide h3 {
             display: -webkit-box;
@@ -126,6 +189,7 @@
             min-height: 58px;
         }
 
+
         .blog-slide .lower-content p {
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -134,134 +198,339 @@
             min-height: 72px;
         }
 
+
         .blog-slide .btn-box {
             margin-top: auto;
         }
 
-    /* Ok butonları */
+
+
+    /* =====================================
+           BLOG NAVİGASYON
+        ===================================== */
+
     .blog-nav {
         position: absolute;
-        top: 40%;
+        top: 42%;
         z-index: 5;
-        width: 48px;
-        height: 48px;
-        border: none;
-        border-radius: 50%;
-        background: #fff;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
-        font-size: 20px;
-        color: #222;
+        width: 52px;
+        height: 52px;
+        border: 1px solid #e8a087;
+        border-radius: 0;
+        background: #e8a087;
+        color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all .25s ease;
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, .10);
+        transition: background .25s ease, color .25s ease, transform .25s ease, box-shadow .25s ease;
     }
+
+
+        .blog-nav i {
+            transition: transform .25s ease;
+        }
+
 
         .blog-nav:hover {
             background: #222;
+            border-color: #222;
             color: #fff;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, .16);
         }
 
-        .blog-nav:disabled {
-            opacity: .3;
-            pointer-events: none;
+
+    .blog-nav-prev:hover i {
+        transform: translateX(-3px);
+    }
+
+
+    .blog-nav-next:hover i {
+        transform: translateX(3px);
+    }
+
+
+    .blog-nav:disabled {
+        opacity: .25;
+        cursor: default;
+        box-shadow: none;
+    }
+
+
+        .blog-nav:disabled:hover {
+            background: #e8a087;
+            border-color: #e8a087;
         }
+
 
     .blog-nav-prev {
-        left: -24px;
+        left: -8px;
     }
+
 
     .blog-nav-next {
-        right: -24px;
+        right: -8px;
     }
 
+
+
+    /* =====================================
+           TABLET
+        ===================================== */
+
     @@media (max-width: 991px) {
+
         .blog-slide {
             flex: 0 0 calc(50% - 15px);
         }
 
-        .blog-nav-prev {
-            left: 4px;
+
+        .blog-nav {
+            width: 46px;
+            height: 46px;
         }
 
+
+        .blog-nav-prev {
+            left: 8px;
+        }
+
+
         .blog-nav-next {
-            right: 4px;
+            right: 8px;
         }
     }
 
+
+
+    /* =====================================
+           MOBİL
+        ===================================== */
+
     @@media (max-width: 575px) {
+
         .blog-slide {
             flex: 0 0 85%;
         }
+
+
+        .blog-nav {
+            width: 42px;
+            height: 42px;
+            top: 40%;
+            font-size: 16px;
+        }
     }
+
 </style>
 
+
 <script>
+
     (function () {
+
         var track = document.getElementById("blogTrack");
-        if (!track) return;
+
+        if (!track)
+            return;
+
 
         var prev = document.getElementById("blogPrev");
+
         var next = document.getElementById("blogNext");
 
+
+
         function step() {
-            var slide = track.querySelector(".blog-slide");
-            return slide ? slide.offsetWidth + 30 : 300;
+
+            var slide =
+                track.querySelector(".blog-slide");
+
+            return slide
+                ? slide.offsetWidth + 30
+                : 300;
         }
+
+
 
         next.addEventListener("click", function () {
-            track.scrollBy({ left: step(), behavior: "smooth" });
+
+            track.scrollBy({
+
+                left: step(),
+
+                behavior: "smooth"
+
+            });
+
         });
+
+
 
         prev.addEventListener("click", function () {
-            track.scrollBy({ left: -step(), behavior: "smooth" });
+
+            track.scrollBy({
+
+                left: -step(),
+
+                behavior: "smooth"
+
+            });
+
         });
 
-        // Ok butonlarını sınırda pasifleştir
+
+
+        /*
+         * İlk ve son noktada
+         * butonları pasifleştir
+         */
         function updateButtons() {
-            prev.disabled = track.scrollLeft <= 5;
-            next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 5;
+
+            prev.disabled =
+                track.scrollLeft <= 5;
+
+
+            next.disabled =
+                track.scrollLeft +
+                track.clientWidth >=
+                track.scrollWidth - 5;
+
         }
 
-        track.addEventListener("scroll", updateButtons);
-        window.addEventListener("resize", updateButtons);
+
+        track.addEventListener(
+            "scroll",
+            updateButtons
+        );
+
+
+        window.addEventListener(
+            "resize",
+            updateButtons
+        );
+
+
         updateButtons();
 
-        // Mouse ile sürükleme
-        var isDown = false, startX = 0, startScroll = 0, moved = false;
 
-        track.addEventListener("mousedown", function (e) {
-            isDown = true;
-            moved = false;
-            startX = e.pageX;
-            startScroll = track.scrollLeft;
-            track.classList.add("dragging");
-        });
 
-        document.addEventListener("mouseup", function () {
-            isDown = false;
-            track.classList.remove("dragging");
-        });
+        /*
+         * MOUSE İLE SÜRÜKLEME
+         */
+        var isDown = false;
 
-        track.addEventListener("mouseleave", function () {
-            isDown = false;
-            track.classList.remove("dragging");
-        });
+        var startX = 0;
 
-        track.addEventListener("mousemove", function (e) {
-            if (!isDown) return;
-            e.preventDefault();
-            var diff = e.pageX - startX;
-            if (Math.abs(diff) > 5) moved = true;
-            track.scrollLeft = startScroll - diff;
-        });
+        var startScroll = 0;
 
-        // Sürükledikten sonra yanlışlıkla linke gitmeyi engelle
-        track.addEventListener("click", function (e) {
-            if (moved) {
-                e.preventDefault();
-                e.stopPropagation();
+        var moved = false;
+
+
+
+        track.addEventListener(
+            "mousedown",
+            function (e) {
+
+                isDown = true;
+
+                moved = false;
+
+                startX = e.pageX;
+
+                startScroll =
+                    track.scrollLeft;
+
+
+                track.classList.add(
+                    "dragging"
+                );
+
             }
-        }, true);
+        );
+
+
+
+        document.addEventListener(
+            "mouseup",
+            function () {
+
+                isDown = false;
+
+                track.classList.remove(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+
+        track.addEventListener(
+            "mouseleave",
+            function () {
+
+                isDown = false;
+
+                track.classList.remove(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+
+        track.addEventListener(
+            "mousemove",
+            function (e) {
+
+                if (!isDown)
+                    return;
+
+
+                e.preventDefault();
+
+
+                var diff =
+                    e.pageX - startX;
+
+
+                if (Math.abs(diff) > 5)
+                    moved = true;
+
+
+                track.scrollLeft =
+                    startScroll - diff;
+
+            }
+        );
+
+
+
+        /*
+         * Sürükleme yaptıktan sonra
+         * yanlışlıkla blog detayına
+         * gitmesini engelle
+         */
+        track.addEventListener(
+            "click",
+            function (e) {
+
+                if (moved) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+                }
+
+            },
+            true
+        );
+
     })();
+
 </script>
