@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Sipariş Takibi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/css/bagery-admin-delivery.css" rel="stylesheet">
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        @* .bd: dashboard'un renk sistemi (açık/koyu tema kendiliğinden) *@
+        <div class="bd" id="adBoard"
+             data-data-url="/Admin/Delivery/Data"
+             data-advance-url="/Admin/Delivery/Advance"
+             data-undo-url="/Admin/Delivery/Undo">
+
+            @Html.AntiForgeryToken()
+
+            <header class="bd-head">
+                <div>
+                    <p class="bd-eyebrow">Ödeme Yönetimi</p>
+                    <h1 class="bd-title">Sipariş takibi</h1>
+                    <p class="bd-sub">Garson panosunun admin görünümü. Admin, geri alma süresiyle sınırlı değildir.</p>
+                </div>
+                <span class="ad-live"><span class="ad-live-dot"></span> Canlı · son yenileme <b id="adUpdated">--:--</b></span>
+            </header>
+
+            <div class="ad-offline" id="adOffline" role="alert" hidden>
+                <i class='bx bx-wifi-off'></i> Veri alınamadı, yeniden deneniyor...
+            </div>
+
+            <div class="ad-stats">
+                <div class="ad-stat" style="--tone: var(--c2)"><small>Bekleyen</small><strong id="adStatWaiting">-</strong></div>
+                <div class="ad-stat" style="--tone: var(--c6)"><small>Yolda</small><strong id="adStatRoad">-</strong></div>
+                <div class="ad-stat" style="--tone: var(--up)"><small>Bugün teslim</small><strong id="adStatDone">-</strong></div>
+                <div class="ad-stat" style="--tone: var(--c4)"><small>Ort. teslim süresi</small><strong id="adStatAvg">-</strong></div>
+                <div class="ad-stat" style="--tone: var(--down)"><small>Şu an 40 dk+</small><strong id="adStatLate">-</strong></div>
+            </div>
+
+            <div class="ad-columns">
+                <section class="ad-col is-waiting">
+                    <header>
+                        <h2><i class='bx bx-time-five'></i> Bekliyor</h2>
+                        <span class="ad-count" data-count="waiting">0</span>
+                    </header>
+                    <div class="ad-list" data-col="waiting"><p class="ad-empty">Yükleniyor...</p></div>
+                </section>
+
+                <section class="ad-col is-road">
+                    <header>
+                        <h2><i class='bx bx-cycling'></i> Yolda</h2>
+                        <span class="ad-count" data-count="onTheWay">0</span>
+                    </header>
+                    <div class="ad-list" data-col="onTheWay"></div>
+                </section>
+
+                <section class="ad-col is-done">
+                    <header>
+                        <h2><i class='bx bx-check-double'></i> Bugün teslim</h2>
+                        <span class="ad-count" data-count="deliveredToday">0</span>
+                    </header>
+                    <div class="ad-list" data-col="deliveredToday"></div>
+                </section>
+            </div>
+
+            <div class="ad-toast" id="adToast" role="status" hidden></div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/bagery-admin-delivery.js" defer></script>

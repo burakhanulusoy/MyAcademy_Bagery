@@ -29,7 +29,8 @@ namespace Bagery.WebUI.Repositories.OrderRepositories
         {
             return _table.AsNoTracking()
                          .Include(x => x.OrderItems)
-                         .Include(x => x.AppUser) // siparişi hangi hesap verdi
+                         .Include(x => x.AppUser)
+                         .Include(x => x.DeliveryLogs) // YENİ: kanıt çizelgesi için
                          .FirstOrDefaultAsync(x => x.OrderNo == orderNo);
         }
 

@@ -12,6 +12,8 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\User\Data\" />
     <Folder Include="Areas\User\Models\" />
+    <Folder Include="Areas\Waiter\Data\" />
+    <Folder Include="Areas\Waiter\Models\" />
     <Folder Include="Areas\Writer\Data\" />
     <Folder Include="Areas\Writer\Models\" />
   </ItemGroup>

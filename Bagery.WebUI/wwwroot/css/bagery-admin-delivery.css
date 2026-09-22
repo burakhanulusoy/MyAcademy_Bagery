@@ -1,0 +1,370 @@
+﻿/* =========================================================
+   Admin > Sipariş takibi
+   Renkler .bd değişkenlerinden (bagery-dashboard.css): açık/koyu temaya uyar
+   ========================================================= */
+.bd [hidden] {
+    display: none !important;
+}
+
+/* "Canlı" göstergesi */
+.ad-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+    .ad-live b {
+        font-family: var(--mono);
+        color: var(--ink);
+    }
+
+.ad-live-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--up);
+    animation: ad-pulse 1.6s ease-out infinite;
+}
+
+@keyframes ad-pulse {
+    0% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--up) 60%, transparent);
+    }
+
+    100% {
+        box-shadow: 0 0 0 10px transparent;
+    }
+}
+
+/* Göstergeler */
+.ad-stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1199px) {
+    .ad-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575px) {
+    .ad-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.ad-stat {
+    --tone: var(--ink);
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--tone);
+    border-radius: 16px;
+    background: var(--card);
+}
+
+    .ad-stat small {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    .ad-stat strong {
+        display: block;
+        margin-top: 6px;
+        font-family: var(--display);
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+    }
+
+/* Sütunlar */
+.ad-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: start;
+}
+
+@media (max-width: 1199px) {
+    .ad-columns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.ad-col {
+    --tone: var(--c2);
+    min-height: 60vh;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--wash);
+}
+
+    .ad-col.is-road {
+        --tone: var(--c6);
+    }
+
+    .ad-col.is-done {
+        --tone: var(--up);
+    }
+
+    .ad-col > header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid var(--tone);
+    }
+
+    .ad-col h2 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        font-family: var(--display);
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+    }
+
+        .ad-col h2 i {
+            font-size: 21px;
+            color: var(--tone);
+        }
+
+.ad-count {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    border-radius: 10px;
+    background: var(--tone);
+    color: #fff;
+    font-family: var(--mono);
+    font-weight: 700;
+}
+
+.ad-list {
+    display: grid;
+    gap: 10px;
+}
+
+.ad-empty {
+    padding: 30px 10px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* Kart */
+.ad-card {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--tone);
+    border-radius: 14px;
+    background: var(--card);
+    color: var(--ink);
+}
+
+.ad-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ad-no {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ink) !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.ad-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--wash);
+    font-size: 13px;
+    color: var(--muted);
+}
+
+    .ad-timer b {
+        font-family: var(--mono);
+        color: var(--ink);
+    }
+
+    .ad-timer.is-warn {
+        background: color-mix(in srgb, var(--c2) 20%, transparent);
+    }
+
+    .ad-timer.is-late {
+        background: var(--down-bg);
+        color: var(--down);
+    }
+
+        .ad-timer.is-late b {
+            color: var(--down);
+        }
+
+.ad-name {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 15.5px;
+}
+
+.ad-line {
+    display: flex;
+    gap: 6px;
+    margin: 0 0 3px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--muted);
+}
+
+.ad-note {
+    display: flex;
+    gap: 6px;
+    margin: 6px 0;
+    padding: 6px 9px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--c2) 16%, transparent);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.ad-items {
+    margin: 8px 0 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--wash);
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.ad-card-foot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ad-price {
+    margin-right: auto;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+.ad-go {
+    height: 36px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--ink);
+    color: var(--paper);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    .ad-go:hover {
+        opacity: .88;
+    }
+
+.ad-undo {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 17px;
+    cursor: pointer;
+}
+
+    .ad-undo:hover {
+        border-color: var(--down);
+        color: var(--down);
+    }
+
+    .ad-go[disabled], .ad-undo[disabled] {
+        opacity: .5;
+        cursor: wait;
+    }
+
+.ad-duration {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+    .ad-duration.is-ok {
+        background: var(--up-bg);
+        color: var(--up);
+    }
+
+    .ad-duration.is-late {
+        background: var(--down-bg);
+        color: var(--down);
+    }
+
+/* Uyarılar */
+.ad-offline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--down-bg);
+    color: var(--down);
+    font-weight: 700;
+}
+
+.ad-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 1100;
+    transform: translateX(-50%);
+    padding: 14px 20px;
+    border-radius: 14px;
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 700;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ad-live-dot {
+        animation: none;
+    }
+}

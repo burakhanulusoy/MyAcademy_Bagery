@@ -13,5 +13,6 @@ namespace Bagery.WebUI.MediatorPattern.Results.OrderResults
         public decimal PaidPrice { get; set; }
         public int InstallmentCount { get; set; }
         public OrderStatus Status { get; set; }
+        public DeliveryStatus DeliveryStatus { get; set; } // YENİ
     }
 }

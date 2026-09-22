@@ -34,7 +34,8 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.OrderHandlers
                     ItemCount = x.OrderItems.Sum(i => i.Quantity), // Include gerekmiyor (açıklaması aşağıda)
                     PaidPrice = x.PaidPrice,
                     InstallmentCount = x.InstallmentCount,
-                    Status = x.Status
+                    Status = x.Status,
+                    DeliveryStatus = x.DeliveryStatus
                 })
                 .ToListAsync(cancellationToken);
 

@@ -34,5 +34,16 @@ namespace Bagery.WebUI.Entities
         public IList<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
 
+
+        // ---------- YENİ: teslimat takibi ----------
+        public DeliveryStatus DeliveryStatus { get; set; } = DeliveryStatus.Waiting;
+        public DateTime? DispatchedAt { get; set; }   // yola çıktığı an (UTC)
+        public string? DispatchedBy { get; set; }     // yola çıkaran kişi
+        public DateTime? DeliveredAt { get; set; }    // teslim edildiği an (UTC)
+        public string? DeliveredBy { get; set; }      // teslim olarak işaretleyen kişi
+        public IList<OrderDeliveryLog> DeliveryLogs { get; set; } = [];
+
+
+
     }
 }

@@ -13,6 +13,10 @@
         <div>
             <p class="bo-eyebrow">Siparişim</p>
             <div class="bo-hero-row">
+                @if (Model.Status == OrderStatus.Paid)
+                {
+                    <span class="bo-pill is-@Model.DeliveryStatus.ToString().ToLower()">@Model.DeliveryStatus.ToTurkish()</span>
+                }
                 <span class="bo-hero-no">#@Model.OrderNo.Substring(0, 8).ToUpperInvariant()</span>
                 <span class="bo-pill is-@Model.Status.ToString().ToLower()">@Model.Status.ToTurkish()</span>
             </div>
@@ -59,6 +63,7 @@
                         <strong>Siparişin alındı</strong>
                         <small>@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
                     </li>
+
                     @if (Model.Status == OrderStatus.Paid)
                     {
                         <li class="is-done">
@@ -66,6 +71,41 @@
                             <strong>Ödemen onaylandı</strong>
                             <small>@(Model.PaidAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm"))</small>
                         </li>
+
+                        @* YENİ: gerçek teslimat adımları *@
+                        @if (Model.DispatchedAt is DateTime dispatchedAt)
+                        {
+                            <li class="is-done">
+                                <span class="dot"></span>
+                                <strong>Kuryemiz yola çıktı</strong>
+                                <small>@dispatchedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+                            </li>
+                        }
+                        else if (Model.DeliveryStatus == DeliveryStatus.Waiting)
+                        {
+                            <li class="is-current">
+                                <span class="dot"></span>
+                                <strong>Hazırlanıyor</strong>
+                                <small>Yaklaşık 30–40 dakika içinde kapında</small>
+                            </li>
+                        }
+
+                        @if (Model.DeliveredAt is DateTime deliveredAt)
+                        {
+                            <li class="is-done">
+                                <span class="dot"></span>
+                                <strong>Teslim edildi</strong>
+                                <small>@deliveredAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+                            </li>
+                        }
+                        else if (Model.DeliveryStatus == DeliveryStatus.OnTheWay)
+                        {
+                            <li class="is-current">
+                                <span class="dot"></span>
+                                <strong>Yolda</strong>
+                                <small>Birazdan kapında</small>
+                            </li>
+                        }
                     }
                     else if (Model.Status == OrderStatus.Pending)
                     {

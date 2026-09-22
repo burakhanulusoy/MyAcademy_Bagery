@@ -5,8 +5,51 @@
     ViewData["Title"] = "Sipariş Detayı";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
-    // Taksitte karttan çekilen tutar sepet toplamından fazladır; aradaki fark vade farkı
     var installmentFee = Model.PaidPrice - (Model.TotalPrice + Model.ShippingPrice - Model.CouponPrice);
+
+    // ---------- Kanıt çizelgesi: bütün olaylar zaman sırasıyla ----------
+    var events = new List<(DateTime At, string Title, string? By, string Css)>
+    {
+        (Model.CreatedAt, "Sipariş oluşturuldu", null, "is-done")
+    };
+
+    if (Model.PaidAt is DateTime paidAt)
+        events.Add((paidAt, "Ödeme onaylandı", "PayTR", "is-done"));
+
+    if (Model.DeliveryLogs.Any())
+    {
+        // Kayıt tablosu: yola çıkış, teslim ve geri almalar (hiçbiri silinmez)
+        events.AddRange(Model.DeliveryLogs.Select(log =>
+            (log.CreatedAt, log.Action, (string?)log.PerformedBy,
+             log.Action.StartsWith("Geri alındı") ? "is-undo" : "is-done")));
+    }
+    else
+    {
+        // Kayıt tablosundan önceki siparişler: siparişteki alanlardan
+        if (Model.DispatchedAt is DateTime dispatchedAt)
+            events.Add((dispatchedAt, "Yola çıktı", Model.DispatchedBy, "is-done"));
+        if (Model.DeliveredAt is DateTime deliveredAt)
+            events.Add((deliveredAt, "Teslim edildi", Model.DeliveredBy, "is-done"));
+    }
+
+    events = events.OrderBy(e => e.At).ToList();
+
+    // Henüz gerçekleşmemiş sıradaki adım
+    string? nextStep = Model.Status switch
+    {
+        OrderStatus.Pending => "PayTR bildirimi bekleniyor",
+        OrderStatus.Failed => null,
+        _ => Model.DeliveryStatus switch
+        {
+            DeliveryStatus.Waiting => "Yola çıkması bekleniyor",
+            DeliveryStatus.OnTheWay => "Teslim edilmesi bekleniyor",
+            _ => null
+        }
+    };
+
+    int? totalMinutes = Model.PaidAt is DateTime p && Model.DeliveredAt is DateTime d
+        ? (int)Math.Round((d - p).TotalMinutes)
+        : null;
 }
 @functions {
     static string Initials(string name) =>
@@ -19,13 +62,17 @@
     <div class="page-content">
         <div class="bo">
 
-            @* Siyah başlık alanı *@
             <section class="bo-hero">
                 <div>
                     <p class="bo-eyebrow">Sipariş</p>
                     <div class="bo-hero-row">
                         <span class="bo-hero-no">#@Model.OrderNo.Substring(0, 8).ToUpperInvariant()</span>
                         <span class="bo-pill is-@Model.Status.ToString().ToLower()">@Model.Status.ToTurkish()</span>
+                        @if (Model.Status == OrderStatus.Paid)
+                        {
+                            @* YENİ: teslimat durumu *@
+                            <span class="bo-pill is-@Model.DeliveryStatus.ToString().ToLower()">@Model.DeliveryStatus.ToTurkish()</span>
+                        }
                     </div>
                     <div class="bo-hero-meta">
                         <span><i class='bx bx-calendar'></i> @Model.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy, HH:mm")</span>
@@ -34,13 +81,14 @@
                 </div>
                 <div class="bo-hero-actions">
                     <a href="mailto:@Model.Email" class="bo-btn is-ghost"><i class='bx bx-envelope'></i> Müşteriye yaz</a>
+                    <a href="/Admin/Delivery/Index" class="bo-btn is-ghost"><i class='bx bx-cycling'></i> Sipariş takibi</a>
                     <a href="/Admin/Order/Index" class="bo-btn"><i class='bx bx-arrow-back'></i> Siparişler</a>
                 </div>
             </section>
 
             <div class="bo-grid">
 
-                @* SOL: ürünler + zaman çizelgesi *@
+                @* SOL: ürünler + kanıt çizelgesi *@
                 <div class="bo-stack">
                     <section class="bo-section">
                         <h2 class="bo-section-title"><i class='bx bx-package'></i> Ürünler <span class="count">@Model.OrderItems.Sum(x => x.Quantity) adet</span></h2>
@@ -59,31 +107,18 @@
                         </ul>
                     </section>
 
-                    <section class="bo-section">
-                        <h2 class="bo-section-title"><i class='bx bx-git-commit'></i> Süreç</h2>
+                    <section class="bo-section is-strong">
+                        <h2 class="bo-section-title"><i class='bx bx-shield-quarter'></i> Sipariş geçmişi <span class="count">kanıt kaydı</span></h2>
                         <ol class="bo-timeline">
-                            <li class="is-done">
-                                <span class="dot"></span>
-                                <strong>Sipariş oluşturuldu</strong>
-                                <small>@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
-                            </li>
-                            @if (Model.Status == OrderStatus.Paid)
+                            @foreach (var e in events)
                             {
-                                <li class="is-done">
+                                <li class="@e.Css">
                                     <span class="dot"></span>
-                                    <strong>Ödeme onaylandı</strong>
-                                    <small>@(Model.PaidAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm")), PayTR bildirimi</small>
+                                    <strong>@e.Title</strong>
+                                    <small>@e.At.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")@(e.By is null ? "" : $" · {e.By}")</small>
                                 </li>
                             }
-                            else if (Model.Status == OrderStatus.Pending)
-                            {
-                                <li class="is-current">
-                                    <span class="dot"></span>
-                                    <strong>PayTR bildirimi bekleniyor</strong>
-                                    <small>Uzun sürerse PayTR panelinden kontrol edin</small>
-                                </li>
-                            }
-                            else
+                            @if (Model.Status == OrderStatus.Failed)
                             {
                                 <li class="is-fail">
                                     <span class="dot"></span>
@@ -91,7 +126,21 @@
                                     <small>@Model.StatusMessage</small>
                                 </li>
                             }
+                            @if (nextStep is not null)
+                            {
+                                <li class="is-current">
+                                    <span class="dot"></span>
+                                    <strong>@nextStep</strong>
+                                </li>
+                            }
                         </ol>
+
+                        @if (totalMinutes is int minutes)
+                        {
+                            <p class="bo-evidence @(minutes > 40 ? "is-late" : "")">
+                                <i class='bx bx-timer'></i> Ödemeden teslime <strong>@minutes dakika</strong>
+                            </p>
+                        }
                     </section>
                 </div>
 
@@ -103,7 +152,6 @@
                             <span class="bo-avatar">@Initials(Model.FullName)</span>
                             <div>
                                 <strong>@Model.FullName</strong>
-                                @* Teslimat adı ile siparişi veren hesap farklı olabilir *@
                                 <small>Hesap: @Model.AppUserFullName</small>
                             </div>
                         </div>
@@ -118,7 +166,7 @@
                         </ul>
                     </section>
 
-                    <section class="bo-section is-strong">
+                    <section class="bo-section">
                         <h2 class="bo-section-title"><i class='bx bx-credit-card'></i> Ödeme</h2>
                         <ul class="bo-receipt">
                             <li><span>Ara toplam</span><span>@Model.TotalPrice.ToString("N2") ₺</span></li>

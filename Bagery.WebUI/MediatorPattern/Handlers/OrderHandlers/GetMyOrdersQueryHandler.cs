@@ -30,7 +30,8 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.OrderHandlers
                     Status = x.Status,
                     PaidPrice = x.PaidPrice,
                     FirstProductName = x.OrderItems.Select(i => i.ProductName).FirstOrDefault() ?? "",
-                    ProductLineCount = x.OrderItems.Count
+                    ProductLineCount = x.OrderItems.Count,
+                    DeliveryStatus=x.DeliveryStatus
                 })
                 .ToListAsync(cancellationToken);
         }

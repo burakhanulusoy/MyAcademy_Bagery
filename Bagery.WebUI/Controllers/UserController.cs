@@ -42,7 +42,10 @@ namespace Bagery.WebUI.Controllers
                 {
                     return RedirectToAction("Dashboard", "Static", new { area = "Admin" });
                 }
-
+                if (userRoles.Contains("Waiter"))
+                {
+                    return RedirectToAction("Index", "Board", new { area = "Waiter" }); // YENİ: garson doğrudan panoya
+                }
                 if (userRoles.Contains("Writer"))
                 {
                     return RedirectToAction("Dashboard", "Static", new { area = "Writer" });
@@ -52,6 +55,7 @@ namespace Bagery.WebUI.Controllers
                 {
                     return RedirectToAction("Index", "Static", new { area = "User" });
                 }
+              
 
                 return RedirectToAction("Index", "Home");
             }

@@ -47,7 +47,15 @@
                 <article class="bo-order">
                     <div class="bo-order-top">
                         <span class="bo-code">#@order.OrderNo.Substring(0, 8).ToUpperInvariant()</span>
-                        <span class="bo-pill is-@order.Status.ToString().ToLower()">@order.Status.ToTurkish()</span>
+                        @* DEĞİŞTİ: ödenmişse teslimat durumu (Bekliyor / Yolda / Teslim edildi), değilse ödeme durumu *@
+                        @if (order.Status == OrderStatus.Paid)
+                        {
+                            <span class="bo-pill is-@order.DeliveryStatus.ToString().ToLower()">@order.DeliveryStatus.ToTurkish()</span>
+                        }
+                        else
+                        {
+                            <span class="bo-pill is-@order.Status.ToString().ToLower()">@order.Status.ToTurkish()</span>
+                        }
                     </div>
 
                     <h3 class="bo-order-title">@title</h3>

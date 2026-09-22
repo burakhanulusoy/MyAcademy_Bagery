@@ -1066,3 +1066,67 @@
         animation: none !important;
     }
 }
+
+
+/* ---------- Teslimat etiketleri ---------- */
+.bo-pill.is-waiting {
+    border-color: var(--ink);
+    border-style: dashed;
+    background: #fff;
+    color: var(--ink);
+}
+
+.bo-pill.is-ontheway {
+    border-color: var(--ink);
+    background: #fff;
+    color: var(--ink);
+}
+
+    .bo-pill.is-ontheway::before {
+        animation: bo-blink 1.2s ease-in-out infinite;
+    }
+
+.bo-pill.is-delivered {
+    background: var(--ink);
+    color: #fff;
+}
+/* Siyah başlık alanında tersine */
+.bo-hero .bo-pill.is-waiting, .bo-hero .bo-pill.is-ontheway {
+    border-color: #fff;
+    background: transparent;
+    color: #fff;
+}
+
+.bo-hero .bo-pill.is-delivered {
+    background: #fff;
+    color: var(--ink);
+}
+
+/* ---------- Kanıt çizelgesi ---------- */
+.bo-timeline .is-undo .dot {
+    border-style: dashed;
+    background: #fff;
+}
+
+.bo-timeline .is-undo strong {
+    color: var(--muted);
+}
+
+.bo-evidence {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 18px 0 0;
+    padding: 12px 14px;
+    border: 1.5px solid var(--ink);
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+    .bo-evidence i {
+        font-size: 20px;
+    }
+
+    .bo-evidence.is-late {
+        border-style: dashed;
+    }

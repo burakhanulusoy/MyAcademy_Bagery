@@ -88,6 +88,7 @@
                                     <th class="num">Adet</th>
                                     <th class="num">Tutar</th>
                                     <th>Durum</th>
+                                    <th>Teslimat</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -120,6 +121,16 @@
                                             }
                                         </td>
                                         <td><span class="bo-pill is-@order.Status.ToString().ToLower()">@order.Status.ToTurkish()</span></td>
+                                        <td>
+                                            @if (order.Status == OrderStatus.Paid)
+                                            {
+                                                <span class="bo-pill is-@order.DeliveryStatus.ToString().ToLower()">@order.DeliveryStatus.ToTurkish()</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-secondary">-</span>
+                                            }
+                                        </td>
                                         <td class="num">
                                             <a href="/Admin/Order/Detail?orderNo=@order.OrderNo" class="bo-go" aria-label="Sipariş detayı"><i class='bx bx-right-arrow-alt'></i></a>
                                         </td>

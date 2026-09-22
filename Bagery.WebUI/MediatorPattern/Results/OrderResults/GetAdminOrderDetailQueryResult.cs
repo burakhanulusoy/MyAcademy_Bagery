@@ -2,7 +2,6 @@
 
 namespace Bagery.WebUI.MediatorPattern.Results.OrderResults
 {
-    // Admin detay sayfasının tamamı
     public class GetAdminOrderDetailQueryResult
     {
         public string OrderNo { get; set; } = string.Empty;
@@ -26,9 +25,17 @@ namespace Bagery.WebUI.MediatorPattern.Results.OrderResults
         public DateTime CreatedAt { get; set; }
         public DateTime? PaidAt { get; set; }
 
-        // Mapster: AppUser.FullName -> AppUserFullName (isimden eşleştirir)
+        // Mapster: AppUser.FullName -> AppUserFullName
         public string AppUserFullName { get; set; } = string.Empty;
         public string? AppUserEmail { get; set; }
+
+        // YENİ: teslimat (Mapster isimden eşleştirir)
+        public DeliveryStatus DeliveryStatus { get; set; }
+        public DateTime? DispatchedAt { get; set; }
+        public string? DispatchedBy { get; set; }
+        public DateTime? DeliveredAt { get; set; }
+        public string? DeliveredBy { get; set; }
+        public List<GetAdminDeliveryLogResult> DeliveryLogs { get; set; } = [];
 
         public List<GetAdminOrderItemResult> OrderItems { get; set; } = [];
     }

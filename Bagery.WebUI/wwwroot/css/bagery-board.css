@@ -1,0 +1,507 @@
+﻿/* =========================================================
+   Bagery sipariş panosu (Waiter paneli, mutfak ekranı)
+   Koyu tema: gün boyu açık kalır, uzaktan okunur
+   ========================================================= */
+.kb-body, .kb-board {
+    --bg: #0e0f12;
+    --panel: #16181d;
+    --card: #1d2027;
+    --line: #2a2e37;
+    --text: #f3f4f6;
+    --muted: #9aa0ab;
+    --wait: #f59e0b; /* Bekliyor: kehribar */
+    --road: #38bdf8; /* Yolda: gök mavisi */
+    --done: #22c55e; /* Teslim: yeşil */
+    --accent: #ff6b4a; /* yeni sipariş vurgusu */
+}
+
+.kb-body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', system-ui, sans-serif;
+}
+
+    .kb-body *, .kb-body *::before, .kb-body *::after {
+        box-sizing: border-box;
+    }
+
+    .kb-body [hidden] {
+        display: none !important;
+    }
+
+    .kb-body :focus-visible {
+        outline: 2px solid var(--road);
+        outline-offset: 2px;
+    }
+
+/* ---------- Üst çubuk ---------- */
+.kb-top {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 72px;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(14, 15, 18, .92);
+    backdrop-filter: blur(8px);
+}
+
+.kb-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+    .kb-logo i {
+        font-size: 26px;
+        color: var(--accent);
+    }
+
+.kb-top h1 {
+    margin: 0;
+    padding-left: 18px;
+    border-left: 1px solid var(--line);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.kb-top-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.kb-clock {
+    margin-right: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.kb-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .kb-tool:hover {
+        border-color: var(--muted);
+    }
+
+    .kb-tool.is-on {
+        border-color: var(--done);
+        color: var(--done);
+    }
+
+    .kb-tool i {
+        font-size: 19px;
+    }
+
+.kb-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+@media (max-width: 900px) {
+    .kb-top h1, .kb-user, .kb-tool span {
+        display: none;
+    }
+}
+
+/* ---------- Pano ---------- */
+.kb-board {
+    padding: 20px 24px 40px;
+    color: var(--text);
+}
+
+.kb-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 1000px) {
+    .kb-columns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.kb-col {
+    --tone: var(--wait);
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 150px);
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--panel);
+}
+
+    .kb-col.is-road {
+        --tone: var(--road);
+    }
+
+    .kb-col.is-done {
+        --tone: var(--done);
+    }
+
+    .kb-col > header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding: 6px 6px 14px;
+        border-bottom: 3px solid var(--tone);
+    }
+
+    .kb-col h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+        .kb-col h2 i {
+            font-size: 24px;
+            color: var(--tone);
+        }
+
+.kb-count {
+    display: grid;
+    place-items: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 10px;
+    border-radius: 12px;
+    background: var(--tone);
+    color: #0e0f12;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.kb-list {
+    display: grid;
+    gap: 12px;
+}
+
+.kb-loading, .kb-empty {
+    padding: 40px 10px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+    .kb-empty i {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 38px;
+        color: var(--line);
+    }
+
+/* ---------- Kart ---------- */
+.kb-card {
+    position: relative;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--tone);
+    border-radius: 16px;
+    background: var(--card);
+}
+
+    .kb-card.is-new {
+        box-shadow: 0 0 0 2px var(--accent);
+        animation: kb-new 1.2s ease-in-out 4;
+    }
+/* yeni sipariş: turuncu çerçeve yanıp söner */
+@keyframes kb-new {
+    50% {
+        box-shadow: 0 0 0 7px rgba(255, 107, 74, .35);
+    }
+}
+
+.kb-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.kb-no {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+}
+
+/* Dakika sayacı: 25+ sarı, 40+ kırmızı yanıp söner */
+.kb-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .06);
+    font-size: 14px;
+}
+
+    .kb-timer b {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 18px;
+    }
+
+    .kb-timer.is-warn {
+        background: rgba(245, 158, 11, .18);
+        color: #fbbf24;
+    }
+
+    .kb-timer.is-late {
+        background: rgba(239, 68, 68, .22);
+        color: #f87171;
+        animation: kb-blink 1s step-end infinite;
+    }
+
+@keyframes kb-blink {
+    50% {
+        opacity: .45;
+    }
+}
+
+.kb-customer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 12px;
+    margin-bottom: 6px;
+}
+
+    .kb-customer strong {
+        font-size: 18px;
+    }
+
+    .kb-customer a {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 14px;
+        color: var(--muted);
+        text-decoration: none;
+    }
+
+        .kb-customer a:hover {
+            color: var(--text);
+        }
+
+.kb-address {
+    display: flex;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+.kb-note {
+    display: flex;
+    gap: 6px;
+    margin: 0 0 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(245, 158, 11, .14);
+    color: #fcd34d;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.kb-items {
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .04);
+    font-size: 15px;
+    line-height: 1.7;
+    list-style: none;
+}
+
+    .kb-items b {
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--tone);
+    }
+
+    .kb-items span {
+        color: var(--muted);
+    }
+
+.kb-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.kb-card-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kb-price {
+    margin-right: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+}
+
+/* Ana buton: kartın gideceği sütunun renginde (Bekliyor -> mavi, Yolda -> yeşil) */
+.kb-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 48px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--road);
+    color: #0e0f12;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .1s, filter .15s;
+}
+
+.kb-col.is-road .kb-go {
+    background: var(--done);
+}
+
+.kb-go i {
+    font-size: 20px;
+}
+
+.kb-go:hover {
+    filter: brightness(1.12);
+}
+
+.kb-go:active {
+    transform: scale(.97);
+}
+
+.kb-go[disabled], .kb-undo[disabled] {
+    opacity: .5;
+    cursor: wait;
+}
+
+.kb-undo {
+    height: 48px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    .kb-undo:hover {
+        border-color: var(--muted);
+        color: var(--text);
+    }
+
+/* Teslim edilenler: küçük kart + toplam süre */
+.kb-card.is-done {
+    padding: 12px 14px;
+}
+
+    .kb-card.is-done .kb-meta {
+        margin: 6px 0 0;
+    }
+
+    .kb-card.is-done .kb-undo {
+        height: 36px;
+        margin-top: 10px;
+        font-size: 13px;
+    }
+
+.kb-duration {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+    .kb-duration.is-ok {
+        background: rgba(34, 197, 94, .16);
+        color: #4ade80;
+    }
+
+    .kb-duration.is-late {
+        background: rgba(239, 68, 68, .18);
+        color: #f87171;
+    }
+
+/* Uyarılar */
+.kb-offline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, .15);
+    color: #fca5a5;
+    font-weight: 700;
+}
+
+.kb-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 50;
+    transform: translateX(-50%);
+    padding: 14px 20px;
+    border-radius: 14px;
+    background: #fef2f2;
+    color: #991b1b;
+    font-weight: 700;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kb-card.is-new, .kb-timer.is-late {
+        animation: none;
+    }
+}

@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Sipariş panosu";
+    Layout = "~/Areas/Waiter/Views/Shared/_WaiterLayout.cshtml";
+}
+
+<section class="kb-board" id="kbBoard"
+         data-data-url="/Waiter/Board/Data"
+         data-advance-url="/Waiter/Board/Advance"
+         data-undo-url="/Waiter/Board/Undo"
+         data-is-admin="false">
+
+    @* POST'lar için güvenlik anahtarı (JS okuyup isteğe ekler) *@
+    @Html.AntiForgeryToken()
+
+    <div class="kb-offline" id="kbOffline" role="alert" hidden>
+        <i class='bx bx-wifi-off'></i> Bağlantı yok ya da oturum kapandı. Yeniden deneniyor...
+    </div>
+
+    <div class="kb-columns">
+        <section class="kb-col is-waiting">
+            <header>
+                <h2><i class='bx bx-time-five'></i> Bekliyor</h2>
+                <span class="kb-count" data-count="waiting">0</span>
+            </header>
+            <div class="kb-list" data-col="waiting"><p class="kb-loading">Yükleniyor...</p></div>
+        </section>
+
+        <section class="kb-col is-road">
+            <header>
+                <h2><i class='bx bx-cycling'></i> Yolda</h2>
+                <span class="kb-count" data-count="onTheWay">0</span>
+            </header>
+            <div class="kb-list" data-col="onTheWay"></div>
+        </section>
+
+        <section class="kb-col is-done">
+            <header>
+                <h2><i class='bx bx-check-double'></i> Bugün teslim edilen</h2>
+                <span class="kb-count" data-count="deliveredToday">0</span>
+            </header>
+            <div class="kb-list" data-col="deliveredToday"></div>
+        </section>
+    </div>
+
+    <div class="kb-toast" id="kbToast" role="status" hidden></div>
+</section>
+
+@section Scripts {
+    <script src="~/js/bagery-board.js"></script>
+}

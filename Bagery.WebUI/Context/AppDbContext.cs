@@ -32,7 +32,15 @@ namespace Bagery.WebUI.Context
             .HasIndex(x => x.OrderNo)
             .IsUnique();//biz siparişi orderId degılde paytr de araken no ya gre arayacagız onun için eklendı bu 
 
+            // YENİ: teslimat kayıtları siparişe bağlı; sipariş silinirse kayıtları da gider
+            modelBuilder.Entity<OrderDeliveryLog>()
+                   .HasOne(x => x.Order)
+                   .WithMany(x => x.DeliveryLogs)
+                   .HasForeignKey(x => x.OrderId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
+            // YENİ: pano sürekli "ödenmiş + bekleyen/yoldaki" siparişleri sorgulayacak; bu ikili hızlı bulunsun
+            modelBuilder.Entity<Order>().HasIndex(x => new { x.Status, x.DeliveryStatus });
 
         }
 
@@ -72,7 +80,7 @@ namespace Bagery.WebUI.Context
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Installment> Installments { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
-
+        public DbSet<OrderDeliveryLog> OrderDeliveryLogs { get; set; } // YENİ
 
     }
 }

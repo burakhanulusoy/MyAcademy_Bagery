@@ -1,0 +1,37 @@
+﻿@{
+    Layout = null;
+}
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] | Bagery</title>
+    <link rel="icon" href="~/Bagery Pack/Bagery/assets/images/favicon.ico" type="image/x-icon">
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="~/css/bagery-board.css" rel="stylesheet">
+</head>
+<body class="kb-body">
+
+    <header class="kb-top">
+        <span class="kb-logo"><i class='bx bxs-cake'></i> Bagery</span>
+        <h1>@ViewData["Title"]</h1>
+
+        <div class="kb-top-right">
+            <span class="kb-clock" id="kbClock" aria-label="Saat">--:--</span>
+            <button type="button" class="kb-tool" id="kbSound" aria-pressed="false"><i class='bx bx-volume-mute'></i> <span>Ses kapalı</span></button>
+            <button type="button" class="kb-tool" id="kbFullscreen"><i class='bx bx-fullscreen'></i> <span>Tam ekran</span></button>
+            <span class="kb-user"><i class='bx bx-user'></i> @User.Identity?.Name</span>
+            <a class="kb-tool" href="/User/Logout"><i class='bx bx-log-out'></i> <span>Çıkış</span></a>
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
