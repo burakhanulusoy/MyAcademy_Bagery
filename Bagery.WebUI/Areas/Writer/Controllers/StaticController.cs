@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Bagery.WebUI.MediatorPattern.Queries.PanelQueries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bagery.WebUI.Areas.Writer.Controllers
 {
     [Area("Writer")]
-    [Authorize(Roles = "Writer")] // Writer paneli: sadece yazarlar
-    public class StaticController : Controller
+    [Authorize(Roles = "Writer")]
+    public class StaticController(IMediator _mediator) : Controller
     {
-        // Login'deki yönlendirme: RedirectToAction("Dashboard", "Static", new { area = "Writer" })
-        public IActionResult Dashboard()
+        // /Writer/Static/Dashboard (login sonrası yönlendirme)
+        public async Task<IActionResult> Dashboard()
         {
-            return View(); // Adım 5'te pixel-art istatistik ekranıyla değişecek
+            var stats = await _mediator.Send(new GetWriterDashboardQuery());
+            return View(stats);
         }
     }
 }

@@ -1222,3 +1222,14 @@
         height: 120px;
     }
 }
+
+
+
+
+
+/* Yeni sekmede açılan linklerin yanındaki küçük ikon */
+.pn-nav a .pn-ext {
+    margin-left: auto;
+    font-size: 15px;
+    opacity: .55;
+}

@@ -32,8 +32,9 @@
                 <button type="button" class="pn-burger" data-panel-toggle aria-label="Menüyü aç"><i class='bx bx-menu'></i></button>
                 <h1 class="pn-page-title">@ViewData["Title"]</h1>
                 <div class="pn-top-actions">
-                    <a href="/Product/Shop"><i class='bx bx-store'></i><span class="label">Mağaza</span></a>
-                    <a href="/Cart/Index" aria-label="Sepetim"><i class='bx bx-shopping-bag'></i><span class="label">Sepetim</span></a>
+                    @* Siteye giden linkler yeni sekmede: panel kapanmaz *@
+                    <a href="/Product/Shop" target="_blank" rel="noopener"><i class='bx bx-store'></i><span class="label">Mağaza</span></a>
+                    <a href="/Cart/Index" target="_blank" rel="noopener" aria-label="Sepetim"><i class='bx bx-shopping-bag'></i><span class="label">Sepetim</span></a>
                 </div>
             </header>
 

@@ -1,50 +1,50 @@
 ﻿@using System.Globalization
 @using Bagery.WebUI.MediatorPattern.Results.PanelResults
-@model GetWriterDashboardQueryResult
+@model GetUserDashboardQueryResult
 @{
     ViewData["Title"] = "İstatistiklerim";
     Layout = "~/Views/Shared/_PanelLayout.cshtml";
 
     var tr = CultureInfo.GetCultureInfo("tr-TR");
-    const int Rows = 10; // sütun grafiğinde en büyük değer 10 kare
+    const int Rows = 10; // sütun grafiğinde en yüksek ay 10 kare
 
     var greeting = $"Merhaba, {Model.FullName.Split(' ')[0]}!";
     var xpCells = Model.LevelProgress * 20 / Model.XpPerLevel;
-    var monthMax = Model.Months.Max(m => Math.Max(m.Blogs, Math.Max(m.Received, m.Written)));
-    var topMax = Model.TopBlogs.Count == 0 ? 0 : Model.TopBlogs.Max(b => b.Comments);
+    var spentMax = Model.Months.Max(m => m.Spent);
+    var topMax = Model.TopProducts.Count == 0 ? 0 : Model.TopProducts.Max(p => p.Quantity);
     var unlocked = Model.Badges.Count(b => b.Unlocked);
 }
 @functions {
     // Değeri 0..cells arası kare sayısına çevirir (0 değilse en az 1 kare görünsün)
-    static int Cells(int value, int max, int cells) =>
-        value <= 0 || max <= 0 ? 0 : Math.Max(1, (int)Math.Round(value * (double)cells / max));
+    static int Cells(decimal value, decimal max, int cells) =>
+        value <= 0 || max <= 0 ? 0 : Math.Max(1, (int)Math.Round(value * cells / max));
 
-    // Pixel cupcake: her harf bir renk, '.' boş
-    static readonly string[] Cupcake =
+    // Pixel donut: her harf bir renk, '.' boş (ortadaki delik de boş)
+    static readonly string[] Donut =
     {
-        "......RR......",
-        ".....RRRR.....",
-        "......RR......",
-        "...WWWWWWWW...",
-        "..WWWPWWWWWW..",
-        ".WWWWWWWPWWWW.",
-        ".WWPWWWWWWWPW.",
-        "WWWWWWPWWWWWWW",
-        "CCCCCCCCCCCCCC",
-        ".CDCCDCCDCCDC.",
-        ".CDCCDCCDCCDC.",
-        "..CDCCDCCDCC..",
-        "..CDCCDCCDCC..",
-        "...CCCCCCCC..."
+        "....PPPPPP....",
+        "..PPPYPPPPBP..",
+        ".PPBPPPPPPPPP.",
+        ".PPPPPGPPYPPP.",
+        "PPYPPP..PPPBPP",
+        "PPPPP....PPPPP",
+        "PBPPD....DPPGP",
+        "DPPPD....DPPPD",
+        "DDPPPD..DPPPDD",
+        ".DDGPPDDPPBPD.",
+        ".DDDPPPPYPPDD.",
+        "..DDDDDDDDDD..",
+        "...DDDDDDDD...",
+        "....DDDDDD...."
     };
 
-    static readonly Dictionary<char, string> CupcakeColors = new()
+    static readonly Dictionary<char, string> DonutColors = new()
     {
-        ['R'] = "#e11d48", // kiraz
-        ['W'] = "#fff7f0", // krema
-        ['P'] = "#f9a8d4", // şeker serpintisi
-        ['C'] = "#ff6b4a", // kap
-        ['D'] = "#c2410c"  // kap çizgileri
+        ['P'] = "#f472b6", // pembe şekerleme
+        ['Y'] = "#fde047", // sarı serpinti
+        ['B'] = "#60a5fa", // mavi serpinti
+        ['G'] = "#4ade80", // yeşil serpinti
+        ['D'] = "#d97706"  // hamur
     };
 
     // Haritayı SVG karelerine çevirir; dolu karelerin etrafına 1 karelik siyah kontur ekler
@@ -70,10 +70,10 @@
     <link href="~/css/bagery-pixel.css" rel="stylesheet">
 }
 
-@* ---------- HERO: selamlama + seviye + zıplayan cupcake ---------- *@
+@* ---------- HERO ---------- *@
 <section class="px-hero">
     <div>
-        <p class="px-kicker">YAZAR PANELİ · SEVİYE @Model.Level</p>
+        <p class="px-kicker">ÜYE PANELİ · SEVİYE @Model.Level</p>
         <h2 class="px-type" style="--len: @greeting.Length">@greeting</h2>
         <p class="px-title"><i class='bx bxs-crown'></i> @Model.LevelTitle</p>
 
@@ -91,7 +91,7 @@
 
     <div class="px-sprite" aria-hidden="true">
         <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
-            @foreach (var pixel in Pixels(Cupcake, CupcakeColors))
+            @foreach (var pixel in Pixels(Donut, DonutColors))
             {
                 <rect x="@pixel.X" y="@pixel.Y" width="1" height="1" fill="@pixel.Fill" />
             }
@@ -103,27 +103,27 @@
     </div>
 </section>
 
-@* ---------- SAYAÇLAR (sıfırdan yukarı sayar) ---------- *@
+@* ---------- SAYAÇLAR ---------- *@
 <div class="px-stats">
-    <div class="px-stat" style="--tone: #ff6b4a">
-        <i class='bx bx-news'></i>
-        <strong data-count="@Model.BlogCount">@Model.BlogCount</strong>
-        <span>Blog</span>
-    </div>
     <div class="px-stat" style="--tone: #14b8a6">
-        <i class='bx bx-conversation'></i>
-        <strong data-count="@Model.CommentsReceived">@Model.CommentsReceived</strong>
-        <span>Aldığın yorum</span>
-    </div>
-    <div class="px-stat" style="--tone: #f59e0b">
-        <i class='bx bx-comment-dots'></i>
-        <strong data-count="@Model.CommentsWritten">@Model.CommentsWritten</strong>
-        <span>Yazdığın yorum</span>
+        <i class='bx bx-receipt'></i>
+        <strong data-count="@Model.PaidOrders">@Model.PaidOrders</strong>
+        <span>Sipariş</span>
     </div>
     <div class="px-stat" style="--tone: #6366f1">
         <i class='bx bx-wallet'></i>
         <strong data-count="@Model.TotalSpent.ToString(CultureInfo.InvariantCulture)" data-money>@Model.TotalSpent.ToString("N2", tr) ₺</strong>
         <span>Harcama</span>
+    </div>
+    <div class="px-stat" style="--tone: #ff6b4a">
+        <i class='bx bx-cake'></i>
+        <strong data-count="@Model.ItemsBought">@Model.ItemsBought</strong>
+        <span>Aldığın ürün</span>
+    </div>
+    <div class="px-stat" style="--tone: #f59e0b">
+        <i class='bx bx-comment-dots'></i>
+        <strong data-count="@Model.CommentsWritten">@Model.CommentsWritten</strong>
+        <span>Yazdığın yorum</span>
     </div>
 </div>
 
@@ -131,35 +131,31 @@
 <div class="px-grid">
     <section class="px-card">
         <div class="px-card-head">
-            <h3 class="px-card-title">Son 6 ay</h3>
+            <h3 class="px-card-title">Son 6 ay harcaman</h3>
         </div>
         <div class="px-legend">
-            <span class="is-a">Blog</span>
-            <span class="is-b">Aldığın yorum</span>
-            <span class="is-c">Yazdığın yorum</span>
+            <span class="is-d" style="--dot: var(--role)">Sütun: harcama, üstteki sayı: sipariş</span>
         </div>
 
-        @if (monthMax == 0)
+        @if (spentMax == 0)
         {
-            <p class="px-empty">HENÜZ VERİ YOK_</p>
+            <p class="px-empty">HENÜZ SİPARİŞ YOK_</p>
         }
         else
         {
             <div class="px-chart">
                 @foreach (var (month, monthIndex) in Model.Months.Select((m, i) => (m, i)))
                 {
-                    <div class="px-month">
-                        <div class="px-cols">
-                            @foreach (var (value, css, label) in new[] { (month.Blogs, "is-a", "blog"), (month.Received, "is-b", "yorum aldın"), (month.Written, "is-c", "yorum yazdın") })
-                            {
-                                var filled = Cells(value, monthMax, Rows);
-                                <div class="px-col @css" title="@month.Label: @value @label">
-                                    @for (var r = 0; r < filled; r++)
-                                    {
-                                        <span style="--i: @(monthIndex * 4 + r)"></span>
-                                    }
-                                </div>
-                            }
+                    var filled = Cells(month.Spent, spentMax, Rows);
+                    <div class="px-month" title="@month.Label: @month.Orders sipariş, @month.Spent.ToString("N2", tr) ₺">
+                        <span class="px-col-top">@(month.Orders > 0 ? $"{month.Orders}×" : "")</span>
+                        <div class="px-cols is-single">
+                            <div class="px-col is-d">
+                                @for (var r = 0; r < filled; r++)
+                                {
+                                    <span style="--i: @(monthIndex * 3 + r)"></span>
+                                }
+                            </div>
                         </div>
                         <small>@month.Label</small>
                     </div>
@@ -170,24 +166,24 @@
 
     <section class="px-card">
         <div class="px-card-head">
-            <h3 class="px-card-title">En çok konuşulan bloglar</h3>
-            <a href="/Writer/Blog/Index" class="px-count" title="Bloglarım">→</a>
+            <h3 class="px-card-title">En çok aldıkların</h3>
+            <a href="/Product/Shop" target="_blank" rel="noopener" class="px-count" title="Mağaza">→</a>
         </div>
 
         @if (topMax == 0)
         {
-            <p class="px-empty">HENÜZ YORUM YOK_</p>
+            <p class="px-empty">İLK TATLINI SEÇ_</p>
         }
         else
         {
             <ol class="px-rows">
-                @foreach (var (blog, index) in Model.TopBlogs.Select((b, i) => (b, i)))
+                @foreach (var (product, index) in Model.TopProducts.Select((p, i) => (p, i)))
                 {
-                    var filled = Cells(blog.Comments, topMax, 20);
+                    var filled = (int)Cells(product.Quantity, topMax, 20);
                     <li>
                         <div class="px-row-head">
-                            <a href="/Blog/Detail/@blog.Id" target="_blank">@blog.Title</a>
-                            <strong>@blog.Comments</strong>
+                            <span>@product.Name</span>
+                            <strong>@product.Quantity</strong>
                         </div>
                         <div class="px-track">
                             @for (var c = 0; c < 20; c++)
@@ -202,41 +198,42 @@
     </section>
 </div>
 
-@* ---------- SON YORUM + ALIŞVERİŞ ---------- *@
+@* ---------- SON SİPARİŞ + TATLI PROFİLİ ---------- *@
 <div class="px-grid">
     <section class="px-card">
         <div class="px-card-head">
-            <h3 class="px-card-title">Son gelen yorum</h3>
+            <h3 class="px-card-title">Son siparişin</h3>
+            <a href="/User/MyOrders/Index" class="px-count" title="Siparişlerim">→</a>
         </div>
 
-        @if (Model.LatestComment is { } comment)
+        @if (Model.LastOrder is { } order)
         {
-            <div class="px-bubble">@comment.Content</div>
-            <div class="px-bubble-by">
-                <i class='bx bx-user'></i>
-                <strong>@(comment.Author ?? "Bir okur")</strong>
-                <span>·</span>
-                <span>@comment.BlogTitle</span>
-                <span>·</span>
-                <span>@comment.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm", tr)</span>
+            <ul class="px-list">
+                <li><span>Sipariş no</span><strong>#@order.OrderNo.Substring(0, 8).ToUpperInvariant()</strong></li>
+                <li><span>Tarih</span><strong>@order.CreatedAt.ToLocalTime().ToString("dd MMM, HH:mm", tr)</strong></li>
+                <li><span>Ürün</span><strong>@order.ItemCount adet</strong></li>
+                <li><span>Tutar</span><strong>@order.PaidPrice.ToString("N2", tr) ₺</strong></li>
+            </ul>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap">
+                <span class="px-status @(order.Status == OrderStatus.Pending ? "is-pending" : "")">@order.Status.ToTurkish()</span>
+                <a href="/User/MyOrders/Detail?orderNo=@order.OrderNo" class="pn-btn is-sm"><i class='bx bx-show'></i> Detay</a>
             </div>
         }
         else
         {
-            <p class="px-empty">YORUM BEKLENİYOR_</p>
+            <p class="px-empty">SİPARİŞ BEKLENİYOR_</p>
         }
     </section>
 
     <section class="px-card">
         <div class="px-card-head">
-            <h3 class="px-card-title">Alışveriş</h3>
-            <a href="/Writer/MyOrders/Index" class="px-count" title="Siparişlerim">→</a>
+            <h3 class="px-card-title">Tatlı profilin</h3>
         </div>
         <ul class="px-list">
-            <li><span>Ödenen sipariş</span><strong>@Model.PaidOrders</strong></li>
-            <li><span>Toplam harcama</span><strong>@Model.TotalSpent.ToString("N2", tr) ₺</strong></li>
-            <li><span>En sevdiğin ürün</span><strong>@(Model.FavoriteProduct is null ? "-" : $"{Model.FavoriteProduct} ×{Model.FavoriteQuantity}")</strong></li>
-            <li><span>Son sipariş</span><strong>@(Model.LastOrderAt?.ToLocalTime().ToString("dd MMM yyyy", tr) ?? "-")</strong></li>
+            <li><span>En sevdiğin kategori</span><strong>@(Model.FavoriteCategory ?? "-")</strong></li>
+            <li><span>En çok aldığın</span><strong>@(Model.TopProducts.FirstOrDefault()?.Name ?? "-")</strong></li>
+            <li><span>Ortalama sepetin</span><strong>@Model.AverageBasket.ToString("N2", tr) ₺</strong></li>
+            <li><span>Onay bekleyen</span><strong>@Model.PendingOrders</strong></li>
         </ul>
     </section>
 </div>
@@ -257,7 +254,7 @@
             </div>
         }
     </div>
-    <p class="px-note">XP nasıl kazanılır: yayınladığın her blog 100, aldığın her yorum 10, yazdığın her yorum 5, her sipariş 20 XP. Her 500 XP'de seviye atlarsın.</p>
+    <p class="px-note">XP nasıl kazanılır: her sipariş 50, aldığın her ürün 5, yazdığın her yorum 10 XP. Her 300 XP'de seviye atlarsın.</p>
 </section>
 
 @section Scripts {
@@ -277,7 +274,7 @@
                 const duration = 1200;
                 function tick(now) {
                     const t = Math.min((now - start) / duration, 1);
-                    const eased = 1 - Math.pow(1 - t, 3); // sona doğru yavaşlar
+                    const eased = 1 - Math.pow(1 - t, 3);
                     el.textContent = format(target * eased);
                     if (t < 1) requestAnimationFrame(tick);
                 }

@@ -13,16 +13,14 @@ namespace Bagery.WebUI.ViewComponents.PanelComponents
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var isWriter = HttpContext.User.IsInRole("Writer");
 
-            // Her rolün kendi adresi: /Writer/... veya /User/...
             var area = isWriter ? "Writer" : "User";
-            var dashboardUrl = isWriter ? "/Writer/Static/Dashboard" : "/User/Static/Index"; // login yönlendirmelerinle aynı
+            var dashboardUrl = isWriter ? "/Writer/Static/Dashboard" : "/User/Static/Index"; // login yönlendirmeleriyle aynı
 
             var sections = new List<PanelMenuSection>
             {
                 new("Genel", [ new("İstatistiklerim", "bx-bar-chart-alt-2", dashboardUrl) ])
             };
 
-            // Sadece Writer
             if (isWriter)
             {
                 sections.Add(new("Yazarlık",
@@ -33,16 +31,22 @@ namespace Bagery.WebUI.ViewComponents.PanelComponents
                 ]));
             }
 
-            // Ortak
             sections.Add(new("Alışveriş",
             [
-                new("Siparişlerim", "bx-receipt", $"/{area}/MyOrders/Index"),
-                new("Mağazaya git", "bx-store", "/Product/Shop")
+                new("Siparişlerim", "bx-receipt", $"/{area}/MyOrders/Index")
             ]));
+
             sections.Add(new("Hesabım",
             [
                 new("Profilim", "bx-user-circle", $"/{area}/Profile/UpdateUser"),
                 new("Şifre değiştir", "bx-lock-alt", $"/{area}/Profile/ChangePassword")
+            ]));
+
+            // YENİ: siteye giden linkler yeni sekmede açılır, panel kapanmaz
+            sections.Add(new("Hızlı erişim",
+            [
+                new("Siteye git", "bx-globe", "/Default/Index", NewTab: true),
+                new("Mağazaya git", "bx-store", "/Product/Shop", NewTab: true)
             ]));
 
             return View(new PanelSidebarModel(

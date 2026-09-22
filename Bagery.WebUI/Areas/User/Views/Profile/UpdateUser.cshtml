@@ -1,0 +1,153 @@
+﻿@using Bagery.WebUI.MediatorPattern.Commands.UserCommands
+@model EditUserCommand
+@{
+    ViewData["Title"] = "Profilim";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+
+    // Model?. : hata olunca ExceptionFilter sayfayı modelsiz açar, o zaman da çökmesin
+    var hasImage = !string.IsNullOrEmpty(Model?.ImageUrl);
+    var initials = string.Concat((Model?.FullName ?? "?").Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2)
+                         .Select(p => char.ToUpper(p[0], new System.Globalization.CultureInfo("tr-TR"))));
+
+    string FieldClass(string key) => ViewData.ModelState[key]?.Errors.Count > 0 ? "pn-field has-error" : "pn-field";
+}
+
+<div class="pn-page-head">
+    <div>
+        <p class="pn-eyebrow">Hesabım</p>
+        <h2>Profilim</h2>
+        <p>Teslimat için telefon ve adresinin güncel olduğundan emin ol.</p>
+    </div>
+    <a href="/User/Profile/ChangePassword" class="pn-btn is-ghost"><i class='bx bx-lock-alt'></i> Şifre değiştir</a>
+</div>
+
+<div asp-validation-summary="ModelOnly" class="pn-summary"></div>
+
+<form method="post" enctype="multipart/form-data" asp-action="UpdateUser" id="profileForm">
+    <input type="hidden" asp-for="ImageUrl" />
+
+    <div class="pn-form-grid">
+        <div class="pn-form-main">
+
+            @* 1) Kişisel bilgiler *@
+            <section class="pn-section">
+                <h3 class="pn-section-title"><span class="no">1</span> Kişisel bilgiler</h3>
+
+                <div class="pn-avatar-row">
+                    <label class="pn-avatar-pick">
+                        <img src="@(hasImage? Model?.ImageUrl : null)" alt="" data-avatar hidden="@(!hasImage)" />
+                        <i class='bx bx-camera' data-avatar-fallback hidden="@hasImage"></i>
+                        <span class="change">Değiştir</span>
+                        <input type="file" name="file" accept="image/*" id="avatarInput" aria-label="Profil fotoğrafı seç" />
+                    </label>
+                    <div>
+                        <strong>Profil fotoğrafı</strong>
+                        <span class="pn-hint">Kare bir fotoğraf en iyi sonucu verir. Seçmezsen mevcut fotoğrafın kalır.</span>
+                    </div>
+                </div>
+
+                <div class="@FieldClass("FullName")">
+                    <label asp-for="FullName">Ad soyad</label>
+                    <input asp-for="FullName" type="text" maxlength="50" autocomplete="name" data-live="name" />
+                    <span asp-validation-for="FullName" class="pn-error"></span>
+                </div>
+
+                <div class="pn-grid-2">
+                    <div class="@FieldClass("PhoneNumber")">
+                        <label asp-for="PhoneNumber">Telefon</label>
+                        <input asp-for="PhoneNumber" type="tel" autocomplete="tel" placeholder="0555 555 55 55" data-live="phone" />
+                        <span asp-validation-for="PhoneNumber" class="pn-error"></span>
+                    </div>
+                    <div class="pn-field">
+                        <label>Kullanıcı adı</label>
+                        <input type="text" value="@User.Identity?.Name" readonly style="background: var(--wash); color: var(--muted)" />
+                        <span class="pn-hint">Giriş bilgin, buradan değişmez</span>
+                    </div>
+                </div>
+
+                <div class="@FieldClass("Address")">
+                    <label asp-for="Address">Teslimat adresi</label>
+                    <textarea asp-for="Address" rows="3" maxlength="250" autocomplete="street-address" data-live="address"></textarea>
+                    <span asp-validation-for="Address" class="pn-error"></span>
+                </div>
+            </section>
+
+            @* 2) Kaydetmek için mevcut şifre (handler istiyor) *@
+            <section class="pn-section">
+                <h3 class="pn-section-title"><span class="no">2</span> Onayla ve kaydet</h3>
+                <div class="@FieldClass("Password")">
+                    <label asp-for="Password">Mevcut şifren</label>
+                    <div class="pn-password">
+                        <input asp-for="Password" type="password" autocomplete="current-password" />
+                        <button type="button" data-toggle-password aria-label="Şifreyi göster"><i class='bx bx-show'></i></button>
+                    </div>
+                    <div class="pn-field-foot">
+                        <span asp-validation-for="Password" class="pn-error"></span>
+                        <span class="pn-hint">Hesabının güvenliği için değişiklikleri şifrenle onaylıyoruz.</span>
+                    </div>
+                </div>
+                <button type="submit" class="pn-btn is-role" id="profileSubmit"><i class='bx bx-save'></i> Değişiklikleri kaydet</button>
+            </section>
+        </div>
+
+        @* SAĞ: teslimat kartı önizlemesi *@
+        <aside class="pn-form-side">
+            <p class="pn-preview-label">Önizleme</p>
+            <section class="pn-preview">
+                <div class="pn-preview-avatar">
+                    <img src="@(hasImage? Model?.ImageUrl : null)" alt="" data-avatar hidden="@(!hasImage)" />
+                    <span data-avatar-fallback hidden="@hasImage">@initials</span>
+                </div>
+                <span class="pn-preview-name" data-show="name" data-empty="Adın">@Model?.FullName</span>
+                <span class="pn-preview-sub" data-show="phone" data-empty="Telefonun">@Model?.PhoneNumber</span>
+                <p class="pn-preview-text" data-show="address" data-empty="Teslimat adresin">@Model?.Address</p>
+            </section>
+            <p class="pn-hint" style="margin-top:12px">Ödeme sayfasında bu bilgiler hazır gelir.</p>
+        </aside>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        (function () {
+            // Yazdıkça önizleme kartını güncelle (sayfa açılınca da bir kez çalışır)
+            document.querySelectorAll('[data-live]').forEach(function (input) {
+                const targets = document.querySelectorAll('[data-show="' + input.dataset.live + '"]');
+                const update = () => targets.forEach(function (target) {
+                    const value = input.value.trim();
+                    target.textContent = value || target.dataset.empty || '';
+                    target.classList.toggle('is-empty', !value);
+                });
+                input.addEventListener('input', update);
+                update();
+            });
+
+            // Fotoğraf seçilince iki yerde de önizle
+            document.getElementById('avatarInput').addEventListener('change', function () {
+                const file = this.files[0];
+                if (!file) return;
+                const url = URL.createObjectURL(file);
+                document.querySelectorAll('[data-avatar]').forEach(img => { img.src = url; img.hidden = false; });
+                document.querySelectorAll('[data-avatar-fallback]').forEach(el => el.hidden = true);
+            });
+
+            // Şifreyi göster / gizle
+            document.querySelectorAll('[data-toggle-password]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const input = button.parentElement.querySelector('input');
+                    const show = input.type === 'password';
+                    input.type = show ? 'text' : 'password';
+                    button.innerHTML = show ? "<i class='bx bx-hide'></i>" : "<i class='bx bx-show'></i>";
+                    button.setAttribute('aria-label', show ? 'Şifreyi gizle' : 'Şifreyi göster');
+                });
+            });
+
+            // Çift tıklamada iki kez gönderilmesin
+            document.getElementById('profileForm').addEventListener('submit', function () {
+                const button = document.getElementById('profileSubmit');
+                button.disabled = true;
+                button.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Kaydediliyor...";
+            });
+        })();
+    </script>
+}
