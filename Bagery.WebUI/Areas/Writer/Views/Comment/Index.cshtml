@@ -1,0 +1,154 @@
+﻿@using System.Globalization
+@using System.Security.Claims
+@using Bagery.WebUI.MediatorPattern.Results.CommentResults
+@model List<GetCommentByUserIdQueryResult>
+@{
+    ViewData["Title"] = "Yorumlarım";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+
+    var tr = new CultureInfo("tr-TR");
+    var myId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+    var comments = Model.Where(c => c.Blog is not null)          // silinmiş bloglara ait yorumlar gösterilmez
+                        .OrderByDescending(c => c.CreatedAt)
+                        .ToList();
+
+    // Ay ay grupla: "Eylül 2026" -> o ayın yorumları
+    var months = comments
+        .GroupBy(c => { var local = c.CreatedAt.ToLocalTime(); return new DateTime(local.Year, local.Month, 1); })
+        .ToList();
+}
+@functions {
+    // "3 gün önce" gibi göreli zaman (tarihler veritabanında UTC)
+    static string Ago(DateTime createdUtc)
+    {
+        var span = DateTime.UtcNow - createdUtc;
+        if (span.TotalMinutes < 1) return "az önce";
+        if (span.TotalHours < 1) return $"{(int)span.TotalMinutes} dakika önce";
+        if (span.TotalDays < 1) return $"{(int)span.TotalHours} saat önce";
+        if (span.TotalDays < 30) return $"{(int)span.TotalDays} gün önce";
+        if (span.TotalDays < 365) return $"{(int)(span.TotalDays / 30)} ay önce";
+        return $"{(int)(span.TotalDays / 365)} yıl önce";
+    }
+}
+
+<div class="pn-page-head">
+    <div>
+        <p class="pn-eyebrow">Yazarlık</p>
+        <h2>Yorumlarım</h2>
+        <p>Bloglara yazdığın yorumlar. Yeni yorumu blog sayfasından yazabilir, burada kaldırabilirsin.</p>
+    </div>
+    <a href="/Blog/Index" class="pn-btn is-ghost"><i class='bx bx-news'></i> Bloglara göz at</a>
+</div>
+
+@if (!comments.Any())
+{
+    <div class="pn-empty">
+        <div class="icon"><i class='bx bx-comment-detail'></i></div>
+        <h3>Henüz yorum yazmadın</h3>
+        <p>Beğendiğin bir blogun altına ilk yorumunu bırak.</p>
+        <a href="/Blog/Index" class="pn-btn is-role"><i class='bx bx-news'></i> Bloglara git</a>
+    </div>
+}
+else
+{
+    <div class="pn-strip">
+        <span class="pn-chip is-dark"><i class='bx bx-comment-detail'></i> @comments.Count yorum</span>
+        <span class="pn-chip"><i class='bx bx-news'></i> @comments.Select(c => c.BlogId).Distinct().Count() farklı blog</span>
+        <span class="pn-chip"><i class='bx bx-time-five'></i> Son yorum: @Ago(comments[0].CreatedAt)</span>
+    </div>
+
+    <label class="pn-search">
+        <i class='bx bx-search'></i>
+        <input type="search" id="commentSearch" placeholder="Yorumlarda ya da blog başlığında ara..." aria-label="Yorumlarda ara" autocomplete="off">
+    </label>
+
+    <div id="commentList">
+        @foreach (var month in months)
+        {
+            <section class="pn-month-group">
+                <h3 class="pn-month">@month.Key.ToString("MMMM yyyy", tr) <small>@month.Count() yorum</small></h3>
+
+                <div class="pn-comments">
+                    @foreach (var comment in month)
+                    {
+                        var blog = comment.Blog;
+                        var isOwnBlog = blog.AppUserId == myId;
+                        var blogUrl = $"/Blog/Detail/{blog.Id}";
+
+                        @* data-search: arama bu metinde yapılır (yorum + blog başlığı) *@
+                        <article class="pn-comment" data-search="@($"{comment.CommentContent} {blog.Title}")">
+                            <a class="pn-comment-thumb" href="@blogUrl" target="_blank" aria-label="Blogu aç">
+                                <img src="@blog.ImageUrl1" alt="" loading="lazy">
+                            </a>
+
+                            <div style="min-width: 0">
+                                <div class="pn-comment-head">
+                                    <a class="pn-comment-blog" href="@blogUrl" target="_blank">@blog.Title</a>
+                                    @if (isOwnBlog)
+                                    {
+                                        <span class="pn-own"><i class='bx bx-crown'></i> Kendi blogun</span>
+                                    }
+                                    else if (blog.AppUser is not null)
+                                    {
+                                        <span class="pn-comment-by">yazar: @blog.AppUser.FullName</span>
+                                    }
+                                </div>
+
+                                <blockquote class="pn-quote">@comment.CommentContent</blockquote>
+
+                                <div class="pn-comment-foot">
+                                    <time datetime="@comment.CreatedAt.ToString("o")" title="@comment.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy HH:mm", tr)">
+                                        <i class='bx bx-time-five'></i> @Ago(comment.CreatedAt)
+                                    </time>
+                                    <div class="actions">
+                                        <a href="@blogUrl" target="_blank" class="pn-btn is-sm is-ghost"><i class='bx bx-show'></i> Blogda gör</a>
+                                        <form method="post" asp-action="DeleteComment" asp-route-id="@comment.Id"
+                                              onsubmit="return confirm('Bu yorum silinsin mi?');">
+                                            <button type="submit" class="pn-icon-btn is-danger" aria-label="Yorumu sil" title="Sil"><i class='bx bx-trash'></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+
+    <p class="pn-no-result" id="noResult" hidden>Aramana uyan yorum bulunamadı.</p>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            const input = document.getElementById('commentSearch');
+            if (!input) return; // hiç yorum yoksa arama kutusu yok
+
+            // Türkçe küçük harf: "İ" -> "i", "I" -> "ı" (toLowerCase bunu yanlış yapar)
+            const normalize = text => (text || '').toLocaleLowerCase('tr-TR').trim();
+
+            const cards = Array.from(document.querySelectorAll('.pn-comment'));
+            cards.forEach(card => card.dataset.search = normalize(card.dataset.search));
+
+            input.addEventListener('input', function () {
+                const term = normalize(input.value);
+                let visible = 0;
+
+                cards.forEach(card => {
+                    const match = !term || card.dataset.search.includes(term);
+                    card.hidden = !match;
+                    if (match) visible++;
+                });
+
+                // İçinde görünür yorum kalmayan ay başlığını da gizle
+                document.querySelectorAll('.pn-month-group').forEach(group => {
+                    group.hidden = !group.querySelector('.pn-comment:not([hidden])');
+                });
+
+                document.getElementById('noResult').hidden = visible > 0;
+            });
+        })();
+    </script>
+}

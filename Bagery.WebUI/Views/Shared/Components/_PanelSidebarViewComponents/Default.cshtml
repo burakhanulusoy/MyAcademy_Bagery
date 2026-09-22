@@ -1,0 +1,66 @@
+﻿@using Bagery.WebUI.Models.PanelModels
+@model PanelSidebarModel
+@functions {
+    // "/Writer/Blog/Index" ile "/Writer/Blog" aynı sayfa sayılsın
+    static string Normalize(string path)
+    {
+        var p = path.TrimEnd('/');
+        return p.EndsWith("/Index", StringComparison.OrdinalIgnoreCase) ? p[..^6] : p;
+    }
+
+    // "Burak Han Ulusoy" -> "BH"
+    static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2)
+                          .Select(p => char.ToUpper(p[0], new System.Globalization.CultureInfo("tr-TR"))));
+}
+@{
+    var current = Normalize(Context.Request.Path.Value ?? "");
+}
+
+<aside class="pn-sidebar" aria-label="Panel menüsü">
+
+    <a class="pn-brand" href="/Default/Index" aria-label="Siteye dön">
+        <img src="~/Bagery Pack/Bagery/assets/images/logo-4.png" alt="Bagery">
+    </a>
+
+    @* Profil kartı *@
+    <div class="pn-profile">
+        <span class="pn-avatar">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="">
+            }
+            else
+            {
+                @Initials(Model.FullName)
+            }
+        </span>
+        <div style="min-width: 0">
+            <span class="pn-profile-name">@Model.FullName</span>
+            <span class="pn-role">@Model.RoleLabel</span>
+        </div>
+    </div>
+
+    @* Menü bölümleri (Yazarlık bölümü sadece Writer'da gelir) *@
+    <nav class="pn-nav">
+        @foreach (var section in Model.Sections)
+        {
+            <div>
+                <p class="pn-nav-title">@@section.Title</p>
+                <ul>
+                    @foreach (var item in section.Items)
+                    {
+                        var isActive = string.Equals(Normalize(item.Url), current, StringComparison.OrdinalIgnoreCase);
+                        <li>
+                            <a href="@item.Url" class="@(isActive ? "is-active" : "")" aria-current="@(isActive ? "page" : null)">
+                                <i class='bx @item.Icon'></i> @item.Label
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </nav>
+
+    <a class="pn-logout" href="/User/Logout"><i class='bx bx-log-out'></i> Çıkış yap</a>
+</aside>

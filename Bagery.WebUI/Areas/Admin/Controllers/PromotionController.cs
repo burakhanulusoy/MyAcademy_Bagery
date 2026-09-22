@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
-    [Authorize]
-     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    [Area("Admin")]
     public class PromotionController (IMediator _mediator): Controller
     {
 

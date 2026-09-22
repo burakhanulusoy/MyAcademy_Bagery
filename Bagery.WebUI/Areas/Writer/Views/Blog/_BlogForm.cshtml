@@ -1,0 +1,215 @@
+﻿@using Bagery.WebUI.MediatorPattern.Results.BlogResults
+@model GetBlogByIdQueryResult
+@functions {
+    // Değer önceliği: az önce gönderilen form (doğrulama hatasında yazılanlar kaybolmasın) > veritabanı
+    string Val(string key, string? fromModel) =>
+        ViewData.ModelState.TryGetValue(key, out var entry) && entry.AttemptedValue is not null
+            ? entry.AttemptedValue
+            : fromModel ?? "";
+
+    // Alanın ilk hata mesajı (FluentValidation mesajları)
+    string? Err(string key) =>
+        ViewData.ModelState.TryGetValue(key, out var entry) && entry.Errors.Count > 0
+            ? entry.Errors[0].ErrorMessage
+            : null;
+}
+@{
+    // Yazma mı düzenleme mi: adresteki action'a bakıyoruz (hata sonrası Model boş gelse de doğru çalışır)
+    var isEdit = string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), "UpdateBlog", StringComparison.OrdinalIgnoreCase);
+
+    // Komutlarda dosya alanlarının adı farklı: Create -> BackgroundFile / File1, Update -> BackgroundImageFile / ImageFile
+    var coverInput = isEdit ? "BackgroundImageFile" : "BackgroundFile";
+    var imageInput = isEdit ? "ImageFile" : "File1";
+    var coverUrl = Val("BackgroundImageUrl", Model?.BackgroundImageUrl);
+    var imageUrl = Val("ImageUrl1", Model?.ImageUrl1);
+
+    // Alana bağlı olmayan hatalar (ör. "Blog bulunamadı")
+    var generalErrors = ViewData.ModelState.TryGetValue(string.Empty, out var general)
+        ? general.Errors.Select(e => e.ErrorMessage).ToList()
+        : new List<string>();
+
+    // Tekrarlanan alan kalıbı: etiket + input/textarea + hata ya da ipucu + karakter sayacı
+    void TextField(string name, string label, string value, int? max = null, bool multiline = false, int rows = 4, string? hint = null)
+    {
+        var error = Err(name);
+        <div class="pn-field @(error is null ? "" : "has-error")">
+            <label for="@name">@label</label>
+            @if (multiline)
+            {
+                <textarea id="@name" name="@name" rows="@rows" maxlength="@max" data-counter="@max">@value</textarea>
+            }
+            else
+            {
+                <input id="@name" name="@name" type="text" value="@value" maxlength="@max" data-counter="@max" />
+            }
+            <div class="pn-field-foot">
+                @if (error is not null)
+                {
+                    <span class="pn-error">@error</span>
+                }
+                else if (hint is not null)
+                {
+
+                    <span class="pn-hint">@hint</span>
+                }
+                @if (max is not null)
+                {
+                    <span class="pn-counter" data-counter-for="@name"></span>
+                }
+            </div>
+        </div>
+    }
+
+    // Görsel seçme alanı (mevcut görsel varsa önizlemede görünür)
+    void ImageField(string inputName, string label, string currentUrl, string? error, string hint)
+    {
+        var hasImage = !string.IsNullOrEmpty(currentUrl);
+        <div class="pn-field @(error is null ? "" : "has-error")">
+            <span class="pn-label">@label</span>
+            <label class="pn-drop @(hasImage ? "has-image" : "")">
+                <img class="pn-drop-preview" src="@(hasImage? currentUrl : null)" alt="" hidden="@(!hasImage)" />
+                <span class="pn-drop-empty"><i class='bx bx-image-add'></i> Görsel seç</span>
+                <span class="pn-drop-change">Değiştir</span>
+                <input name="@inputName" type="file" accept="image/*" data-preview aria-label="@label" />
+            </label>
+            <div class="pn-field-foot">
+                @if (error is not null)
+                {
+                    <span class="pn-error">@error</span>
+                }
+                else
+                {
+
+                    <span class="pn-hint">@hint</span>
+                }
+            </div>
+        </div>
+    }
+}
+
+@if (generalErrors.Any())
+{
+    <div class="pn-alert is-error" role="alert">
+        <i class='bx bx-error-circle'></i>
+        <ul>@foreach (var e in generalErrors) {
+        <li>@e</li>
+    }
+</ul>
+</div>
+}
+
+<form method="post" enctype="multipart/form-data" asp-action="@(isEdit ? "UpdateBlog" : "CreateBlog")" id="blogForm">
+
+    @if (isEdit)
+    {
+        @* Düzenlemede: hangi blog + yeni görsel seçilmezse eskisi kalsın diye mevcut adresler *@
+        <input type="hidden" name="Id" value="@Val("Id", Model?.Id.ToString())" />
+        <input type="hidden" name="BackgroundImageUrl" value="@coverUrl" />
+        <input type="hidden" name="ImageUrl1" value="@imageUrl" />
+    }
+
+    <div class="pn-form-grid">
+
+        @* SOL: blog sayfasının üç bölümü, sitedeki sırayla *@
+        <div class="pn-form-main">
+            <section class="pn-section">
+                <h3 class="pn-section-title"><span class="no">1</span> Giriş <small>Blog listesinde ve sayfanın başında</small></h3>
+                @{
+                    TextField("Title", "Blog başlığı", Val("Title", Model?.Title), 150);
+                }
+                @{
+                    TextField("ShortDescription", "Kısa açıklama", Val("ShortDescription", Model?.ShortDescription), 500, multiline: true, rows: 3, hint: "Blog kartlarında görünen özet");
+                }
+                @{
+                    TextField("MainDescription", "Giriş metni", Val("MainDescription", Model?.MainDescription), multiline: true, rows: 6);
+                }
+            </section>
+
+            <section class="pn-section">
+                <h3 class="pn-section-title"><span class="no">2</span> Orta bölüm <small>İç görselle birlikte</small></h3>
+                @{
+                    TextField("LongTitle", "Alt başlık", Val("LongTitle", Model?.LongTitle), 200);
+                }
+                @{
+                    TextField("LongDescription", "Detay metni", Val("LongDescription", Model?.LongDescription), multiline: true, rows: 8);
+                }
+            </section>
+
+            <section class="pn-section">
+                <h3 class="pn-section-title"><span class="no">3</span> Kapanış</h3>
+                @{
+                    TextField("LastDescriptionTitle", "Kapanış başlığı", Val("LastDescriptionTitle", Model?.LastDescriptionTitle), 200);
+                }
+                @{
+                    TextField("LastDescription", "Kapanış metni", Val("LastDescription", Model?.LastDescription), multiline: true, rows: 5);
+                }
+            </section>
+        </div>
+
+        @* SAĞ: görseller + yayınla (kaydırırken sabit kalır) *@
+        <aside class="pn-form-side">
+            <section class="pn-section">
+                <h3 class="pn-section-title"><i class='bx bx-image' style="font-size:22px"></i> Görseller</h3>
+                @{
+                    ImageField(coverInput, "Kapak görseli", coverUrl,
+                    Err(isEdit ? "BackgroundImageUrl" : "BackgroundFile"),
+                    isEdit ? "Seçmezsen mevcut görsel kalır" : "Blog kartında ve sayfa başında");
+                }
+                @{
+                    ImageField(imageInput, "İç görsel", imageUrl,
+                    Err(isEdit ? "ImageUrl1" : "File1"),
+                    isEdit ? "Seçmezsen mevcut görsel kalır" : "Orta bölümde görünür");
+                }
+            </section>
+
+            <section class="pn-section">
+                <button type="submit" class="pn-btn is-role is-block" id="blogSubmit">
+                    <i class='bx @(isEdit ? "bx-save" : "bx-send")'></i> @(isEdit ? "Değişiklikleri kaydet" : "Yayınla")
+                </button>
+                <a href="/Writer/Blog/Index" class="pn-btn is-ghost is-block" style="margin-top:10px">Vazgeç</a>
+                @if (!isEdit && ViewData.ModelState.ErrorCount > 0)
+                {
+                    @* Tarayıcılar güvenlik gereği seçilen dosyaları hata sonrası hatırlamaz *@
+                    <p class="pn-hint" style="margin:12px 0 0">Görselleri yeniden seçmen gerekiyor.</p>
+                }
+            </section>
+        </aside>
+    </div>
+</form>
+
+<script>
+    (function () {
+        // Karakter sayacı: "42 / 150"
+        document.querySelectorAll('[data-counter]').forEach(function (field) {
+            const output = document.querySelector('[data-counter-for="' + field.id + '"]');
+            const max = parseInt(field.dataset.counter, 10);
+            if (!output || !max) return;
+            const update = () => {
+                output.textContent = field.value.length + ' / ' + max;
+                output.classList.toggle('is-near', field.value.length > max * 0.9);
+            };
+            field.addEventListener('input', update);
+            update();
+        });
+
+        // Görsel seçilince anında önizleme (yükleme yapılmadan, tarayıcıda)
+        document.querySelectorAll('input[data-preview]').forEach(function (input) {
+            input.addEventListener('change', function () {
+                const file = input.files[0];
+                if (!file) return;
+                const drop = input.closest('.pn-drop');
+                const preview = drop.querySelector('.pn-drop-preview');
+                preview.src = URL.createObjectURL(file);
+                preview.hidden = false;
+                drop.classList.add('has-image');
+            });
+        });
+
+        // Çift tıklamada blog iki kez kaydedilmesin
+        document.getElementById('blogForm').addEventListener('submit', function () {
+            const button = document.getElementById('blogSubmit');
+            button.disabled = true;
+            button.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Kaydediliyor...";
+        });
+    })();
+</script>

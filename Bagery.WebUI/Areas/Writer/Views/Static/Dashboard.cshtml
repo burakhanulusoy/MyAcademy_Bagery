@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "İstatistiklerim";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+}
+
+<section class="pn-welcome">
+    <small>Yazar paneli</small>
+    <h1>Hoş geldin</h1>
+    <p>Bloglarını buradan yazıp yönetebilir, yorumlarını ve siparişlerini takip edebilirsin. İstatistik ekranın çok yakında burada.</p>
+</section>
+
+<div class="pn-quick">
+    <a href="/Writer/Blog/CreateBlog">
+        <i class='bx bx-edit-alt'></i>
+        <strong>Yeni blog yaz</strong>
+        <span>Okuyucularınla yeni bir tarif ya da hikâye paylaş</span>
+    </a>
+    <a href="/Writer/Blog/Index">
+        <i class='bx bx-news'></i>
+        <strong>Bloglarım</strong>
+        <span>Yazdıklarını düzenle ya da kaldır</span>
+    </a>
+    <a href="/Writer/Comment/Index">
+        <i class='bx bx-comment-detail'></i>
+        <strong>Yorumlarım</strong>
+        <span>Bloglara yazdığın yorumlar</span>
+    </a>
+    <a href="/Writer/MyOrders/Index">
+        <i class='bx bx-receipt'></i>
+        <strong>Siparişlerim</strong>
+        <span>Siparişlerin ve faturaların</span>
+    </a>
+</div>

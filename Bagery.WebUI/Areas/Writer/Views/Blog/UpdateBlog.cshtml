@@ -1,0 +1,23 @@
+﻿@using Bagery.WebUI.MediatorPattern.Results.BlogResults
+@model GetBlogByIdQueryResult
+@{
+    ViewData["Title"] = "Blogu düzenle";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+}
+
+<div class="pn-page-head">
+    <div>
+        <p class="pn-eyebrow">Yazarlık</p>
+        <h2>Blogu düzenle</h2>
+        <p>Değiştirmek istediğin alanları güncelle. Yeni görsel seçmezsen mevcut görseller kalır.</p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap">
+        @if (Model is not null)
+        {
+            <a href="/Blog/Detail/@Model.Id" target="_blank" class="pn-btn is-ghost"><i class='bx bx-show'></i> Sitede gör</a>
+        }
+        <a href="/Writer/Blog/Index" class="pn-btn is-ghost"><i class='bx bx-arrow-back'></i> Bloglarım</a>
+    </div>
+</div>
+
+<partial name="_BlogForm" model="Model" />

@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+    // Rol rengi body sınıfından gelir (CSS: .is-writer mercan, .is-user turkuaz)
+    var roleClass = User.IsInRole("Writer") ? "is-writer" : "is-user";
+}
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] | Bagery Panel</title>
+    <link rel="icon" href="~/Bagery Pack/Bagery/assets/images/favicon.ico" type="image/x-icon">
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <link href="~/css/bagery-admin-orders.css" rel="stylesheet"> @* Siparişlerim sayfaları (Adım 4) bu tasarımı kullanır *@
+    <link href="~/css/bagery-panel.css" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="pn-body @roleClass">
+
+    <div class="pn-shell">
+
+        @await Component.InvokeAsync("_PanelSidebarViewComponents")
+
+        @* Telefonda menü açıkken arkadaki karartma; tıklayınca menü kapanır *@
+        <div class="pn-scrim" data-panel-close></div>
+
+        <div class="pn-main">
+            <header class="pn-topbar">
+                <button type="button" class="pn-burger" data-panel-toggle aria-label="Menüyü aç"><i class='bx bx-menu'></i></button>
+                <h1 class="pn-page-title">@ViewData["Title"]</h1>
+                <div class="pn-top-actions">
+                    <a href="/Product/Shop"><i class='bx bx-store'></i><span class="label">Mağaza</span></a>
+                    <a href="/Cart/Index" aria-label="Sepetim"><i class='bx bx-shopping-bag'></i><span class="label">Sepetim</span></a>
+                </div>
+            </header>
+
+            <main class="pn-content">
+                @* YENİ: işlem sonrası kısa mesaj (controller'da TempData["PanelSuccess"] = "...") *@
+                @if (TempData["PanelSuccess"] is string panelSuccess)
+                {
+                    <div class="pn-alert is-success" role="status"><i class='bx bx-check-circle'></i> @panelSuccess</div>
+                }
+
+                @RenderBody()
+            </main>
+
+            <footer class="pn-footer">© @DateTime.Now.Year Bagery</footer>
+        </div>
+    </div>
+
+    <script>
+        // Telefonda menü aç / kapat (masaüstünde menü zaten hep açık)
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('[data-panel-toggle]')) document.body.classList.toggle('pn-open');
+            else if (e.target.closest('[data-panel-close]')) document.body.classList.remove('pn-open');
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') document.body.classList.remove('pn-open');
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

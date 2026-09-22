@@ -10,7 +10,7 @@ using PagedList.Core;
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
 
     public class UserController(IMediator _mediator) : Controller
     {

@@ -1,0 +1,70 @@
+﻿@using Bagery.WebUI.MediatorPattern.Results.BlogResults
+@model List<GetBlogByUserIdQueryResult>
+@{
+    ViewData["Title"] = "Bloglarım";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+
+    var blogs = Model.OrderByDescending(b => b.CreatedAt).ToList(); // en yeni üstte
+    var totalComments = Model.Sum(b => b.Comments?.Count ?? 0);
+    var tr = new System.Globalization.CultureInfo("tr-TR");
+}
+
+<div class="pn-page-head">
+    <div>
+        <p class="pn-eyebrow">Yazarlık</p>
+        <h2>Bloglarım</h2>
+        <p>Yazdığın bloglar. Düzenleyebilir, sitede nasıl göründüğüne bakabilir ya da kaldırabilirsin.</p>
+    </div>
+    <a href="/Writer/Blog/CreateBlog" class="pn-btn is-role"><i class='bx bx-edit-alt'></i> Yeni blog yaz</a>
+</div>
+
+@if (!blogs.Any())
+{
+    <div class="pn-empty">
+        <div class="icon"><i class='bx bx-news'></i></div>
+        <h3>Henüz blog yazmadın</h3>
+        <p>İlk tarifini ya da hikâyeni paylaş, okuyucular yorumlarıyla sana ulaşsın.</p>
+        <a href="/Writer/Blog/CreateBlog" class="pn-btn is-role"><i class='bx bx-edit-alt'></i> İlk blogunu yaz</a>
+    </div>
+}
+else
+{
+    <div class="pn-strip">
+        <span class="pn-chip is-dark"><i class='bx bx-news'></i> @blogs.Count blog</span>
+        <span class="pn-chip"><i class='bx bx-comment-detail'></i> @totalComments yorum aldı</span>
+        <span class="pn-chip"><i class='bx bx-time-five'></i> Son yazı: @blogs[0].CreatedAt.ToLocalTime().ToString("dd MMMM yyyy", tr)</span>
+    </div>
+
+    <div class="pn-blogs">
+        @foreach (var blog in blogs)
+        {
+            var commentCount = blog.Comments?.Count ?? 0;
+
+            <article class="pn-blog">
+                <a class="pn-blog-cover" href="/Blog/Detail/@blog.Id" target="_blank" aria-label="Sitede görüntüle">
+                    <img src="@blog.BackgroundImageUrl" alt="" loading="lazy">
+                    <span class="pn-blog-badge"><i class='bx bx-comment-detail'></i> @commentCount</span>
+                </a>
+                <div class="pn-blog-body">
+                    <div class="pn-blog-meta">
+                        <span><i class='bx bx-calendar'></i> @blog.CreatedAt.ToLocalTime().ToString("dd MMM yyyy", tr)</span>
+                        <span><i class='bx bx-comment'></i> @commentCount yorum</span>
+                    </div>
+                    <h3>@blog.Title</h3>
+                    <p>@blog.ShortDescription</p>
+
+                    <div class="pn-blog-actions">
+                        <a href="/Writer/Blog/UpdateBlog/@blog.Id" class="pn-btn is-sm"><i class='bx bx-edit'></i> Düzenle</a>
+                        <a href="/Blog/Detail/@blog.Id" target="_blank" class="pn-btn is-sm is-ghost"><i class='bx bx-show'></i> Görüntüle</a>
+
+                        @* Silme: POST form + güvenlik anahtarı (tag helper otomatik ekler) *@
+                        <form method="post" asp-action="DeleteBlog" asp-route-id="@blog.Id"
+                              onsubmit="return confirm('Bu blog silinsin mi? Bu işlem geri alınamaz.');">
+                            <button type="submit" class="pn-icon-btn is-danger" aria-label="Blogu sil" title="Sil"><i class='bx bx-trash'></i></button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+}

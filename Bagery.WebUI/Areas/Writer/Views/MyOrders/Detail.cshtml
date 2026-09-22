@@ -1,0 +1,121 @@
+﻿@using Bagery.WebUI.MediatorPattern.Results.OrderResults
+@model GetMyOrderQueryResult
+@{
+    ViewData["Title"] = "Sipariş detayı";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+
+    var installmentFee = Model.PaidPrice - (Model.TotalPrice + Model.ShippingPrice - Model.CouponPrice);
+}
+
+<div class="bo">
+
+    <section class="bo-hero">
+        <div>
+            <p class="bo-eyebrow">Siparişim</p>
+            <div class="bo-hero-row">
+                <span class="bo-hero-no">#@Model.OrderNo.Substring(0, 8).ToUpperInvariant()</span>
+                <span class="bo-pill is-@Model.Status.ToString().ToLower()">@Model.Status.ToTurkish()</span>
+            </div>
+            <div class="bo-hero-meta">
+                <span><i class='bx bx-calendar'></i> @Model.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy, HH:mm")</span>
+                <span><i class='bx bx-package'></i> @Model.OrderItems.Sum(x => x.Quantity) ürün</span>
+            </div>
+        </div>
+        <div class="bo-hero-actions">
+            @if (Model.Status == OrderStatus.Paid)
+            {
+                <a href="/Writer/MyOrders/Invoice?orderNo=@Model.OrderNo" target="_blank" class="bo-btn"><i class='bx bx-show'></i> Faturayı görüntüle</a>
+                <a href="/Writer/MyOrders/Invoice?orderNo=@Model.OrderNo&download=true" class="bo-btn is-ghost"><i class='bx bx-download'></i> PDF indir</a>
+            }
+            <a href="/Writer/MyOrders/Index" class="bo-btn is-ghost"><i class='bx bx-arrow-back'></i> Siparişlerim</a>
+        </div>
+    </section>
+
+    <div class="bo-grid">
+
+        <div class="bo-stack">
+            <section class="bo-section">
+                <h2 class="bo-section-title"><i class='bx bx-package'></i> Ürünler <span class="count">@Model.OrderItems.Sum(x => x.Quantity) adet</span></h2>
+                <ul class="bo-items">
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <li class="bo-item">
+                            <img src="@item.ImageUrl" alt="">
+                            <div>
+                                <div class="name">@item.ProductName <span class="bo-qty">@item.Quantity adet</span></div>
+                                <div class="meta">@(item.VariantName ?? "Standart"), birim @item.UnitPrice.ToString("N2") ₺</div>
+                            </div>
+                            <div class="total">@item.LineTotal.ToString("N2") ₺</div>
+                        </li>
+                    }
+                </ul>
+            </section>
+
+            <section class="bo-section">
+                <h2 class="bo-section-title"><i class='bx bx-git-commit'></i> Sipariş durumu</h2>
+                <ol class="bo-timeline">
+                    <li class="is-done">
+                        <span class="dot"></span>
+                        <strong>Siparişin alındı</strong>
+                        <small>@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+                    </li>
+                    @if (Model.Status == OrderStatus.Paid)
+                    {
+                        <li class="is-done">
+                            <span class="dot"></span>
+                            <strong>Ödemen onaylandı</strong>
+                            <small>@(Model.PaidAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm"))</small>
+                        </li>
+                    }
+                    else if (Model.Status == OrderStatus.Pending)
+                    {
+                        <li class="is-current">
+                            <span class="dot"></span>
+                            <strong>Ödemen onaylanıyor</strong>
+                            <small>Birkaç saniye sonra sayfayı yenile</small>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="is-fail">
+                            <span class="dot"></span>
+                            <strong>Ödeme tamamlanamadı</strong>
+                            <small>@Model.StatusMessage</small>
+                        </li>
+                    }
+                </ol>
+            </section>
+        </div>
+
+        <div class="bo-stack">
+            <section class="bo-section">
+                <h2 class="bo-section-title"><i class='bx bx-map'></i> Teslimat</h2>
+                <ul class="bo-info">
+                    <li><i class='bx bx-user'></i><div><small>Alıcı</small><span>@Model.FullName</span></div></li>
+                    <li><i class='bx bx-phone'></i><div><small>Telefon</small><span>@Model.PhoneNumber</span></div></li>
+                    <li><i class='bx bx-envelope'></i><div><small>E-posta</small><span>@Model.Email</span></div></li>
+                    <li><i class='bx bx-home-alt'></i><div><small>Adres</small><span>@Model.Address</span></div></li>
+                </ul>
+            </section>
+
+            <section class="bo-section is-strong">
+                <h2 class="bo-section-title"><i class='bx bx-credit-card'></i> Ödeme</h2>
+                <ul class="bo-receipt">
+                    <li><span>Ara toplam</span><span>@Model.TotalPrice.ToString("N2") ₺</span></li>
+                    @if (Model.CouponPrice > 0)
+                    {
+                        <li><span>İndirim (@Model.CouponCode)</span><span>−@Model.CouponPrice.ToString("N2") ₺</span></li>
+                    }
+                    <li><span>Kargo</span><span>@(Model.ShippingPrice == 0 ? "Ücretsiz" : Model.ShippingPrice.ToString("N2") + " ₺")</span></li>
+                    @if (installmentFee > 0)
+                    {
+                        <li><span>Vade farkı</span><span>@installmentFee.ToString("N2") ₺</span></li>
+                    }
+                    <li><span>Ödeme şekli</span><span>@(Model.InstallmentCount == 0 ? "Tek çekim" : $"{Model.InstallmentCount} taksit")</span></li>
+                    <li class="is-total"><span>Ödenen</span><span>@Model.PaidPrice.ToString("N2") ₺</span></li>
+                </ul>
+            </section>
+        </div>
+
+    </div>
+</div>

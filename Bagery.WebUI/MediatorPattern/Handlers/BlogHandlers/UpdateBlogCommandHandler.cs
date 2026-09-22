@@ -26,11 +26,20 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.BlogHandlers
                 throw new ValidationUIException(validationResult.Errors);
             }
 
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User)
+                       ?? throw new IdentityException("Bu işlem için giriş yapmalısınız.");
 
+            // YENİ: blogun gerçek sahibini oku (AsNoTracking: aşağıdaki Update ile çakışmaz)
+            var existing = await _blogRepository.GetBlogByIdWithUser(request.Id)
+                           ?? throw new IdentityException("Blog bulunamadı.");
+
+            // YENİ: admin her blogu, yazar sadece kendi blogunu düzenler
+            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+            if (!isAdmin && existing.AppUserId != user.Id)
+                throw new IdentityException("Blog bulunamadı.");
 
             var mappedBlog = request.Adapt<Blog>();
-            mappedBlog.AppUserId = user.Id;
+            mappedBlog.AppUserId = existing.AppUserId; // DEĞİŞTİ: admin düzenlese bile yazar değişmesin
 
             if (request.BackgroundImageFile != null && request.BackgroundImageFile.Length > 0)
             {

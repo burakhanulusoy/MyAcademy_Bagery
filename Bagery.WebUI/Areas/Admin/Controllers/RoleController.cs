@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Bagery.WebUI.Areas.Admin.Controllers
 {
-    [Authorize]
-      [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    [Area("Admin")]
     public class RoleController(IMediator _mediator) : Controller
     {
         public async Task<IActionResult> Index()
