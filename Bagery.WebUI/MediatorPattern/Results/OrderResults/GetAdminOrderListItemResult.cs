@@ -14,5 +14,7 @@ namespace Bagery.WebUI.MediatorPattern.Results.OrderResults
         public int InstallmentCount { get; set; }
         public OrderStatus Status { get; set; }
         public DeliveryStatus DeliveryStatus { get; set; } // YENİ
+        public DateTime? DispatchedAt { get; set; } // YENİ
+        public DateTime? DeliveredAt { get; set; }  // YENİ
     }
 }

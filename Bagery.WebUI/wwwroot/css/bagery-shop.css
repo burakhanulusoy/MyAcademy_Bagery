@@ -1749,3 +1749,30 @@
         animation: none;
     }
 }
+
+
+/* Başarı ekranındaki panelden takip bilgisi */
+.bg-track-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 620px;
+    margin: 26px auto 0;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: var(--blush);
+    font-size: 14.5px;
+    line-height: 1.6;
+    text-align: left;
+    color: var(--ink-soft);
+}
+
+    .bg-track-note i {
+        margin-top: 3px;
+        font-size: 18px;
+        color: var(--accent-strong);
+    }
+
+    .bg-track-note strong {
+        color: var(--ink);
+    }

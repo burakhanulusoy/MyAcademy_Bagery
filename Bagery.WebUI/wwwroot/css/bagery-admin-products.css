@@ -1,0 +1,470 @@
+﻿/* =========================================================
+   Admin > Ürünler
+   Renkler .bd değişkenlerinden (bagery-dashboard.css): koyu temaya uyar
+   ========================================================= */
+
+/* ---------- Süzme çubuğu ---------- */
+.ap-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.ap-search {
+    position: relative;
+    flex: 1 1 260px;
+    max-width: 360px;
+}
+
+    .ap-search i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 19px;
+        color: var(--muted);
+    }
+
+    .ap-search input {
+        width: 100%;
+        height: 44px;
+        padding: 0 14px 0 42px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--card);
+        color: var(--ink);
+        font: inherit;
+        font-size: 14px;
+    }
+
+        .ap-search input:focus {
+            outline: none;
+            border-color: var(--ink);
+        }
+
+.ap-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ap-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--ink) !important;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .ap-chip:hover {
+        border-color: var(--ink);
+    }
+
+    .ap-chip.is-active {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--paper) !important;
+    }
+
+.ap-sort {
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+    margin-left: auto;
+}
+
+/* ---------- Ürün kartları ---------- */
+.ap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 18px;
+}
+
+.ap-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card);
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+    .ap-card:hover {
+        transform: translate(-3px, -3px);
+        border-color: var(--ink);
+        box-shadow: 6px 6px 0 var(--ink);
+    }
+
+.ap-card-img {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--wash);
+}
+
+    .ap-card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .3s;
+    }
+
+.ap-card:hover .ap-card-img img {
+    transform: scale(1.04);
+}
+/* fotoğraflar renkli, üzerine gelince hafif yakınlaşır */
+.ap-card-cat {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.ap-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px 16px;
+}
+
+    .ap-card-body h3 {
+        margin: 0;
+        font-family: var(--display);
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.35;
+        color: var(--ink);
+    }
+
+.ap-card-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.ap-card-price {
+    margin-top: auto;
+    padding-top: 10px;
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.ap-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.ap-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 1;
+    height: 38px;
+    padding: 0 12px;
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    background: var(--ink);
+    color: var(--paper) !important;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .ap-btn:hover {
+        background: transparent;
+        color: var(--ink) !important;
+    }
+
+    .ap-btn.is-ghost {
+        flex: 0 0 auto;
+        background: transparent;
+        color: var(--ink) !important;
+    }
+
+        .ap-btn.is-ghost:hover {
+            background: var(--ink);
+            color: var(--paper) !important;
+        }
+
+    .ap-btn.is-danger {
+        border-color: var(--down);
+        background: transparent;
+        color: var(--down) !important;
+    }
+
+        .ap-btn.is-danger:hover {
+            background: var(--down);
+            color: #fff !important;
+        }
+
+.ap-empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--muted);
+}
+
+    .ap-empty i {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 40px;
+        color: var(--line);
+    }
+
+/* ---------- Detay ---------- */
+.ap-gallery-main {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--wash);
+}
+
+    .ap-gallery-main img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.ap-thumbs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ap-thumb {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    background: var(--wash);
+    cursor: pointer;
+    padding: 0;
+}
+
+    .ap-thumb.is-active {
+        border-color: var(--ink);
+    }
+
+    .ap-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.ap-price-big {
+    font-family: var(--display);
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.ap-variants {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .ap-variants li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        font-size: 14px;
+    }
+
+        .ap-variants li.is-off {
+            border-style: dashed;
+            color: var(--muted);
+        }
+
+    .ap-variants b {
+        font-family: var(--mono);
+        font-weight: 500;
+    }
+
+/* Satış çubukları (son 6 ay) */
+.ap-bars {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    align-items: end;
+    height: 130px;
+}
+
+.ap-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+    .ap-bar .fill {
+        width: 100%;
+        min-height: 3px;
+        border-radius: 6px 6px 0 0;
+        background: var(--c1);
+        transition: height .5s ease;
+    }
+
+    .ap-bar span {
+        font-size: 12px;
+        color: var(--muted);
+    }
+
+    .ap-bar b {
+        font-family: var(--mono);
+        font-size: 13px;
+        color: var(--ink);
+    }
+
+/* ---------- Formlar ---------- */
+.ap-form-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 1099px) {
+    .ap-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.ap-field {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+    .ap-field label {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink);
+    }
+
+    .ap-field input[type=text], .ap-field input[type=number], .ap-field select, .ap-field textarea {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--card);
+        color: var(--ink);
+        font: inherit;
+        font-size: 14.5px;
+    }
+
+    .ap-field textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+        .ap-field input:focus, .ap-field select:focus, .ap-field textarea:focus {
+            outline: none;
+            border-color: var(--ink);
+        }
+
+    .ap-field .hint {
+        font-size: 12.5px;
+        color: var(--muted);
+    }
+
+/* Görsel seçici */
+.ap-drop {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1.5px dashed var(--ink);
+    border-radius: 14px;
+    background: var(--wash);
+    cursor: pointer;
+}
+
+    .ap-drop input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .ap-drop .placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--muted);
+    }
+
+        .ap-drop .placeholder i {
+            font-size: 28px;
+            color: var(--c1);
+        }
+
+    .ap-drop img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .ap-drop.has-image .placeholder {
+        display: none;
+    }
+
+.ap-drops {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+    .ap-drops .is-main {
+        grid-column: 1 / -1;
+    }

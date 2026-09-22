@@ -14,32 +14,27 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
 
     public class UserController(IMediator _mediator) : Controller
     {
-        public async Task<IActionResult> Index(string search, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? search, string? role, int page = 1, int pageSize = 12)
         {
             ViewData["CurrentSearch"] = search;
+            ViewData["CurrentRole"] = role;
 
-            // Sistemdeki kullanıcıları çekiyoruz
-            var users = await _mediator.Send(new GetUsersQuery());
+            var result = await _mediator.Send(new GetAdminUsersQuery(search, role));
 
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                // StringComparison.OrdinalIgnoreCase ile büyük/küçük harf duyarlılığını ortadan kaldırıyoruz
-                users = users.Where(u =>
-                    (u.FullName != null && u.FullName.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
-                    (u.Email != null && u.Email.Contains(search, StringComparison.OrdinalIgnoreCase))
-                ).ToList();
-            }
-
-            var values = new PagedList<GetUsersQueryResult>(users.AsQueryable(), page, pageSize);
+            // Sayfalama süzülmüş liste üzerinde
+            ViewData["Summary"] = result;
+            var values = new PagedList<AdminUserListItem>(result.Users.AsQueryable(), page, pageSize);
 
             return View(values);
         }
 
         public async Task<IActionResult> GetUserById(Guid id)
         {
-            var user = await _mediator.Send(new GetUserByIdQuery(id));
-            return View(user);
+            var user = await _mediator.Send(new GetAdminUserDetailQuery(id));
+            if (user is null)
+                return NotFound();
 
+            return View(user);
         }
 
         public async Task<IActionResult> RemoveUser(Guid id)

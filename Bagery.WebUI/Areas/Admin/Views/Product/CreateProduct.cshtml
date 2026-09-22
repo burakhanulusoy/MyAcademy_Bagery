@@ -1,107 +1,128 @@
 ﻿@model CreateProductCommand
 @{
-    ViewData["Title"] = "CreateProduct";
+    ViewData["Title"] = "Yeni Ürün";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<link href="~/css/bagery-admin-products.css" rel="stylesheet">
+
 <div class="page-content-wrapper">
     <div class="page-content">
+        <div class="bd">
 
-        <div class="card">
-            <div class="card-header">
-                <h6 class="mb-0">Yeni Ürün Ekle</h6>
-            </div>
-            <div class="card-body">
-                <form enctype="multipart/form-data" method="post" id="createItemForm">
+            <header class="bd-head">
+                <div>
+                    <p class="bd-eyebrow">Site Yönetimi</p>
+                    <h1 class="bd-title">Yeni ürün ekle</h1>
+                    <p class="bd-sub">Soldaki bilgileri doldur, sağdan görselleri seç.</p>
+                </div>
+                <a href="/Admin/Product/Index" class="ap-btn is-ghost" style="height: 44px"><i class='bx bx-arrow-back'></i> Ürünler</a>
+            </header>
 
-                    <div class="mb-3">
-                        <label class="form-label">Ürün Adı</label>
-                        <input class="form-control" type="text" placeholder="Ürün adı giriniz..." asp-for="ProductName" />
-                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="ProductName"></span>
+            <form enctype="multipart/form-data" method="post" id="productForm">
+                <div class="ap-form-grid">
+
+                    <div class="bd-card">
+                        <div class="ap-field">
+                            <label asp-for="ProductName">Ürün adı</label>
+                            <input type="text" asp-for="ProductName" placeholder="Ör. San Sebastian Cheesecake" />
+                            <span class="badge bg-danger text-wrap text-start p-2" asp-validation-for="ProductName"></span>
+                        </div>
+
+                        <div class="ap-field">
+                            <label asp-for="CategoryId">Kategori</label>
+                            <select asp-for="CategoryId" asp-items="@ViewBag.Categories" required>
+                                <option value="">Kategori seçiniz</option>
+                            </select>
+                            <span class="badge bg-danger text-wrap text-start p-2" asp-validation-for="CategoryId"></span>
+                        </div>
+
+                        <div class="ap-field">
+                            <label asp-for="Price">Fiyat (₺)</label>
+                            <input type="number" step="0.01" min="0" asp-for="Price" placeholder="0,00" />
+                            <span class="hint">Seçenek farkları ürün seçeneklerinde ayrıca tanımlanır.</span>
+                            <span class="badge bg-danger text-wrap text-start p-2" asp-validation-for="Price"></span>
+                        </div>
+
+                        <div class="ap-field">
+                            <label asp-for="Description">Ürün açıklaması</label>
+                            <textarea asp-for="Description" rows="4" placeholder="Müşterinin ürün sayfasında göreceği açıklama..."></textarea>
+                            <span class="badge bg-danger text-wrap text-start p-2" asp-validation-for="Description"></span>
+                        </div>
+
+                        <div class="ap-field">
+                            <label asp-for="PreperationDescription">Hazırlanış açıklaması</label>
+                            <textarea asp-for="PreperationDescription" rows="4" placeholder="Ürün sayfasındaki 'Ürün Hazırlanışı' sekmesinde görünür..."></textarea>
+                            <span class="badge bg-danger text-wrap text-start p-2" asp-validation-for="PreperationDescription"></span>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Ürün Açıklaması</label>
-                        <textarea class="form-control" placeholder="Ürün hakkında açıklama yazınız..." asp-for="Description" rows="4"></textarea>
-                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Description"></span>
-                    </div>
+                    <aside class="bd-card">
+                        <h2 class="bd-card-title" style="margin-bottom: 14px">Görseller</h2>
 
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fadeIn animated bx bx-duplicate"></i> Kategori Seçiniz</label>
-                        <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-control" required>
-                            <option value="">Kategori Seçiniz</option>
-                        </select>
-                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="CategoryId"></span>
-                    </div>
+                        <div class="ap-drops">
+                            <div class="is-main">
+                                <label class="ap-drop">
+                                    <img data-preview alt="" hidden>
+                                    <span class="placeholder"><i class='bx bx-image-add'></i> Ana görsel</span>
+                                    <input type="file" accept="image/*" asp-for="mainFile" />
+                                </label>
+                                <span class="badge bg-danger text-wrap text-start p-2" asp-validation-for="mainFile"></span>
+                            </div>
+                            <div>
+                                <label class="ap-drop">
+                                    <img data-preview alt="" hidden>
+                                    <span class="placeholder"><i class='bx bx-image-add'></i> 1. görsel</span>
+                                    <input type="file" accept="image/*" asp-for="File1" />
+                                </label>
+                            </div>
+                            <div>
+                                <label class="ap-drop">
+                                    <img data-preview alt="" hidden>
+                                    <span class="placeholder"><i class='bx bx-image-add'></i> 2. görsel</span>
+                                    <input type="file" accept="image/*" asp-for="File2" />
+                                </label>
+                            </div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Ürün Fiyatı</label>
-                        <input class="form-control" type="number" step="0.01" placeholder="Fiyat giriniz..." asp-for="Price" />
-                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="Price"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fadeIn animated bx bx-export"></i> Ana Görseli Seçin</label>
-                        <input class="form-control" type="file" accept="image/*" asp-for="mainFile" />
-                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="mainFile"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fadeIn animated bx bx-export"></i> 1. Görseli Seçin</label>
-                        <input class="form-control" type="file" accept="image/*" asp-for="File1" />
-                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File1"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label"><i class="fadeIn animated bx bx-export"></i> 2. Görseli Seçin</label>
-                        <input class="form-control" type="file" accept="image/*" asp-for="File2" />
-                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="File2"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Hazırlanış Açıklaması</label>
-                        <textarea class="form-control" placeholder="Ürünün hazırlanış detaylarını yazınız..." asp-for="PreperationDescription" rows="4"></textarea>
-                        <span class="badge bg-danger text-wrap text-start mt-1 p-2" asp-validation-for="PreperationDescription"></span>
-                    </div>
-
-                    <div class="d-flex gap-3 mt-4">
-                        <button type="button" onclick="confirmCreate()" class="btn btn-info text-white px-5">
-                            <i class="fadeIn animated bx bx-save"></i> Kaydet
+                        <button type="button" onclick="confirmSave()" class="ap-btn" style="width: 100%; height: 46px; margin-top: 18px">
+                            <i class='bx bx-save'></i> Ürünü kaydet
                         </button>
-                        <a href="/Admin/Product/Index" class="btn btn-secondary px-5">
-                            <i class="fadeIn animated bx bx-x"></i> İptal
-                        </a>
-                    </div>
+                        <a href="/Admin/Product/Index" class="ap-btn is-ghost" style="width: 100%; height: 46px; margin-top: 10px">İptal</a>
+                    </aside>
+                </div>
+            </form>
 
-                </form>
-            </div>
         </div>
-
     </div>
 </div>
 
 <script>
-    function confirmCreate() {
-        var form = document.getElementById("createItemForm");
+    // Görsel seçilince anında önizleme
+    document.querySelectorAll('.ap-drop input').forEach(function (input) {
+        input.addEventListener('change', function () {
+            const file = input.files[0];
+            if (!file) return;
+            const drop = input.closest('.ap-drop');
+            const preview = drop.querySelector('[data-preview]');
+            preview.src = URL.createObjectURL(file);
+            preview.hidden = false;
+            drop.classList.add('has-image');
+        });
+    });
 
-        if (form.checkValidity()) {
-            Swal.fire({
-                title: "Kaydetmek istediğinize emin misiniz?",
-                text: "Yeni öğe sistemimize eklenecektir.",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#28a745",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Evet, Ekle!",
-                cancelButtonText: "İptal"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Kullanıcı onay verirse formu gönder
-                    form.submit();
-                }
-            });
-        } else {
-            form.reportValidity();
-        }
+    function confirmSave() {
+        const form = document.getElementById('productForm');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+
+        Swal.fire({
+            title: 'Ürün kaydedilsin mi?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Evet, kaydet',
+            cancelButtonText: 'İptal'
+        }).then((result) => { if (result.isConfirmed) form.submit(); });
     }
 </script>

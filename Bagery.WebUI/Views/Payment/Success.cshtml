@@ -5,6 +5,76 @@
     ViewData["Title"] = "Sipariş Durumu";
     Layout = "~/Views/Shared/_WebUILayout.cshtml";
 }
+@functions {
+    // ---------- Pixel motokurye sprite'ı: her harf bir renk, '.' boş ----------
+    static readonly string[] Courier =
+    {
+        ".............................KKKKK..................",
+        "............................KAAAAAKKKKK.............",
+        "............................KAAAAAKLLLLK............",
+        ".KKKKKKKKKKKKK.............KHHHHHHHLLLLK............",
+        "KDDDDDDDDDDDDDK...........KHHHHHVVVVLLLK............",
+        "KDDDDDDDDDDDDDK...........KHHHHHVWWVLLLK............",
+        "KAAAAAAAAAAAAAK...........KHHHHHVVVVLLLK............",
+        "KAAWWWWWWWWWAAK............KHHHHVVVVLLLK............",
+        "KAAWWWWWWWWWAAK..........KKKKHHHHHGGGGGK............",
+        "KAAWWWWWWWWWAAK.........KJJJJJHHHGGGGGGK............",
+        "KAAWWWWWWWWWAAK........KJJJJJJJJJGGGSSKKKK..........",
+        "KAAWWWWWWWWWAAKKKKKKKKKKJJJJJJJJJKCCSSYYYYK.........",
+        "KAAWWWWWWWWWAAGGGGGGGGGGJJJJJJKKKKCCSSYYYYK.........",
+        "KAAAAAAAAAAAAAGGGGGGGGGJJJJJJK...KCCSSYYYYK.........",
+        "KAAAAAAAAAAAAAGGGGGGGGJJJJJJJK...KCCSSYYYYK.........",
+        "KAAAAAAAAAAAGGGGKKKKKKJJJJJJJK...KCCSSKKKK..........",
+        ".KKCCCCCCCCCGGGGCCCCCCJJJJJJK....KCCSSK.............",
+        "..KAACCCCCCCCCCCCCCCCJJJJJJJKK...KCCSSK.............",
+        "..KAACCCCCCCCCCCCCCCCCKKPPPPPPK..KCCSSK.............",
+        "..KAACCCCCCCCCCCCCCCCCKKPPPPPPPKKKCCSSKKKKKKK.......",
+        "...KCCCCCCCCCCCCCCCCCCKKKPPPPPPPPCCCCCCCCCCCCK......",
+        "...KSSSSSSSSSSSSSSSSSSSSSSSSPGGGGGGCCCCCCCCCCK......",
+        "...KSSSSSSSSSSSSSSSSSSSSSSSSSGGGGGGCCCCCCCCCCK......",
+        "...KSSSSSSSSSSSSSSSSSSSSSSSSSGGGGGGCCCCCCCCCCK......",
+        "....KTTRRRRRRRTTKKKKKKKKKKKKKKKKKKKTTRRRRRRRTTK.....",
+        "....KTTRRRRRRRTTK.................KTTRRRRRRRTTK.....",
+        "....KTTRRRRRRRTTK.................KTTRRRRRRRTTK.....",
+        ".....KTTRRRRRTTK...................KTTRRRRRTTK......",
+        ".....KTTTRRRTTTK...................KTTTRRRTTTK......",
+        "......KTTTTTTTK.....................KTTTTTTTK.......",
+        ".......KKTTTKK.......................KKTTTKK........",
+        ".........KKK...........................KKK.........."
+    };
+
+    // Şehir silüeti: (x, y, genişlik, yükseklik)
+    static readonly (int X, int Y, int W, int H)[] Buildings =
+    {
+        (0, 44, 14, 26), (16, 38, 10, 32), (28, 48, 18, 22), (48, 34, 12, 36), (62, 46, 16, 24),
+        (80, 40, 10, 30), (92, 50, 20, 20), (114, 36, 12, 34), (128, 46, 14, 24), (144, 42, 16, 28)
+    };
+
+    static readonly (int X, int Y)[] Stars =
+    {
+        (8, 10), (26, 6), (44, 14), (70, 8), (96, 12), (118, 6), (150, 16), (60, 20), (136, 24)
+    };
+
+    // Haritayı yan yana aynı renkteki karelerden tek dikdörtgen yaparak çizer (daha az etiket)
+    static IEnumerable<(int X, int Y, int Width, char Color)> Runs(string[] map)
+    {
+        for (var y = 0; y < map.Length; y++)
+        {
+            var row = map[y];
+            var x = 0;
+            while (x < row.Length)
+            {
+                var color = row[x];
+                var start = x;
+                while (x < row.Length && row[x] == color) x++;
+                if (color != '.') yield return (start, y, x - start, color);
+            }
+        }
+    }
+}
+
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<link href="~/css/bagery-pixel-moto.css" rel="stylesheet">
 
 <section class="page-title centred"
          style="background-image: url('@Url.Content("~/Bagery Pack/Bagery/assets/images/background/shop detail arka plan.png")');">
@@ -35,163 +105,146 @@
         }
         else if (Model.Status == OrderStatus.Paid)
         {
-            // Tahmini varış: ödeme saati + 15-20 dk (sabit tahmin)
-            // DEĞİŞTİ: teslim süremiz 30-40 dakika
+            // Tahmini varış: ödeme saati + 30-40 dk
             var etaFrom = (Model.PaidAt ?? Model.CreatedAt).ToLocalTime().AddMinutes(30);
             var etaTo = etaFrom.AddMinutes(10);
 
-            // YENİ: başlık ve açıklama gerçek teslimat durumuna göre
-            var (heading, subText) = Model.DeliveryStatus switch
+            // Başlık, açıklama ve bilgi metni gerçek teslimat durumuna göre
+            var (heading, subText, noteText) = Model.DeliveryStatus switch
             {
-                DeliveryStatus.OnTheWay => ("Siparişiniz yola çıktı",
-                $"Kuryemiz {Model.DispatchedAt?.ToLocalTime().ToString("HH:mm")} itibarıyla yolda, birazdan kapınızda."),
-                DeliveryStatus.Delivered => ("Siparişiniz teslim edildi",
-                "Afiyet olsun! Bizi tercih ettiğiniz için teşekkürler."),
-                _ => ("Siparişiniz alındı",
-                "Siparişiniz hazırlanıyor. Yaklaşık 30–40 dakika içinde kapınızda.")
+                DeliveryStatus.OnTheWay => (
+                "Siparişiniz yola çıktı",
+                $"Kuryemiz {Model.DispatchedAt?.ToLocalTime().ToString("HH:mm")} itibarıyla yolda, birazdan kapınızda.",
+                "Teslimat durumunu panelinizdeki Siparişlerim sayfasından takip edebilirsiniz."),
+                DeliveryStatus.Delivered => (
+                "Siparişiniz teslim edildi",
+                "Afiyet olsun! Bizi tercih ettiğiniz için teşekkürler.",
+                "Fişinizi ve faturanızı panelinizdeki Siparişlerim sayfasından görebilirsiniz."),
+                _ => (
+                "Siparişiniz alındı",
+                "Siparişiniz hazırlanıyor. Yaklaşık 30–40 dakika içinde kapınızda.",
+                "Detayını ve teslimat durumunu panelinizdeki Siparişlerim sayfasından takip edebilirsiniz.")
             };
 
             <div class="bg-hero">
 
-                <div class="bg-moto">
-                    <svg class="bg-moto-svg" viewBox="0 0 640 300" role="img" aria-label="Motokurye kutudan fırlayan cupcake'i havada yakalıyor">
-                        <defs>
-                            @* Far ışığı: öne doğru soluklaşır *@
-                            <linearGradient id="bgMotoBeam" x1="0" x2="1">
-                                <stop offset="0" stop-color="#ffe7a8" stop-opacity=".55" />
-                                <stop offset="1" stop-color="#ffe7a8" stop-opacity="0" />
-                            </linearGradient>
-                        </defs>
+                @* ---------- PIXEL MOTOKURYE SAHNESİ ---------- *@
+                <div class="px-scene">
+                    <svg class="px-scene-svg" viewBox="0 0 160 90" shape-rendering="crispEdges"
+                         role="img" aria-label="Pixel motokurye siparişinizi getiriyor">
 
-                        @* Gece gökyüzü, yıldızlar, ay *@
-                        <rect class="m-sky" width="640" height="300" />
-                        <g class="m-stars bg-moto-twinkle">
-                            <circle cx="40" cy="30" r="1.5" /><circle cx="120" cy="60" r="1" /><circle cx="210" cy="24" r="1.5" /><circle cx="350" cy="18" r="1" />
-                            <circle cx="480" cy="40" r="1" /><circle cx="560" cy="22" r="1.5" /><circle cx="600" cy="80" r="1" />
-                        </g>
-                        <circle class="m-moon" cx="540" cy="70" r="26" />
+                        <rect class="s-sky" width="160" height="90" />
 
-                        @* Şehir silüeti: iki kopya yan yana, 640 birim kayınca başa döner *@
-                        <g class="bg-moto-city">
-                            <g class="m-far">
-                                <rect x="0" y="130" width="50" height="130" /><rect x="56" y="100" width="40" height="160" /><rect x="102" y="140" width="60" height="120" /><rect x="168" y="110" width="36" height="150" />
-                                <rect x="210" y="150" width="64" height="110" /><rect x="280" y="96" width="44" height="164" /><rect x="330" y="128" width="54" height="132" /><rect x="390" y="112" width="38" height="148" />
-                                <rect x="434" y="146" width="62" height="114" /><rect x="502" y="104" width="46" height="156" /><rect x="554" y="132" width="50" height="128" /><rect x="610" y="116" width="40" height="144" />
-                                <rect x="640" y="130" width="50" height="130" /><rect x="696" y="100" width="40" height="160" /><rect x="742" y="140" width="60" height="120" /><rect x="808" y="110" width="36" height="150" />
-                                <rect x="850" y="150" width="64" height="110" /><rect x="920" y="96" width="44" height="164" /><rect x="970" y="128" width="54" height="132" /><rect x="1030" y="112" width="38" height="148" />
-                                <rect x="1074" y="146" width="62" height="114" /><rect x="1142" y="104" width="46" height="156" /><rect x="1194" y="132" width="50" height="128" /><rect x="1250" y="116" width="40" height="144" />
-                            </g>
-                            <rect class="m-window" x="64" y="112" width="6" height="8" /><rect class="m-window" x="80" y="130" width="6" height="8" /><rect class="m-window" x="64" y="150" width="6" height="8" />
-                            <rect class="m-window" x="176" y="124" width="6" height="8" /><rect class="m-window" x="190" y="144" width="6" height="8" />
-                            <rect class="m-window" x="290" y="110" width="6" height="8" /><rect class="m-window" x="306" y="128" width="6" height="8" /><rect class="m-window" x="290" y="148" width="6" height="8" />
-                            <rect class="m-window" x="398" y="126" width="6" height="8" /><rect class="m-window" x="412" y="160" width="6" height="8" />
-                            <rect class="m-window" x="512" y="118" width="6" height="8" /><rect class="m-window" x="528" y="138" width="6" height="8" /><rect class="m-window" x="512" y="158" width="6" height="8" />
-                            <rect class="m-window" x="618" y="130" width="6" height="8" />
-                            <rect class="m-window" x="704" y="112" width="6" height="8" /><rect class="m-window" x="720" y="130" width="6" height="8" /><rect class="m-window" x="704" y="150" width="6" height="8" />
-                            <rect class="m-window" x="816" y="124" width="6" height="8" /><rect class="m-window" x="830" y="144" width="6" height="8" />
-                            <rect class="m-window" x="930" y="110" width="6" height="8" /><rect class="m-window" x="946" y="128" width="6" height="8" /><rect class="m-window" x="930" y="148" width="6" height="8" />
-                            <rect class="m-window" x="1038" y="126" width="6" height="8" /><rect class="m-window" x="1052" y="160" width="6" height="8" />
-                            <rect class="m-window" x="1152" y="118" width="6" height="8" /><rect class="m-window" x="1168" y="138" width="6" height="8" /><rect class="m-window" x="1152" y="158" width="6" height="8" />
-                            <rect class="m-window" x="1258" y="130" width="6" height="8" />
+                        @* Yıldızlar *@
+                        <g class="px-twinkle">
+                            @foreach (var star in Stars)
+                            {
+                                <rect class="s-star" x="@star.X" y="@star.Y" width="1" height="1" />
+                            }
                         </g>
 
-                        @* Kuryenin arkasındaki büyük daire *@
-                        <circle class="m-halo" cx="320" cy="170" r="118" />
+                        @* Ay *@
+                        <rect class="s-moon" x="127" y="8" width="10" height="10" />
+                        <rect class="s-moon" x="125" y="10" width="2" height="6" />
+                        <rect class="s-moon" x="137" y="10" width="2" height="6" />
+                        <rect class="s-crater" x="129" y="10" width="2" height="2" />
+                        <rect class="s-crater" x="132" y="14" width="3" height="2" />
+
+                        @* Şehir: iki kopya yan yana, 160 birim kayınca başa döner (kesintisiz) *@
+                        <g class="px-city">
+                            @for (var copy = 0; copy < 2; copy++)
+                            {
+                                var offset = copy * 160;
+                                foreach (var b in Buildings)
+                                {
+                                    <rect class="s-building" x="@(b.X + offset)" y="@b.Y" width="@b.W" height="@b.H" />
+
+                                    @* Yanan pencereler *@
+                                    for (var wy = b.Y + 3; wy < b.Y + b.H - 3; wy += 6)
+                                    {
+                                        for (var wx = b.X + offset + 2; wx < b.X + offset + b.W - 2; wx += 5)
+                                        {
+                                            <rect class="s-window @((wx + wy) % 3 == 0 ? "is-warm" : "")" x="@wx" y="@wy" width="2" height="2" />
+                                        }
+                                    }
+                                }
+                            }
+                        </g>
 
                         @* Yol *@
-                        <rect class="m-curb" x="0" y="240" width="640" height="6" />
-                        <rect class="m-road" x="0" y="246" width="640" height="54" />
-                        <g class="m-dash bg-moto-dashes">
-                            <rect x="0" y="270" width="40" height="4" rx="2" /><rect x="80" y="270" width="40" height="4" rx="2" /><rect x="160" y="270" width="40" height="4" rx="2" />
-                            <rect x="240" y="270" width="40" height="4" rx="2" /><rect x="320" y="270" width="40" height="4" rx="2" /><rect x="400" y="270" width="40" height="4" rx="2" />
-                            <rect x="480" y="270" width="40" height="4" rx="2" /><rect x="560" y="270" width="40" height="4" rx="2" /><rect x="640" y="270" width="40" height="4" rx="2" />
+                        <rect class="s-curb" x="0" y="62" width="160" height="2" />
+                        <rect class="s-road" x="0" y="64" width="160" height="26" />
+                        <g class="px-dashes">
+                            @for (var x = 0; x <= 176; x += 16)
+                            {
+                                <rect class="s-dash" x="@x" y="82" width="8" height="2" />
+                            }
                         </g>
 
                         @* Hız çizgileri *@
-                        <g class="m-speed bg-moto-speed">
-                            <path d="M90 150 H170" /><path d="M60 176 H150" /><path d="M110 202 H180" /><path d="M130 124 H190" />
+                        <g class="px-speed">
+                            <rect class="s-speed" x="28" y="56" width="14" height="1" />
+                            <rect class="s-speed" x="20" y="64" width="10" height="1" />
+                            <rect class="s-speed" x="34" y="72" width="12" height="1" />
                         </g>
 
-                        @* Kurye: drive soldan getirir, transform büyütür/konumlar, bob titretir, wobble panikte yalpalatır *@
-                        <g class="bg-moto-drive">
-                            <g transform="translate(190 44) scale(1.25)">
-                                <ellipse class="m-shadow" cx="150" cy="188" rx="120" ry="6" />
-                                <g class="bg-moto-bob">
-                                    <g class="m-wobble">
-                                        <path class="bg-moto-beam" fill="url(#bgMotoBeam)" d="M234 96 L330 70 L330 140 L234 108 Z" />
-                                        <rect class="m-metal" x="36" y="158" width="46" height="9" rx="4.5" />
+                        @* Egzoz dumanı *@
+                        <g class="px-smoke">
+                            <rect class="s-smoke" x="50" y="74" width="2" height="2" />
+                            <rect class="s-smoke" x="46" y="72" width="3" height="3" />
+                            <rect class="s-smoke" x="41" y="70" width="4" height="4" />
+                        </g>
 
-                                        @* Tekerlekler *@
-                                        <g class="bg-moto-wheel"><circle class="m-tire" cx="70" cy="160" r="26" /><circle class="m-rim" cx="70" cy="160" r="15" /><path class="m-spokes" d="M70 147 V173 M57 160 H83" /><circle class="m-hub" cx="70" cy="160" r="5" /></g>
-                                        <g class="bg-moto-wheel"><circle class="m-tire" cx="232" cy="160" r="26" /><circle class="m-rim" cx="232" cy="160" r="15" /><path class="m-spokes" d="M232 147 V173 M219 160 H245" /><circle class="m-hub" cx="232" cy="160" r="5" /></g>
+                        @* Kurye: dış grup soldan getirir, iç grup kare kare titretir *@
+                        <g class="px-drive">
+                            <g class="px-bob">
+                                <g transform="translate(54 47)">
+                                    @foreach (var run in Runs(Courier))
+                                    {
+                                        <rect class="p-@run.Color" x="@run.X" y="@run.Y" width="@run.Width" height="1" />
+                                    }
+                                </g>
 
-                                        @* Scooter gövdesi *@
-                                        <path class="m-body" d="M34 150 C30 128 44 114 66 110 L144 106 C156 106 162 114 162 126 L164 150 C130 156 100 140 84 152 Z" />
-                                        <path class="m-body-shade" d="M34 150 C33 140 36 132 42 126 C70 136 110 132 162 136 L164 150 C130 156 100 140 84 152 Z" />
-                                        <path class="m-stripe" d="M52 124 L150 120" />
-                                        <rect class="m-tail" x="30" y="124" width="8" height="12" rx="3" />
-                                        <path class="m-seat" d="M78 108 C80 98 96 96 118 96 L150 98 C156 99 158 104 156 108 Z" />
-                                        <rect class="m-body-shade" x="158" y="144" width="50" height="9" rx="4" />
-                                        <path class="m-body" d="M200 152 C200 124 206 100 214 84 L226 86 C230 104 236 126 240 150 Z" />
-                                        <path class="m-body-shade" d="M222 88 C228 106 234 128 238 150 L226 150 C224 128 220 106 216 90 Z" />
-                                        <path class="m-body" d="M206 150 C210 136 222 130 236 132 C248 134 256 142 258 150 Z" />
-                                        <ellipse class="m-lamp" cx="232" cy="100" rx="6" ry="8" />
-                                        <path class="m-glass" d="M214 84 L224 56 L232 58 L226 86 Z" />
-                                        <path class="m-bar" d="M214 80 L198 72" />
-
-                                        @* Zıplayan cupcake: kutunun içinde gizli bekler.
-                                           Kutudan ÖNCE çiziliyor ki yükselirken kutunun arkasından çıksın. *@
-                                        <g transform="translate(62 46)">
-                                            <g class="m-cupcake">
-                                                <path class="m-cup-wrap" d="M-11 0 H11 L8 14 H-8 Z" />
-                                                <path class="m-cup-line" d="M-4 1 L-3 13 M4 1 L3 13" />
-                                                <path class="m-cup-cream" d="M-13 1 C-16 -8 -8 -12 -4 -9 C-3 -16 7 -16 7 -9 C12 -12 18 -6 13 1 Z" />
-                                                <path class="m-cup-pink" d="M-7 -4 C-3 -7 3 -7 7 -4" />
-                                                <circle class="m-cup-cherry" cx="1" cy="-15" r="3.5" />
-                                            </g>
-                                        </g>
-
-                                        @* Teslimat kutusu + kapak + Bagery logosu *@
-                                        <rect class="m-box" x="24" y="40" width="76" height="64" rx="10" />
-                                        <path class="m-box-shade" d="M84 40 H90 A10 10 0 0 1 100 50 V94 A10 10 0 0 1 90 104 H84 Z" />
-                                        <g class="m-lid"><rect class="m-box-shade" x="24" y="40" width="76" height="12" rx="6" /></g>
-                                        <g class="m-pop"><path d="M62 30 V22" /><path d="M48 34 L42 28" /><path d="M76 34 L82 28" /></g>
-                                        <g class="m-logo" transform="translate(44 60)">
-                                            <path d="M6 18 h24 l-4 14 h-16 z" /><path d="M3 18 c-3 -9 5 -14 11 -11 c2 -7 12 -7 14 0 c6 -3 14 2 11 11 z" /><circle cx="18" cy="3" r="3" />
-                                        </g>
-
-                                        @* Kurye *@
-                                        <path class="m-pants" d="M112 104 L166 106 L176 142" />
-                                        <path class="m-boot" d="M168 140 H192 C196 140 198 144 196 148 H168 Z" />
-                                        <path class="m-jacket" d="M104 110 C100 84 116 60 146 54 L166 62 C168 88 158 106 140 116 Z" />
-                                        <path class="m-jacket-shade" d="M104 110 C101 90 108 72 122 62 C113 82 113 100 121 117 Z" />
-                                        <path class="m-collar" d="M144 54 L166 62 L160 70 Z" />
-                                        <path class="m-arm" d="M156 68 L182 88 L204 74" />
-                                        <circle class="m-glove" cx="206" cy="73" r="7" />
-                                        @* Yakalayan kol: normalde gizli, panikte kaskın arkasından yukarı uzanır *@
-                                        <g class="m-reach"><path class="m-arm" d="M150 64 L128 50 L118 24" /><circle class="m-glove" cx="118" cy="20" r="7" /></g>
-                                        <circle class="m-helmet" cx="156" cy="34" r="24" />
-                                        <path class="m-helmet-shade" d="M134 44 A24 24 0 0 0 168 56 C150 56 138 52 134 44 Z" />
-                                        <path class="m-visor" d="M158 24 H176 A6 6 0 0 1 180 30 V38 A6 6 0 0 1 174 44 H160 Z" />
-                                        <path class="m-visor-shine" d="M164 28 L172 28" />
-                                        <path class="m-helmet-stripe" d="M136 26 A24 24 0 0 1 166 12" />
-                                        @* Vizördeki gözler *@
-                                        <g class="m-eyes"><ellipse class="m-eye" cx="166" cy="35" rx="2.2" ry="3" /><ellipse class="m-eye" cx="173" cy="35" rx="2.2" ry="3" /></g>
-                                        @* Ünlem + ter damlaları *@
-                                        <g class="m-alert"><rect x="152" y="-22" width="8" height="16" rx="4" /><circle cx="156" cy="0" r="4" /></g>
-                                        <g class="m-sweat"><path d="M130 22 C127 27 127 30 130 30 C133 30 133 27 130 22 Z" /><path d="M124 34 C121 39 121 42 124 42 C127 42 127 39 124 34 Z" /></g>
-                                    </g>
+                                @* Jantlar: iki kare sırayla görünür, tekerlek dönüyormuş gibi *@
+                                <g class="px-spokes-a">
+                                    @foreach (var cx in new[] { 64, 94 })
+                                    {
+                                        <rect class="s-spoke" x="@(cx - 3)" y="72" width="7" height="1" />
+                                        <rect class="s-spoke" x="@cx" y="69" width="1" height="7" />
+                                    }
+                                </g>
+                                <g class="px-spokes-b">
+                                    @foreach (var cx in new[] { 64, 94 })
+                                    {
+                                        <rect class="s-spoke" x="@(cx - 2)" y="70" width="1" height="1" />
+                                        <rect class="s-spoke" x="@(cx - 1)" y="71" width="1" height="1" />
+                                        <rect class="s-spoke" x="@cx" y="72" width="1" height="1" />
+                                        <rect class="s-spoke" x="@(cx + 1)" y="73" width="1" height="1" />
+                                        <rect class="s-spoke" x="@(cx + 2)" y="74" width="1" height="1" />
+                                        <rect class="s-spoke" x="@(cx + 2)" y="70" width="1" height="1" />
+                                        <rect class="s-spoke" x="@(cx + 1)" y="71" width="1" height="1" />
+                                        <rect class="s-spoke" x="@(cx - 1)" y="73" width="1" height="1" />
+                                        <rect class="s-spoke" x="@(cx - 2)" y="74" width="1" height="1" />
+                                    }
                                 </g>
                             </g>
                         </g>
                     </svg>
 
-                    @* Sahnenin sol üstünde tahmini varış *@
-                    <div class="bg-moto-card">
-                        <span class="ico"><i class="fas fa-motorcycle" aria-hidden="true"></i></span>
+                    @* Sahnenin sol üstündeki kart *@
+                    <div class="px-eta">
+                        <span class="px-eta-icon"><i class="fas fa-motorcycle" aria-hidden="true"></i></span>
                         <div>
-                            <small>TAHMİNİ VARIŞ</small>
-                            <strong>@etaFrom.ToString("HH:mm") – @etaTo.ToString("HH:mm")</strong>
+                            @if (Model.DeliveryStatus == DeliveryStatus.Delivered && Model.DeliveredAt is DateTime deliveredAt)
+                            {
+                                <small>TESLİM EDİLDİ</small>
+                                <strong>@deliveredAt.ToLocalTime().ToString("HH:mm")</strong>
+                            }
+                            else
+                            {
+                                <small>TAHMİNİ VARIŞ</small>
+                                <strong>@etaFrom.ToString("HH:mm") – @etaTo.ToString("HH:mm")</strong>
+                            }
                         </div>
                     </div>
                 </div>
@@ -200,28 +253,41 @@
                 <h2>@heading</h2>
                 <p>@subText</p>
 
-                @* DEĞİŞTİ: adımlar gerçek teslimat durumundan *@
+                @* Adımlar gerçek teslimat durumundan *@
                 <ol class="bg-track" aria-label="Sipariş durumu">
-                    <li class="is-done"><span class="dot"><i class="fas fa-check" aria-hidden="true"></i></span>Ödeme alındı</li>
+                    <li class="is-done">
+                        <span class="dot"><i class="fas fa-check" aria-hidden="true"></i></span>Ödeme alındı
+                    </li>
                     <li class="@(Model.DeliveryStatus == DeliveryStatus.Waiting ? "is-current" : "is-done")">
-                        <span class="dot">@if (Model.DeliveryStatus != DeliveryStatus.Waiting) {
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    }
-</span>Hazırlanıyor
-                </li>
-                <li class="@(Model.DeliveryStatus == DeliveryStatus.OnTheWay ? "is-current" : Model.DeliveryStatus == DeliveryStatus.Delivered ? "is-done" : "")">
-                    <span class="dot">@if (Model.DeliveryStatus == DeliveryStatus.Delivered) {
-                    <i class="fas fa-check" aria-hidden="true"></i>
-                                        }
-</span>Yolda
-                </li>
-                <li class="@(Model.DeliveryStatus == DeliveryStatus.Delivered ? "is-done" : "")">
-                    <span class="dot">@if (Model.DeliveryStatus == DeliveryStatus.Delivered) {
-                    <i class="fas fa-check" aria-hidden="true"></i>
-                                        }
-</span>Teslim
-                </li>
-            </ol>
+                        <span class="dot">
+                            @if (Model.DeliveryStatus != DeliveryStatus.Waiting)
+                            {
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            }
+                        </span>Hazırlanıyor
+                    </li>
+                    <li class="@(Model.DeliveryStatus == DeliveryStatus.OnTheWay ? "is-current" : Model.DeliveryStatus == DeliveryStatus.Delivered ? "is-done" : "")">
+                        <span class="dot">
+                            @if (Model.DeliveryStatus == DeliveryStatus.Delivered)
+                            {
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            }
+                        </span>Yolda
+                    </li>
+                    <li class="@(Model.DeliveryStatus == DeliveryStatus.Delivered ? "is-done" : "")">
+                        <span class="dot">
+                            @if (Model.DeliveryStatus == DeliveryStatus.Delivered)
+                            {
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            }
+                        </span>Teslim
+                    </li>
+                </ol>
+
+                <p class="bg-track-note">
+                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                    @noteText
+                </p>
             </div>
         }
         else if (Model.Status == OrderStatus.Pending)
@@ -295,7 +361,9 @@
         <div class="bg-actions">
             @if (Model?.Status == OrderStatus.Paid)
             {
-                <a href="/Admin/MyOrders/Detail?orderNo=@Model.OrderNo" class="bg-btn">Siparişimi görüntüle</a>
+                @* Herkes kendi paneline: Admin, Writer ya da User *@
+                var panelArea = User.IsInRole("Admin") ? "Admin" : User.IsInRole("Writer") ? "Writer" : "User";
+                <a href="/@panelArea/MyOrders/Detail?orderNo=@Model.OrderNo" class="bg-btn">Siparişimi görüntüle</a>
             }
             @if (Model?.Status == OrderStatus.Pending)
             {

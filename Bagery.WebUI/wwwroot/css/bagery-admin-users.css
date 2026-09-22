@@ -1,0 +1,357 @@
+﻿/* =========================================================
+   Admin > Kullanıcılar
+   Renkler .bd değişkenlerinden (bagery-dashboard.css): koyu temaya uyar
+   ========================================================= */
+
+/* Sayı kartları */
+.au-stats {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1199px) {
+    .au-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575px) {
+    .au-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.au-stat {
+    --tone: var(--ink);
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--tone);
+    border-radius: 14px;
+    background: var(--card);
+}
+
+    .au-stat small {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    .au-stat strong {
+        display: block;
+        margin-top: 4px;
+        font-family: var(--display);
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--ink);
+    }
+
+/* Arama + rol süzme */
+.au-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.au-search {
+    position: relative;
+    flex: 1 1 260px;
+    max-width: 360px;
+}
+
+    .au-search i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 19px;
+        color: var(--muted);
+    }
+
+    .au-search input {
+        width: 100%;
+        height: 44px;
+        padding: 0 14px 0 42px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--card);
+        color: var(--ink);
+        font: inherit;
+        font-size: 14px;
+    }
+
+        .au-search input:focus {
+            outline: none;
+            border-color: var(--ink);
+        }
+
+.au-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.au-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--ink) !important;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .au-chip:hover {
+        border-color: var(--ink);
+    }
+
+    .au-chip.is-active {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--paper) !important;
+    }
+
+    .au-chip b {
+        font-family: var(--mono);
+        font-weight: 500;
+        opacity: .7;
+    }
+
+/* Kullanıcı hücresi */
+.au-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.au-avatar {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: var(--wash);
+}
+
+    .au-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.au-user strong {
+    display: block;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.au-user small {
+    display: block;
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+/* Rol etiketleri: renk yok, şekil var */
+.au-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    margin: 2px 4px 2px 0;
+    padding: 0 10px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+    .au-role.is-admin {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: var(--paper);
+    }
+
+    .au-role.is-writer {
+        border-color: var(--ink);
+        color: var(--ink);
+    }
+
+    .au-role.is-waiter {
+        border-style: dashed;
+        border-color: var(--ink);
+        color: var(--ink);
+    }
+
+    .au-role.is-user {
+        background: var(--wash);
+        border-color: var(--line);
+        color: var(--muted);
+    }
+
+    .au-role.is-none {
+        border-style: dashed;
+        color: var(--muted);
+    }
+
+.au-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--down);
+}
+
+.au-num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+}
+
+    .au-num small {
+        display: block;
+        color: var(--muted);
+    }
+
+/* Detay: siyah profil kartı */
+.au-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 22px;
+}
+
+.au-hero-avatar {
+    width: 92px;
+    height: 92px;
+    overflow: hidden;
+    border: 3px solid var(--paper);
+    border-radius: 50%;
+    background: var(--wash);
+}
+
+    .au-hero-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.au-hero h1 {
+    margin: 6px 0 8px;
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+.au-hero .au-role {
+    border-color: rgba(255, 255, 255, .5);
+    color: inherit;
+}
+
+    .au-hero .au-role.is-admin {
+        background: var(--paper);
+        border-color: var(--paper);
+        color: var(--ink);
+    }
+
+.au-hero-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 12px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, .72);
+}
+
+html.dark-theme .bd .au-hero-contact {
+    color: rgba(0, 0, 0, .6);
+}
+/* koyu temada kart açık renk olur */
+.au-hero-contact a {
+    color: inherit !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.au-list {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .au-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 10px;
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+        .au-list li:hover {
+            background: var(--wash);
+        }
+
+    .au-list .main {
+        min-width: 0;
+    }
+
+        .au-list .main strong {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--ink);
+        }
+
+        .au-list .main small {
+            color: var(--muted);
+        }
+
+    .au-list .side {
+        flex-shrink: 0;
+        text-align: right;
+        font-family: var(--mono);
+        font-size: 13px;
+    }
+
+.au-quote {
+    margin: 4px 0 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
+
+.au-social {
+    display: grid;
+    gap: 10px;
+}
+
+    .au-social a, .au-social span {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+    }
+
+    .au-social i {
+        font-size: 20px;
+    }

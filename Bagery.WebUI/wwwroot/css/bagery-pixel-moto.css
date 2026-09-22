@@ -1,0 +1,335 @@
+﻿/* =========================================================
+   Başarı ekranı: pixel-art motokurye sahnesi
+   Renkler sahneye ait, sitenin temasından bağımsız
+   ========================================================= */
+.px-scene {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #141c38;
+    box-shadow: 0 20px 50px rgba(20, 28, 56, .25);
+}
+
+.px-scene-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+}
+
+/* ---- sahne renkleri ---- */
+.s-sky {
+    fill: #141c38;
+}
+
+.s-star {
+    fill: #ffffff;
+}
+
+.s-moon {
+    fill: #f6d9cd;
+}
+
+.s-crater {
+    fill: #eec4b4;
+}
+
+.s-building {
+    fill: #23305c;
+}
+
+.s-window {
+    fill: #e3a087;
+}
+
+    .s-window.is-warm {
+        fill: #ffe7a8;
+    }
+
+.s-curb {
+    fill: #33447a;
+}
+
+.s-road {
+    fill: #101830;
+}
+
+.s-dash {
+    fill: #ffffff;
+}
+
+.s-speed {
+    fill: #e3a087;
+}
+
+.s-smoke {
+    fill: #6b7280;
+}
+
+.s-spoke {
+    fill: #0b0b0c;
+}
+
+/* ---- sprite renkleri (harita harfleri) ---- */
+.p-K {
+    fill: #0b0b0c;
+}
+/* kontur */
+.p-C {
+    fill: #f7f1ec;
+}
+/* gövde */
+.p-S {
+    fill: #d8cdc6;
+}
+/* gölge */
+.p-A {
+    fill: #e3a087;
+}
+/* kutu / şerit */
+.p-D {
+    fill: #cf7f62;
+}
+/* kutu kapağı */
+.p-W {
+    fill: #ffffff;
+}
+/* logo alanı */
+.p-H {
+    fill: #f7f1ec;
+}
+/* kask */
+.p-V {
+    fill: #1f2c52;
+}
+/* vizör */
+.p-L {
+    fill: #cfe0f5;
+}
+/* ön cam */
+.p-J {
+    fill: #d9876a;
+}
+/* mont */
+.p-P {
+    fill: #4a63a8;
+}
+/* pantolon */
+.p-G {
+    fill: #0f172e;
+}
+/* sele, eldiven, bot */
+.p-T {
+    fill: #131722;
+}
+/* lastik */
+.p-R {
+    fill: #c9d1e6;
+}
+/* jant */
+.p-Y {
+    fill: #ffe7a8;
+}
+/* far */
+
+/* ---- hareketler: hepsi steps() ile, piksel hissi ---- */
+.px-drive {
+    transform-box: view-box;
+    animation: px-drive-in 1s steps(10) both;
+}
+
+.px-bob {
+    animation: px-bob .4s steps(2) infinite alternate;
+}
+
+.px-city {
+    animation: px-city 26s linear infinite;
+}
+
+.px-dashes {
+    animation: px-dash .5s steps(4) infinite;
+}
+
+.px-twinkle {
+    animation: px-twinkle 2s steps(2) infinite alternate;
+}
+
+.px-speed rect {
+    animation: px-speed .8s steps(3) infinite;
+}
+
+    .px-speed rect:nth-child(2) {
+        animation-delay: .25s;
+    }
+
+    .px-speed rect:nth-child(3) {
+        animation-delay: .5s;
+    }
+
+.px-smoke rect {
+    animation: px-smoke 1s steps(3) infinite;
+}
+
+    .px-smoke rect:nth-child(2) {
+        animation-delay: .3s;
+    }
+
+    .px-smoke rect:nth-child(3) {
+        animation-delay: .6s;
+    }
+
+/* Jant: iki kare sırayla görünür -> tekerlek dönüyormuş gibi */
+.px-spokes-a {
+    animation: px-frame-a .24s steps(1) infinite;
+}
+
+.px-spokes-b {
+    animation: px-frame-b .24s steps(1) infinite;
+}
+
+@keyframes px-drive-in {
+    from {
+        transform: translateX(-90px);
+    }
+}
+
+@keyframes px-bob {
+    to {
+        transform: translateY(-1px);
+    }
+}
+
+@keyframes px-city {
+    to {
+        transform: translateX(-160px);
+    }
+}
+/* 160 = silüetin tekrar aralığı */
+@keyframes px-dash {
+    to {
+        transform: translateX(-16px);
+    }
+}
+/* 16 = çizgiler arası */
+@keyframes px-twinkle {
+    to {
+        opacity: .35;
+    }
+}
+
+@keyframes px-speed {
+    0% {
+        opacity: 0;
+        transform: translateX(6px);
+    }
+
+    30% {
+        opacity: .9;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+}
+
+@keyframes px-smoke {
+    0% {
+        opacity: .7;
+        transform: translate(0, 0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-8px, -4px);
+    }
+}
+
+@keyframes px-frame-a {
+    0%, 49% {
+        opacity: 1;
+    }
+
+    50%, 100% {
+        opacity: 0;
+    }
+}
+
+@keyframes px-frame-b {
+    0%, 49% {
+        opacity: 0;
+    }
+
+    50%, 100% {
+        opacity: 1;
+    }
+}
+
+/* ---- sahnenin üstündeki varış kartı (pixel çerçeve) ---- */
+.px-eta {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    color: #0b0b0c;
+    text-align: left;
+    /* köşeler çentikli: kenarlık yerine 4 yöne kaydırılmış gölge */
+    box-shadow: 0 -4px 0 0 #0b0b0c, 0 4px 0 0 #0b0b0c, -4px 0 0 0 #0b0b0c, 4px 0 0 0 #0b0b0c;
+}
+
+.px-eta-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    background: #e3a087;
+    color: #fff;
+    font-size: 20px;
+}
+
+.px-eta small {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    color: #6f6f6f;
+}
+
+.px-eta strong {
+    font-family: 'VT323', monospace;
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 575px) {
+    .px-eta {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+    }
+
+    .px-eta-icon {
+        display: none;
+    }
+
+    .px-eta strong {
+        font-size: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .px-drive, .px-bob, .px-city, .px-dashes, .px-twinkle,
+    .px-speed rect, .px-smoke rect, .px-spokes-a, .px-spokes-b {
+        animation: none;
+    }
+
+    .px-spokes-b {
+        opacity: 0;
+    }
+}

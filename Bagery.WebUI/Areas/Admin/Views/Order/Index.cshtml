@@ -125,6 +125,20 @@
                                             @if (order.Status == OrderStatus.Paid)
                                             {
                                                 <span class="bo-pill is-@order.DeliveryStatus.ToString().ToLower()">@order.DeliveryStatus.ToTurkish()</span>
+
+                                                @* YENİ: etiketin altında saat *@
+                                                @if (order.DeliveredAt is DateTime deliveredAt)
+                                                {
+                                                    <small class="bo-delivery-time">@($"{deliveredAt.ToLocalTime():HH:mm} teslim edildi")</small>
+                                                }
+                                                else if (order.DispatchedAt is DateTime dispatchedAt)
+                                                {
+                                                    <small class="bo-delivery-time">@($"{dispatchedAt.ToLocalTime():HH:mm} yola çıktı")</small>
+                                                }
+                                                else
+                                                {
+                                                    <small class="bo-delivery-time">henüz çıkmadı</small>
+                                                }
                                             }
                                             else
                                             {

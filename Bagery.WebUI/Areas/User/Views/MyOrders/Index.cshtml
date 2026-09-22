@@ -60,7 +60,24 @@
 
                     <h3 class="bo-order-title">@title</h3>
                     <span class="bo-order-date"><i class='bx bx-calendar'></i> @order.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy, HH:mm")</span>
-
+                                        @* YENİ: teslimat bilgisi *@
+                    @if (order.Status == OrderStatus.Paid)
+                    {
+                        <span class="bo-order-date">
+                            @if (order.DeliveredAt is DateTime deliveredAt)
+                            {
+                                <i class='bx bx-check-double'></i> @($"{deliveredAt.ToLocalTime():dd MMM HH:mm} teslim edildi")
+                            }
+                            else if (order.DispatchedAt is DateTime dispatchedAt)
+                            {
+                                <i class='bx bx-cycling'></i> @($"{dispatchedAt.ToLocalTime():dd MMM HH:mm} yola çıktı")
+                            }
+                            else
+                            {
+                                <i class='bx bx-time-five'></i> @:Henüz yola çıkmadı
+                            }
+                        </span>
+                    }
                     <div class="bo-order-bottom">
                         <div>
                             <small>Tutar</small>

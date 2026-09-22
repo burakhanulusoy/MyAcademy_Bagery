@@ -135,6 +135,24 @@
                     <li><i class='bx bx-phone'></i><div><small>Telefon</small><span>@Model.PhoneNumber</span></div></li>
                     <li><i class='bx bx-envelope'></i><div><small>E-posta</small><span>@Model.Email</span></div></li>
                     <li><i class='bx bx-home-alt'></i><div><small>Adres</small><span>@Model.Address</span></div></li>
+                    @* YENİ: teslimat saatleri *@
+                    @if (Model.Status == OrderStatus.Paid)
+                    {
+                        <li>
+                            <i class='bx bx-cycling'></i>
+                            <div>
+                                <small>Yola çıkış</small>
+                                <span>@(Model.DispatchedAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "Henüz yola çıkmadı")</span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class='bx bx-check-double'></i>
+                            <div>
+                                <small>Teslim</small>
+                                <span>@(Model.DeliveredAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? (Model.DeliveryStatus == DeliveryStatus.OnTheWay ? "Yolda, birazdan kapında" : "Bekleniyor"))</span>
+                            </div>
+                        </li>
+                    }
                 </ul>
             </section>
 

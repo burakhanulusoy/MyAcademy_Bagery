@@ -1,117 +1,163 @@
-﻿@model PagedList<GetUsersQueryResult>
+﻿@using Bagery.WebUI.MediatorPattern.Results.UserResults
+@model PagedList<AdminUserListItem>
 @{
     ViewData["Title"] = "Kullanıcılar";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var customOption = PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext;
-    customOption.LinkToPreviousPageFormat = "« Önceki";
-    customOption.LinkToNextPageFormat = "Sonraki »";
-    var placeholder = "https://ui-avatars.com/api/?background=random&name=";
+
+    var summary = (GetAdminUsersQueryResult)ViewData["Summary"]!;
+    var search = ViewData["CurrentSearch"] as string;
+    var currentRole = ViewData["CurrentRole"] as string;
+
+    var options = PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext;
+    options.LinkToPreviousPageFormat = "« Önceki";
+    options.LinkToNextPageFormat = "Sonraki »";
 }
+@functions {
+    // Fotoğrafı olmayanlar için baş harflerden görsel
+    static string Avatar(string? imageUrl, string fullName) =>
+        string.IsNullOrWhiteSpace(imageUrl)
+            ? "https://ui-avatars.com/api/?background=random&name=" + Uri.EscapeDataString(fullName)
+            : imageUrl;
+
+    static string RoleClass(string role) => role switch
+    {
+        "Admin" => "is-admin",
+        "Writer" => "is-writer",
+        "Waiter" => "is-waiter",
+        _ => "is-user"
+    };
+
+    static string RoleText(string role) => role switch
+    {
+        "Admin" => "Admin",
+        "Writer" => "Yazar",
+        "Waiter" => "Garson",
+        "User" => "Üye",
+        _ => role
+    };
+
+    string ChipClass(string? role) => (ViewData["CurrentRole"] as string) == role ? "au-chip is-active" : "au-chip";
+}
+
+<link href="~/css/bagery-admin-users.css" rel="stylesheet">
 
 <div class="page-content-wrapper">
     <div class="page-content">
+        <div class="bd">
 
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
-            <div>
-                <h5 class="mb-1">Kullanıcılar</h5>
-                <p class="mb-0 text-muted small">Sisteme kayıtlı @Model.TotalItemCount kişi</p>
-            </div>
-            <div class="input-group" style="max-width: 320px;">
-                <span class="input-group-text"><ion-icon name="search-outline"></ion-icon></span>
-                <input type="text" id="globalSearchInput" class="form-control"
-                       placeholder="İsim veya e-posta ara..."
-                       value="@ViewData["CurrentSearch"]">
-            </div>
-        </div>
+            <header class="bd-head">
+                <div>
+                    <p class="bd-eyebrow">Sistem Yönetimi</p>
+                    <h1 class="bd-title">Kullanıcılar</h1>
+                    <p class="bd-sub">Sistemde @summary.TotalCount kişi kayıtlı</p>
+                </div>
+            </header>
 
-        <div class="card radius-10">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th style="width: 60px;"></th>
-                            <th>Ad Soyad</th>
-                            <th>E-posta</th>
-                            <th>Meslek</th>
-                            <th class="text-end">İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.Any())
-                        {
-                            foreach (var user in Model)
-                            {
+            <div class="au-stats">
+                <div class="au-stat" style="--tone: var(--ink)"><small>Toplam</small><strong>@summary.TotalCount</strong></div>
+                <div class="au-stat" style="--tone: var(--c1)"><small>Admin</small><strong>@summary.AdminCount</strong></div>
+                <div class="au-stat" style="--tone: var(--c4)"><small>Yazar</small><strong>@summary.WriterCount</strong></div>
+                <div class="au-stat" style="--tone: var(--c3)"><small>Garson</small><strong>@summary.WaiterCount</strong></div>
+                <div class="au-stat" style="--tone: var(--c6)"><small>Üye</small><strong>@summary.MemberCount</strong></div>
+                <div class="au-stat" style="--tone: var(--down)"><small>E-posta onaysız</small><strong>@summary.UnconfirmedCount</strong></div>
+            </div>
+
+            @* Arama: form ile, JS gerekmiyor *@
+            <div class="au-tools">
+                <form method="get" asp-action="Index" class="au-search">
+                    <i class='bx bx-search'></i>
+                    <input type="search" name="search" value="@search" placeholder="İsim veya e-posta ara..." autocomplete="off">
+                    <input type="hidden" name="role" value="@currentRole">
+                </form>
+
+                <nav class="au-chips" aria-label="Rol süzme">
+                    <a class="@ChipClass(null)" href="@Url.Action("Index", new { search })">Tümü <b>@summary.TotalCount</b></a>
+                    <a class="@ChipClass("Admin")" href="@Url.Action("Index", new { search, role = "Admin" })">Admin <b>@summary.AdminCount</b></a>
+                    <a class="@ChipClass("Writer")" href="@Url.Action("Index", new { search, role = "Writer" })">Yazar <b>@summary.WriterCount</b></a>
+                    <a class="@ChipClass("Waiter")" href="@Url.Action("Index", new { search, role = "Waiter" })">Garson <b>@summary.WaiterCount</b></a>
+                    <a class="@ChipClass("User")" href="@Url.Action("Index", new { search, role = "User" })">Üye <b>@summary.MemberCount</b></a>
+                    <a class="@ChipClass("none")" href="@Url.Action("Index", new { search, role = "none" })">Rolsüz <b>@summary.NoRoleCount</b></a>
+                </nav>
+            </div>
+
+            <div class="bd-card" style="padding: 0; overflow: hidden">
+                @if (!Model.Any())
+                {
+                    <p class="bd-sub" style="padding: 40px; text-align: center">Aramana uyan kullanıcı bulunamadı.</p>
+                }
+                else
+                {
+                    <div class="bd-table-wrap" style="margin: 0">
+                        <table class="bd-table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <img src="@(string.IsNullOrWhiteSpace(user.ImageUrl) ? placeholder + Uri.EscapeDataString(user.FullName ?? "?") : user.ImageUrl)"
-                                             class="rounded-circle" width="40" height="40"
-                                             style="object-fit: cover;" alt="">
-                                    </td>
-                                    <td>
-                                        <span class="fw-semibold">@user.FullName</span>
-                                    </td>
-                                    <td>
-                                        @if (!string.IsNullOrWhiteSpace(user.Email))
-                                        {
-                                            <a href="mailto:@user.Email" class="text-decoration-none">@user.Email</a>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">—</span>
-                                        }
-                                    </td>
-                                    <td class="text-muted">@(string.IsNullOrWhiteSpace(user.Job) ? "—" : user.Job)</td>
-                                    <td class="text-end">
-                                        <a href="/Admin/User/GetUserById/@user.Id" class="btn btn-sm btn-outline-primary">
-                                            İncele
-                                        </a>
-                                    </td>
+                                    <th>Kullanıcı</th>
+                                    <th>Roller</th>
+                                    <th class="num">Sipariş</th>
+                                    <th class="num">Harcama</th>
+                                    <th class="num">İçerik</th>
+                                    <th></th>
                                 </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="5" class="text-center text-muted py-5">
-                                    Arama kriterlerine uygun kullanıcı bulunamadı.
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="au-user">
+                                                <span class="au-avatar"><img src="@Avatar(user.ImageUrl, user.FullName)" alt="" loading="lazy"></span>
+                                                <div>
+                                                    <strong>@user.FullName</strong>
+                                                    <small>@(user.Email ?? "e-posta yok")</small>
+                                                    @if (!user.EmailConfirmed)
+                                                    {
+                                                        <span class="au-flag"><i class='bx bx-error-circle'></i> e-posta onaysız</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (user.Roles.Any())
+                                            {
+                                                foreach (var role in user.Roles)
+                                                {
+                                                    <span class="au-role @RoleClass(role)">@RoleText(role)</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="au-role is-none">Rol yok</span>
+                                            }
+                                        </td>
+                                        <td class="num au-num">
+                                            @user.PaidOrders
+                                            @if (user.LastOrderAt is DateTime last)
+                                            {
+                                                <small>@last.ToLocalTime().ToString("dd.MM.yyyy")</small>
+                                            }
+                                        </td>
+                                        <td class="num au-num">@user.TotalSpent.ToString("N2") ₺</td>
+                                        <td class="num au-num">
+                                            @user.BlogCount blog
+                                            <small>@user.CommentCount yorum</small>
+                                        </td>
+                                        <td class="num">
+                                            <a href="/Admin/User/GetUserById/@user.Id" class="au-chip">İncele <i class='bx bx-right-arrow-alt'></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
-        </div>
 
-        <div class="d-flex justify-content-center mt-4">
-            <pager asp-action="Index" asp-controller="User" asp-area="Admin"
-                   list="@Model" options="@customOption"
-                   asp-route-search="@ViewData["CurrentSearch"]"></pager>
-        </div>
+            <div class="d-flex justify-content-center mt-4">
+                <pager asp-action="Index" asp-controller="User" asp-area="Admin"
+                       list="@Model" options="@options"
+                       asp-route-search="@search" asp-route-role="@currentRole"></pager>
+            </div>
 
+        </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const input = document.getElementById("globalSearchInput");
-        const current = '@Html.Raw(ViewData["CurrentSearch"] ?? "")';
-        let timer;
-
-        input.addEventListener('keyup', function () {
-            clearTimeout(timer);
-            timer = setTimeout(function () {
-                const term = input.value.trim();
-                if (term !== current) {
-                    window.location.href = '@Url.Action("Index", "User", new { area = "Admin" })?search=' + encodeURIComponent(term);
-                }
-            }, 500);
-        });
-
-        if (input.value.length > 0) {
-            input.focus();
-            const v = input.value;
-            input.value = '';
-            input.value = v;
-        }
-    });
-</script>

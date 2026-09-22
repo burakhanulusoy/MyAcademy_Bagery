@@ -34,13 +34,51 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
 
 
 
-        public async Task<IActionResult> Index(int page = 1,int pageSize =12)
+        public async Task<IActionResult> Index(string? search, Guid? categoryId, string? sort, int page = 1, int pageSize = 12)
         {
             var items = await _mediator.Send(new GetProductsQuery());
+            var categories = await _mediator.Send(new GetCategoriesQuery());
 
-            var pageItems = new PagedList<GetProductsQueryResult>(items.AsQueryable(),page,pageSize);
+            var filtered = items.AsEnumerable();
 
-            return View(pageItems);
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                filtered = filtered.Where(p =>
+                    p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    (p.Description ?? "").Contains(search, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (categoryId is Guid selectedCategory)
+                filtered = filtered.Where(p => p.Category != null && p.Category.Id == selectedCategory);
+
+            filtered = sort switch
+            {
+                "price-asc" => filtered.OrderBy(p => p.Price),
+                "price-desc" => filtered.OrderByDescending(p => p.Price),
+                "name" => filtered.OrderBy(p => p.ProductName),
+                _ => filtered
+            };
+
+            var list = filtered.ToList();
+
+            ViewData["Search"] = search;
+            ViewData["CategoryId"] = categoryId;
+            ViewData["Sort"] = sort;
+            ViewBag.CategoryList = categories;   // süzme çipleri için
+            ViewBag.TotalCount = items.Count;    // süzme öncesi toplam
+            ViewBag.FilteredCount = list.Count;
+
+            return View(new PagedList<GetProductsQueryResult>(list.AsQueryable(), page, pageSize));
+        }
+
+        public async Task<IActionResult> ProductDetail(Guid id)
+        {
+            var item = await _mediator.Send(new GetProductByIdQuery(id));
+            if (item is null)
+                return NotFound();
+
+            ViewBag.Stats = await _mediator.Send(new GetProductSalesStatsQuery(id)); // gerçek satış verisi
+            return View(item);
         }
 
         public async Task<IActionResult> CreateProduct()
@@ -82,11 +120,7 @@ namespace Bagery.WebUI.Areas.Admin.Controllers
         }
 
 
-        public async Task<IActionResult> ProductDetail(Guid id)
-        {
-            var item = await _mediator.Send(new GetProductByIdQuery(id));
-            return View(item);
-        }
+      
 
 
 

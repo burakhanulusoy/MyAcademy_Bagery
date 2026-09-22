@@ -35,7 +35,9 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.OrderHandlers
                     PaidPrice = x.PaidPrice,
                     InstallmentCount = x.InstallmentCount,
                     Status = x.Status,
-                    DeliveryStatus = x.DeliveryStatus
+                    DeliveryStatus = x.DeliveryStatus,
+                    DispatchedAt = x.DispatchedAt, // YENİ
+                    DeliveredAt = x.DeliveredAt    // YENİ
                 })
                 .ToListAsync(cancellationToken);
 

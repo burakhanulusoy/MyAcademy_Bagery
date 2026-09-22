@@ -1,170 +1,117 @@
-﻿@model PagedList<GetProductsQueryResult>
+﻿@using Bagery.WebUI.MediatorPattern.Results.CategoryResults
+@model PagedList<GetProductsQueryResult>
 @{
-	ViewData["Title"] = "Index";
-	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Ürünler";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
-	var customOption = PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext;
-	customOption.LinkToPreviousPageFormat = "<--";
-	customOption.LinkToNextPageFormat = "-->";
+    var search = ViewData["Search"] as string;
+    var categoryId = ViewData["CategoryId"] as Guid?;
+    var sort = ViewData["Sort"] as string;
+    var categories = (List<GetCategoriesQueryResult>)ViewBag.CategoryList;
 
-
+    var options = PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext;
+    options.LinkToPreviousPageFormat = "« Önceki";
+    options.LinkToNextPageFormat = "Sonraki »";
+}
+@functions {
+    string ChipClass(Guid? id) => (ViewData["CategoryId"] as Guid?) == id ? "ap-chip is-active" : "ap-chip";
 }
 
+<link href="~/css/bagery-admin-products.css" rel="stylesheet">
 
-<!-- start page content wrapper-->
 <div class="page-content-wrapper">
-	<!-- start page content-->
-	<div class="page-content">
+    <div class="page-content">
+        <div class="bd">
 
-		<!--start breadcrumb-->
-		<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-			<div class="breadcrumb-title pe-3">Ürünlerimiz</div>
-			<div class="ps-3">
-				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb mb-0 p-0 align-items-center">
-						<li class="breadcrumb-item">
-							<a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
-						</li>
-						<li class="breadcrumb-item active" aria-current="page">Tüm Ürünler Listesi</li>
-					</ol>
-				</nav>
-			</div>
-			<div class="ms-auto d-flex align-items-center">
-				<a href="/Admin/Product/CreateProduct" class="btn btn-primary px-4 me-2">
-					<i class="fadeIn animated bx bx-rocket"></i>Yeni Ürün Ekle
-				</a>
+            <header class="bd-head">
+                <div>
+                    <p class="bd-eyebrow">Site Yönetimi</p>
+                    <h1 class="bd-title">Ürünler</h1>
+                    <p class="bd-sub">
+                        @ViewBag.TotalCount ürün
+                        @if (ViewBag.FilteredCount != ViewBag.TotalCount)
+                        {
+                            <text>· süzülmüş: @ViewBag.FilteredCount</text>
+                        }
+                    </p>
+                </div>
+                <a href="/Admin/Product/CreateProduct" class="ap-btn" style="height: 44px; padding: 0 22px">
+                    <i class='bx bx-plus-circle'></i> Yeni ürün ekle
+                </a>
+            </header>
 
-				<div class="btn-group">
-					<button type="button" class="btn btn-outline-primary">Settings</button>
-					<button type="button" class="btn btn-outline-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
-						<span class="visually-hidden">Toggle Dropdown</span>
-					</button>
-					<div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">
-						<a class="dropdown-item" href="javascript:;">Kategorilere Göre İncele</a>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--end breadcrumb-->
-		<!--start shop area-->
-		<section class="shop-page">
-			<div class="shop-container">
-				<div class="card shadow-sm border-0">
-					<div class="card-body">
-						<div class="row">
-							<div class="col-12 col-xl-12">
-								<div class="product-wrapper">
-									<div class="card">
-										<div class="card-body">
-											<div class="position-relative">
-												<input type="text" class="form-control ps-5" placeholder="Ürün Arayınız...">
-												<span class="position-absolute top-50 product-show translate-middle-y"><ion-icon name="search-sharp" class="ms-3 fs-6"></ion-icon></span>
-											</div>
-										</div>
-									</div>
+            <div class="ap-tools">
+                @* Arama: normal form, Enter ile arar *@
+                <form method="get" asp-action="Index" class="ap-search">
+                    <i class='bx bx-search'></i>
+                    <input type="search" name="search" value="@search" placeholder="Ürün adı ya da açıklama ara..." autocomplete="off">
+                    <input type="hidden" name="categoryId" value="@categoryId">
+                    <input type="hidden" name="sort" value="@sort">
+                </form>
 
+                <nav class="ap-chips" aria-label="Kategori süzme">
+                    <a class="@ChipClass(null)" href="@Url.Action("Index", new { search, sort })">Tümü</a>
+                    @foreach (var category in categories)
+                    {
+                        <a class="@ChipClass(category.Id)" href="@Url.Action("Index", new { search, sort, categoryId = category.Id })">@category.CategoryName</a>
+                    }
+                </nav>
 
-									<div class="product-grid">
-										<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                @* Sıralama: seçince form kendiliğinden gönderilir *@
+                <form method="get" asp-action="Index">
+                    <input type="hidden" name="search" value="@search">
+                    <input type="hidden" name="categoryId" value="@categoryId">
+                    <select name="sort" class="ap-sort" onchange="this.form.submit()" aria-label="Sıralama">
+                        <option value="" selected="@(string.IsNullOrEmpty(sort))">Varsayılan sıra</option>
+                        <option value="name" selected="@(sort == "name")">İsme göre (A-Z)</option>
+                        <option value="price-asc" selected="@(sort == "price-asc")">Fiyat: artan</option>
+                        <option value="price-desc" selected="@(sort == "price-desc")">Fiyat: azalan</option>
+                    </select>
+                </form>
+            </div>
 
+            @if (!Model.Any())
+            {
+                <div class="bd-card">
+                    <div class="ap-empty">
+                        <i class='bx bx-package'></i>
+                        Aramana uyan ürün bulunamadı.
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="ap-grid">
+                    @foreach (var product in Model)
+                    {
+                        <article class="ap-card">
+                            <a class="ap-card-img" href="/Admin/Product/ProductDetail/@product.Id">
+                                <img src="@product.MainImageUrl" alt="@product.ProductName" loading="lazy">
+                                @if (product.Category is not null)
+                                {
+                                    <span class="ap-card-cat">@product.Category.CategoryName</span>
+                                }
+                            </a>
+                            <div class="ap-card-body">
+                                <h3>@product.ProductName</h3>
+                                <p class="ap-card-desc">@product.Description</p>
+                                <div class="ap-card-price">@product.Price.ToString("N2") ₺</div>
+                                <div class="ap-card-actions">
+                                    <a href="/Admin/Product/ProductDetail/@product.Id" class="ap-btn">İncele</a>
+                                    <a href="/Admin/Product/UpdateProduct/@product.Id" class="ap-btn is-ghost" title="Düzenle"><i class='bx bx-edit'></i></a>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
 
-											@foreach (var item in Model)
-											{
-												<div class="col mb-4">
-													<div class="card product-card h-100 shadow-sm">
-														<a href="javascript:;" class="position-absolute end-0 top-0 m-3">
-															<div class="product-wishlist">
-																<i class="bx bx-heart"></i>
-															</div>
-														</a>
+                <div class="d-flex justify-content-center mt-4">
+                    <pager asp-action="Index" asp-controller="Product" asp-area="Admin"
+                           list="@Model" options="@options"
+                           asp-route-search="@search" asp-route-categoryId="@categoryId" asp-route-sort="@sort"></pager>
+                </div>
+            }
 
-														<img src="@item.MainImageUrl" class="card-img-top" alt="@item.ProductName">
-
-														<div class="card-body">
-															<div class="product-info">
-																<a href="javascript:;">
-																	<p class="product-catergory font-13 mb-1">@item.Category.CategoryName</p>
-																</a>
-																<a href="/Admin/Product/ProductDetail/@item.Id">
-																	<h6 class="product-name mb-2">@item.ProductName</h6>
-																</a>
-																<div class="d-flex align-items-center mb-3">
-																	<div class="product-price">
-																		<span class="fs-5 fw-bold text-dark">$@item.Price</span>
-																	</div>
-																	<div class="cursor-pointer ms-auto text-warning">
-																		<i class="bx bxs-star"></i>
-																		<i class="bx bxs-star"></i>
-																		<i class="bx bxs-star"></i>
-																		<i class="bx bxs-star"></i>
-																		<i class="bx bxs-star"></i>
-																	</div>
-																</div>
-																<div class="product-action mt-auto">
-																	<div class="d-grid">
-																		<a href="/Admin/Product/ProductDetail/@item.Id" class="btn btn-primary">
-																			<i class="fadeIn animated bx bx-meteor"></i> Ürünü İncele
-																		</a>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											}
-										</div>
-										<!--end row-->
-									</div>
-									<hr>
-
-
-
-									<div class="d-flex justify-content-center mt-4">
-										<pager asp-action="Index" asp-controller="Product" list="@Model" options="@customOption"></pager>
-									</div>
-
-								
-								</div>
-							</div>
-						</div><!--end row-->
-					</div>
-				</div>
-			</div>
-		</section>
-		<!--end shop area-->
-
-	</div>
-	<!-- end page content-->
+        </div>
+    </div>
 </div>
-
-
-
-
-
-
-<style>
-
-	/* Ürün kartlarındaki resimleri standartlaştır */
-	.product-card .card-img-top {
-		width: 100%;
-		height: 250px; /* Burayı tasarımına göre 200px-300px arası ayarlayabilirsin */
-		object-fit: cover; /* Resmi bozmadan (stretch etmeden) alanı dolduracak şekilde kırpar */
-		background-color: #f8f9fa; /* Resim yüklenene kadar veya şeffafsa arkada duracak renk */
-	}
-
-	/* Kartların boyunu da eşitlemek istersen (İsimler uzun/kısa olabilir) */
-	.product-card {
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-	}
-
-		.product-card .card-body {
-			flex: 1 1 auto;
-			display: flex;
-			flex-direction: column;
-			justify-content: 空间-between;
-		}
-
-
-</style>
