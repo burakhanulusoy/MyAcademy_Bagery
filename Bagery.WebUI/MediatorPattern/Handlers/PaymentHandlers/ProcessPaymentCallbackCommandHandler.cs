@@ -1,19 +1,24 @@
-﻿using Bagery.WebUI.Enums;
+﻿using Bagery.WebUI.Entities;
+using Bagery.WebUI.Enums;
 using Bagery.WebUI.MediatorPattern.Commands.PaymentCommands;
 using Bagery.WebUI.Repositories.OrderRepositories;
 using Bagery.WebUI.Services.EmailServices;
 using Bagery.WebUI.Services.PayTRServices;
+using Bagery.WebUI.Services.RealtimeServices;
 using Bagery.WebUI.UOW;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bagery.WebUI.MediatorPattern.Handlers.PaymentHandlers
 {
     public class ProcessPaymentCallbackCommandHandler(IPayTRService _payTRService,
                                                       IOrderRepository _orderRepository,
                                                       IUnitOfWork _unitOfWork,
-                                                      IEmailService _emailService,        // YENİ
-                                                      IWebHostEnvironment _environment,   // YENİ: logo dosyasının yolu için
-                                                      IConfiguration _configuration,      // YENİ: fatura linki (baseUrl)
+                                                      IEmailService _emailService,
+                                                      IWebHostEnvironment _environment,   // logo dosyasının yolu için
+                                                      IConfiguration _configuration,      // fatura linki (baseUrl)
+                                                      UserManager<AppUser> _userManager,  // fatura linki için sipariş sahibinin rolü
+                                                      IDeliveryNotifier _notifier,        // canlı bildirim (SignalR)
                                                       ILogger<ProcessPaymentCallbackCommandHandler> _logger) : IRequestHandler<ProcessPaymentCallbackCommand, string>
     {
         private const string Ok = "OK";
@@ -35,7 +40,7 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.PaymentHandlers
                 return Ok;
             }
 
-            // 3) Daha önce işlendiyse tekrar işleme (e-posta da ikinci kez gitmez)
+            // 3) Daha önce işlendiyse tekrar işleme (e-posta ve bildirim ikinci kez gitmez)
             if (order.Status != OrderStatus.Pending)
                 return Ok;
 
@@ -59,28 +64,34 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.PaymentHandlers
 
             _logger.LogInformation("PayTR callback işlendi. OrderNo: {OrderNo}, Durum: {Status}", order.OrderNo, order.Status);
 
-            // 5) YENİ: sadece başarılı ödemede fatura e-postası (başarısızda gönderilmiyor)
+            // 5) Sadece başarılı ödemede: önce garson panosuna haber, sonra fatura e-postası
             if (order.Status == OrderStatus.Paid)
+            {
+                // YENİ: pano saniyesinde bilsin (e-posta yavaş olsa bile mutfak beklemesin)
+                await _notifier.NewPaidOrderAsync(order.OrderNo, order.FullName);
                 await SendPaidEmailAsync(order.OrderNo);
+            }
 
             return Ok;
         }
 
         // E-posta gitmese bile ödeme kaydedildi; hata PayTR'ye "OK" dönmeyi engellememeli.
-        // Bu yüzden her şey try-catch içinde, hata sadece loglanıyor.
         private async Task SendPaidEmailAsync(string orderNo)
         {
             try
             {
-                // Ürünlerle birlikte tekrar oku (Adım 12'deki metot)
+                // Ürünler ve sipariş sahibiyle birlikte oku
                 var order = await _orderRepository.GetOrderDetailForAdminAsync(orderNo);
                 if (order is null) return;
 
-                // Fatura butonu: baseUrl (ngrok / canlı alan adı) varsa eklenir
+                // Fatura linki sipariş sahibinin kendi paneline gider
                 var baseUrl = _configuration["PayTR:baseUrl"]?.TrimEnd('/');
-                var invoiceUrl = string.IsNullOrWhiteSpace(baseUrl)
-                    ? null
-                                       : $"{baseUrl}/Admin/MyOrders/Invoice?orderNo={order.OrderNo}"; // DEĞİŞTİ: panel adresi
+                string? invoiceUrl = null;
+                if (!string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    var area = await PanelAreaOfAsync(order.AppUser);
+                    invoiceUrl = $"{baseUrl}/{area}/MyOrders/Invoice?orderNo={order.OrderNo}";
+                }
 
                 // wwwroot'taki logo dosyasının diskteki tam yolu
                 var logoPath = Path.Combine(_environment.WebRootPath, "Bagery Pack", "Bagery", "assets", "images", "logo-4.png");
@@ -96,6 +107,17 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.PaymentHandlers
             {
                 _logger.LogError(ex, "Sipariş e-postası gönderilemedi. OrderNo: {OrderNo}", orderNo);
             }
+        }
+
+        // Sipariş sahibinin Siparişlerim sayfası hangi panelde
+        private async Task<string> PanelAreaOfAsync(AppUser? user)
+        {
+            if (user is null) return "User";
+
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.Contains("Admin") ? "Admin"
+                 : roles.Contains("Writer") ? "Writer"
+                 : "User";
         }
     }
 }

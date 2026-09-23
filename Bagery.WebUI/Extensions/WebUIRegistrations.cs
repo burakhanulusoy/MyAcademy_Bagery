@@ -11,6 +11,7 @@ using Bagery.WebUI.Services.CartServices;
 using Bagery.WebUI.Services.EmailServices;
 using Bagery.WebUI.Services.InvoiceServices;
 using Bagery.WebUI.Services.PayTRServices;
+using Bagery.WebUI.Services.RealtimeServices;
 using Bagery.WebUI.UOW;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -134,6 +135,11 @@ namespace Bagery.WebUI.Extensions
 
             // YENİ ---------- FATURA (PDF) ----------
             services.AddScoped<IInvoicePdfService, InvoicePdfService>();
+
+
+            //signalR
+            services.AddSignalR();                                       // YENİ: canlı bildirim altyapısı
+            services.AddSingleton<IDeliveryNotifier, DeliveryNotifier>();
 
         }
 

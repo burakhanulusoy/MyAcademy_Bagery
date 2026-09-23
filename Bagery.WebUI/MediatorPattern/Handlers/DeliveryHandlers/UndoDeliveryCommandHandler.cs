@@ -4,6 +4,7 @@ using Bagery.WebUI.Exceptions;
 using Bagery.WebUI.MediatorPattern.Commands.DeliveryCommands;
 using Bagery.WebUI.Repositories.OrderDeliveryLogRepositories;
 using Bagery.WebUI.Repositories.OrderRepositories;
+using Bagery.WebUI.Services.RealtimeServices;
 using Bagery.WebUI.UOW;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,8 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.DeliveryHandlers
                                             IOrderDeliveryLogRepository _logRepository,
                                             IUnitOfWork _unitOfWork,
                                             UserManager<AppUser> _userManager,
-                                            IHttpContextAccessor _httpContextAccessor) : IRequestHandler<UndoDeliveryCommand>
+                                            IHttpContextAccessor _httpContextAccessor,
+                                            IDeliveryNotifier _notifier) : IRequestHandler<UndoDeliveryCommand>
     {
         // Garson yanlış tıklamayı bu süre içinde düzeltebilir; sonrası sadece admin
         public static readonly TimeSpan UndoWindow = TimeSpan.FromMinutes(5);
@@ -71,6 +73,9 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.DeliveryHandlers
             });
 
             await _unitOfWork.SaveChangesAsync();
+
+            // YENİ: geri alma da ekranlara yansısın
+            await _notifier.DeliveryChangedAsync(order.OrderNo, order.DeliveryStatus, order.DispatchedAt, order.DeliveredAt);
         }
     }
 }

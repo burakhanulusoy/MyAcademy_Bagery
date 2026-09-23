@@ -1,5 +1,6 @@
 using Bagery.WebUI.Extensions;
 using Bagery.WebUI.Filters;
+using Bagery.WebUI.Hubs;
 using Bagery.WebUI.Services;
 using Bagery.WebUI.Services.BageryAi;
 
@@ -35,7 +36,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseStatusCodePagesWithReExecute("/User/PageNotFound", "?code={0}");
+// DEÐÝÞTÝ: özel hata sayfasý sadece normal sayfalar için; /hubs altýndaki SignalR cevaplarý olduðu gibi kalsýn
+app.UseWhen(
+    context => !context.Request.Path.StartsWithSegments("/hubs"),
+    branch => branch.UseStatusCodePagesWithReExecute("/User/PageNotFound", "?code={0}"));
+
+
 app.UseRouting();
 
 app.UseSession();  ///Session çalýþmasý için
@@ -60,5 +66,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapHub<OrderHub>("/hubs/orders"); // YENÝ: tarayýcýlar buraya baðlanýr
 
 app.Run();

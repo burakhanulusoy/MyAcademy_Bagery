@@ -20,6 +20,9 @@
         <h1>@ViewData["Title"]</h1>
 
         <div class="kb-top-right">
+            @* YENİ: canlı bağlantı göstergesi *@
+            <span class="kb-live is-off" id="kbLive"><span class="kb-live-dot"></span> <span>Bağlanıyor</span></span>
+
             <span class="kb-clock" id="kbClock" aria-label="Saat">--:--</span>
             <button type="button" class="kb-tool" id="kbSound" aria-pressed="false"><i class='bx bx-volume-mute'></i> <span>Ses kapalı</span></button>
             <button type="button" class="kb-tool" id="kbFullscreen"><i class='bx bx-fullscreen'></i> <span>Tam ekran</span></button>
@@ -31,6 +34,9 @@
     <main>
         @RenderBody()
     </main>
+
+    @* YENİ: SignalR tarayıcı kütüphanesi (panodan ÖNCE yüklenmeli) *@
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

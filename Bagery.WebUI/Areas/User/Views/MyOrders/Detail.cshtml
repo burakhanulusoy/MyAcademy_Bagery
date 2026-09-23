@@ -28,10 +28,10 @@
         <div class="bo-hero-actions">
             @if (Model.Status == OrderStatus.Paid)
             {
-                <a href="/User/MyOrders/Invoice?orderNo=@Model.OrderNo" target="_blank" class="bo-btn"><i class='bx bx-show'></i> Faturayı görüntüle</a>
-                <a href="/User/MyOrders/Invoice?orderNo=@Model.OrderNo&download=true" class="bo-btn is-ghost"><i class='bx bx-download'></i> PDF indir</a>
+                <a href="/Writer/MyOrders/Invoice?orderNo=@Model.OrderNo" target="_blank" class="bo-btn"><i class='bx bx-show'></i> Faturayı görüntüle</a>
+                <a href="/Writer/MyOrders/Invoice?orderNo=@Model.OrderNo&download=true" class="bo-btn is-ghost"><i class='bx bx-download'></i> PDF indir</a>
             }
-            <a href="/User/MyOrders/Index" class="bo-btn is-ghost"><i class='bx bx-arrow-back'></i> Siparişlerim</a>
+            <a href="/Writer/MyOrders/Index" class="bo-btn is-ghost"><i class='bx bx-arrow-back'></i> Siparişlerim</a>
         </div>
     </section>
 
@@ -72,7 +72,7 @@
                             <small>@(Model.PaidAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm"))</small>
                         </li>
 
-                        @* YENİ: gerçek teslimat adımları *@
+                        @* Gerçek teslimat adımları *@
                         @if (Model.DispatchedAt is DateTime dispatchedAt)
                         {
                             <li class="is-done">
@@ -135,7 +135,7 @@
                     <li><i class='bx bx-phone'></i><div><small>Telefon</small><span>@Model.PhoneNumber</span></div></li>
                     <li><i class='bx bx-envelope'></i><div><small>E-posta</small><span>@Model.Email</span></div></li>
                     <li><i class='bx bx-home-alt'></i><div><small>Adres</small><span>@Model.Address</span></div></li>
-                    @* YENİ: teslimat saatleri *@
+                    @* Teslimat saatleri *@
                     @if (Model.Status == OrderStatus.Paid)
                     {
                         <li>
@@ -177,3 +177,51 @@
 
     </div>
 </div>
+
+@* YENİ: canlı teslimat takibi (sadece ödenmiş ve henüz teslim edilmemiş siparişlerde) *@
+@if (Model.Status == OrderStatus.Paid && Model.DeliveryStatus != DeliveryStatus.Delivered)
+{
+    <div class="bo-live" id="boLive" role="status" hidden></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+    <script>
+        (function () {
+            if (!window.signalR) return;   // kütüphane yüklenmediyse sayfa normal çalışır
+
+            const orderNo = '@Model.OrderNo';
+            const banner = document.getElementById('boLive');
+
+            function announce(text) {
+                banner.textContent = text;
+                banner.hidden = false;
+            }
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl('/hubs/orders')
+                .withAutomaticReconnect()
+                .build();
+
+            // Garson durumu değiştirdiğinde sunucu haber verir
+            connection.on('deliveryChanged', function (data) {
+                if (data.orderNo !== orderNo) return;   // başka siparişin haberi
+
+                const saat = t => new Date(t).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+
+                if (data.status === 'OnTheWay') {
+                    announce('Siparişiniz ' + saat(data.dispatchedAt) + ' itibarıyla yola çıktı.');
+                } else if (data.status === 'Delivered') {
+                    announce('Siparişiniz ' + saat(data.deliveredAt) + ' itibarıyla teslim edildi. Afiyet olsun!');
+                } else {
+                    announce('Sipariş durumunuz güncellendi.');
+                }
+
+                // Çizelge ve etiketler sunucudan gelsin: kısa bir bildirimden sonra sayfayı tazele
+                setTimeout(() => location.reload(), 2500);
+            });
+
+            connection.start()
+                .then(() => connection.invoke('WatchOrder', orderNo))  // "bu siparişi izlemek istiyorum"
+                .catch(() => { /* bağlanamazsa sayfa normal çalışır */ });
+        })();
+    </script>
+}

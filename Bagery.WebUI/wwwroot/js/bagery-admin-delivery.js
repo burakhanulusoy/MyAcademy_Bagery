@@ -166,7 +166,31 @@
         await load();
     });
 
+    // ---------- CANLI BAĞLANTI (SignalR) ----------
+    function connectRealtime() {
+        if (!window.signalR) return;   // kütüphane yoksa yedek yenileme yeterli
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl('/hubs/orders')
+            .withAutomaticReconnect([0, 2000, 5000, 10000, 20000])
+            .build();
+
+        connection.on('orderReceived', function (data) {
+            toast('Yeni sipariş: ' + data.customerName);   // admin ekranında ses yok, sadece bilgi
+            load();
+        });
+
+        connection.on('deliveryChanged', () => load());     // garson işaretledi, pano tazelensin
+
+        connection.onreconnected(() => load());             // kopukken kaçanları yakala
+        connection.onclose(() => setTimeout(connectRealtime, 5000));
+
+        connection.start().catch(() => setTimeout(connectRealtime, 5000));
+    }
+
+    // ---------- başlat ----------
     load();
-    setInterval(load, REFRESH_MS);
+    connectRealtime();
+    setInterval(load, REFRESH_MS);   // SignalR koparsa diye yedek
     setInterval(tickTimers, 10000);
 })();

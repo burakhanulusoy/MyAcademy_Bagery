@@ -1139,3 +1139,27 @@
     color: var(--muted);
     white-space: nowrap;
 }
+/* Müşteri sipariş detayında canlı durum bildirimi */
+.bo-live {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 60;
+    transform: translateX(-50%);
+    max-width: calc(100% - 32px);
+    padding: 14px 22px;
+    border-radius: 14px;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    box-shadow: 0 14px 34px rgba(11, 11, 12, .3);
+    animation: bo-live-in .35s ease;
+}
+
+@keyframes bo-live-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 12px);
+    }
+}

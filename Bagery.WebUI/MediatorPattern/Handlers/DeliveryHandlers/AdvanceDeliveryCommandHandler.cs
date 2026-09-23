@@ -4,6 +4,7 @@ using Bagery.WebUI.Exceptions;
 using Bagery.WebUI.MediatorPattern.Commands.DeliveryCommands;
 using Bagery.WebUI.Repositories.OrderDeliveryLogRepositories;
 using Bagery.WebUI.Repositories.OrderRepositories;
+using Bagery.WebUI.Services.RealtimeServices;
 using Bagery.WebUI.UOW;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -14,11 +15,12 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.DeliveryHandlers
                                                IOrderDeliveryLogRepository _logRepository,
                                                IUnitOfWork _unitOfWork,
                                                UserManager<AppUser> _userManager,
-                                               IHttpContextAccessor _httpContextAccessor) : IRequestHandler<AdvanceDeliveryCommand>
+                                               IHttpContextAccessor _httpContextAccessor,
+                                               IDeliveryNotifier _notifier) : IRequestHandler<AdvanceDeliveryCommand>
     {
         public async Task Handle(AdvanceDeliveryCommand request, CancellationToken cancellationToken)
         {
-            // Takipli okuma (Adım 2'deki metot): değişiklikler SaveChanges'te yazılır
+            // Takipli okuma: değişiklikler SaveChanges'te yazılır
             var order = await _orderRepository.GetByOrderNoAsync(request.OrderNo)
                         ?? throw new BusinessException("Sipariş bulunamadı.");
 
@@ -62,6 +64,9 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.DeliveryHandlers
             });
 
             await _unitOfWork.SaveChangesAsync(); // sipariş ve kayıt aynı anda yazılır
+
+            // YENİ: kayıt tamamlandıktan sonra haber ver (panolar + siparişi izleyen müşteri)
+            await _notifier.DeliveryChangedAsync(order.OrderNo, order.DeliveryStatus, order.DispatchedAt, order.DeliveredAt);
         }
 
         private async Task<string> CurrentStaffNameAsync()

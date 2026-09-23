@@ -1,5 +1,5 @@
-﻿// Bagery sipariş panosu (Waiter paneli): veriyi çeker, kartları çizer, butonları yönetir.
-// Adresleri #kbBoard üzerindeki data- attribute'larından okur.
+﻿// Bagery sipariş panosu (Waiter paneli)
+// Canlı: SignalR ile anında haber alır. Yedek: 30 sn'de bir kendini yeniler.
 (function () {
     'use strict';
 
@@ -14,12 +14,12 @@
     const isAdmin = root.dataset.isAdmin === 'true';
     const token = root.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
-    const REFRESH_MS = 15000;          // pano her 15 sn'de yenilenir
+    const REFRESH_MS = 30000;          // SignalR yedeği: yarım dakikada bir tazele
     const UNDO_MS = 5 * 60 * 1000;     // geri alma süresi (sunucuyla aynı)
+    const FRESH_MS = 60000;            // yeni sipariş vurgusu ne kadar sürsün
 
     let board = null;                  // son gelen veri
     let offset = 0;                    // sunucu saati - bu bilgisayarın saati
-    let knownWaiting = null;           // yeni sipariş tespiti için önceki "Bekliyor" listesi
     let freshOrders = new Set();       // yeni gelen siparişler (vurgulanır)
     let busy = false;
 
@@ -116,43 +116,68 @@
         });
     }
 
-    // ---------- yeni sipariş: ses + vurgu + sekme başlığı ----------
-    const originalTitle = document.title;
+    // ---------- sesli uyarı ----------
     let audio = null;
     let soundOn = localStorage.getItem('kbSound') === 'on';
 
+    // Tek "ding" (ses açma denemesi için)
     function ding() {
+        beep([880, 1320], 0.3);
+    }
+
+    // Yeni sipariş alarmı: üç kez, daha yüksek ve daha uzun
+    function alarm() {
+        if (!soundOn) return;
+        beep([988, 1319, 988], 0.55, 3);
+    }
+
+    // frekanslar: sırayla çalınacak notalar, volume: ses seviyesi, repeat: kaç kez tekrar
+    function beep(frequencies, volume, repeat = 1) {
         if (!soundOn) return;
         try {
             audio ??= new AudioContext();
-            [0, 0.18].forEach((delay, i) => {           // iki notalı kısa "ding-dong"
-                const osc = audio.createOscillator();
-                const gain = audio.createGain();
-                const t = audio.currentTime + delay;
-                osc.type = 'sine';
-                osc.frequency.value = i === 0 ? 880 : 1320;
-                gain.gain.setValueAtTime(0.0001, t);
-                gain.gain.exponentialRampToValueAtTime(0.3, t + 0.02);
-                gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
-                osc.connect(gain).connect(audio.destination);
-                osc.start(t);
-                osc.stop(t + 0.4);
-            });
+            audio.resume();
+            const step = 0.16;
+            const groupLength = frequencies.length * step + 0.25;
+
+            for (let r = 0; r < repeat; r++) {
+                frequencies.forEach((freq, i) => {
+                    const oscillator = audio.createOscillator();
+                    const gain = audio.createGain();
+                    const t = audio.currentTime + 0.02 + r * groupLength + i * step;
+
+                    oscillator.type = 'square';           // daha keskin, ortamda duyulur
+                    oscillator.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.0001, t);
+                    gain.gain.exponentialRampToValueAtTime(volume, t + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, t + step);
+
+                    oscillator.connect(gain).connect(audio.destination);
+                    oscillator.start(t);
+                    oscillator.stop(t + step + 0.05);
+                });
+            }
         } catch { /* ses desteklenmiyorsa sessizce geç */ }
     }
 
-    function detectNewOrders() {
-        const current = new Set(board.waiting.map(c => c.orderNo));
-        if (knownWaiting) {                               // ilk yüklemede uyarı verme
-            const fresh = [...current].filter(no => !knownWaiting.has(no));
-            if (fresh.length) {
-                freshOrders = new Set(fresh);
-                ding();
-                document.title = `(${fresh.length}) Yeni sipariş · ${originalTitle}`;
-                setTimeout(() => { freshOrders.clear(); document.title = originalTitle; }, 30000);
-            }
-        }
-        knownWaiting = current;
+    // Sekme başlığı yanıp sönsün (garson başka sekmedeyse fark etsin)
+    const originalTitle = document.title;
+    let titleTimer = null;
+    function flashTitle(count) {
+        clearInterval(titleTimer);
+        let on = true;
+        titleTimer = setInterval(() => {
+            document.title = on ? `🔔 ${count} YENİ SİPARİŞ!` : originalTitle;
+            on = !on;
+        }, 900);
+
+        const stop = () => {
+            clearInterval(titleTimer);
+            document.title = originalTitle;
+            window.removeEventListener('focus', stop);
+        };
+        window.addEventListener('focus', stop);      // ekrana dönünce sussun
+        setTimeout(stop, FRESH_MS);
     }
 
     // ---------- sunucu ile konuşma ----------
@@ -160,9 +185,8 @@
         try {
             const res = await fetch(urls.data, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, cache: 'no-store' });
             if (!res.ok) throw new Error();
-            board = await res.json();                     // oturum kapandıysa HTML gelir, burada hata verir
+            board = await res.json();                 // oturum kapandıysa HTML gelir, burada hata verir
             offset = new Date(board.serverTimeUtc).getTime() - Date.now();
-            detectNewOrders();
             render();
             document.getElementById('kbOffline').hidden = true;
         } catch {
@@ -176,8 +200,8 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest',  // ExceptionFilter hatayı JSON dönsün
-                    'RequestVerificationToken': token        // anti-forgery
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'RequestVerificationToken': token
                 },
                 body: new URLSearchParams(data)
             });
@@ -202,8 +226,53 @@
         if (!result.success) toast(result.message);
 
         busy = false;
-        await load(); // başarılı da olsa hatalı da olsa en güncel hali göster
+        await load();
     });
+
+    // ---------- CANLI BAĞLANTI (SignalR) ----------
+    const liveEl = document.getElementById('kbLive');
+
+    function setLive(state) {
+        if (!liveEl) return;
+        const texts = { on: 'Canlı', off: 'Bağlanıyor', dead: 'Çevrimdışı' };
+        liveEl.className = 'kb-live is-' + state;
+        liveEl.querySelector('span:last-child').textContent = texts[state];
+    }
+
+    async function connectRealtime() {
+        if (!window.signalR) { setLive('dead'); return; }   // kütüphane yüklenmediyse yedek yenilemeyle devam
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl('/hubs/orders')
+            .withAutomaticReconnect([0, 2000, 5000, 10000, 20000]) // kopunca kendi kendine dener
+            .build();
+
+        // Yeni sipariş: vurgula, alarm çal, başlığı yanıp söndür, panoyu tazele
+        connection.on('orderReceived', data => {
+            freshOrders.add(data.orderNo);
+            setTimeout(() => freshOrders.delete(data.orderNo), FRESH_MS);
+
+            alarm();
+            flashTitle(freshOrders.size);
+            toast(`Yeni sipariş: ${data.customerName}`);
+            load();
+        });
+
+        // Durum değişti (başka bir garson ya da admin işaretledi): panoyu tazele
+        connection.on('deliveryChanged', () => load());
+
+        connection.onreconnecting(() => setLive('off'));
+        connection.onreconnected(() => { setLive('on'); load(); });   // kopukken kaçanları yakala
+        connection.onclose(() => { setLive('dead'); setTimeout(connectRealtime, 5000); });
+
+        try {
+            await connection.start();
+            setLive('on');
+        } catch {
+            setLive('dead');
+            setTimeout(connectRealtime, 5000);   // sunucu kapalıysa yeniden dene
+        }
+    }
 
     // ---------- üst çubuk: saat, ses, tam ekran ----------
     const clockEl = document.getElementById('kbClock');
@@ -225,7 +294,7 @@
     soundBtn?.addEventListener('click', () => {
         soundOn = !soundOn;
         localStorage.setItem('kbSound', soundOn ? 'on' : 'off');
-        if (soundOn) { audio ??= new AudioContext(); audio.resume(); ding(); } // deneme sesi
+        if (soundOn) ding();   // deneme sesi
         paintSound();
     });
     paintSound();
@@ -244,6 +313,7 @@
 
     // ---------- başlat ----------
     load();
-    setInterval(load, REFRESH_MS);
+    connectRealtime();
+    setInterval(load, REFRESH_MS);   // SignalR koparsa diye yedek
     setInterval(tickTimers, 10000);
 })();
