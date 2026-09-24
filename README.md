@@ -1,4 +1,4 @@
-<img width="1900" height="948" alt="Ekran görüntüsü 2026-09-24 122332" src="https://github.com/user-attachments/assets/b82794fd-8a55-4ce7-b890-50a03fb7cf53" /><img width="1885" height="942" alt="Ekran görüntüsü 2026-09-24 122224" src="https://github.com/user-attachments/assets/254d9696-6c1e-49d6-aa1c-13baac7fd4e1" /><div align="center">
+
 
 # 🥐 MyAcademy_Bagery
 
@@ -237,73 +237,6 @@ flowchart TB
 
 Bu şema ana istek yolunu özetler. Bazı raporlama handler’ları doğrudan AppDbContext kullanır; dijital barista controller’ı kendi servisine erişir. Identity oturum ve yetkilendirmeyi, SignalR canlı bildirimleri yönetir.
 
-### 02 · Hesap Doğrulama
-
-E-posta ve şifreyle kayıt olan kullanıcı, hesabını doğruladıktan sonra oturum açabilir.
-
-```mermaid
-flowchart LR
-    A["Kayıt"]
-    B["Identity<br/>Kod üretimi"]
-    C["E-posta<br/>Doğrulama kodu"]
-    D["Kod kontrolü"]
-    E["Hesap doğrulandı<br/>EmailConfirmed"]
-    A b1@--> B
-    B b2@--> C
-    C b3@--> D
-    D b4@--> E
-    class A entry;
-    class B,C process;
-    class D decision;
-    class E success;
-
-    classDef entry fill:#EFF6FF,stroke:#3B82F6,color:#172554,stroke-width:1.5px;
-    classDef process fill:#F5F3FF,stroke:#8B5CF6,color:#2E1065,stroke-width:1.5px;
-    classDef success fill:#ECFDF5,stroke:#10B981,color:#064E3B,stroke-width:1.5px;
-    classDef decision fill:#FFF7ED,stroke:#F59E0B,color:#78350F,stroke-width:1.5px;
-    classDef failure fill:#FFF1F2,stroke:#F43F5E,color:#881337,stroke-width:1.5px;
-
-    b1@{ animation: slow }
-    b2@{ animation: slow }
-    b3@{ animation: slow }
-    b4@{ animation: slow }
-```
-
-**Giriş koşulu:** Doğru şifre tek başına yeterli değildir. E-posta doğrulanmamışsa oturum açılmaz ve yeniden kod gönderilir. Hatalı veya süresi dolmuş kodla doğrulama tamamlanmaz. Google ile giriş ayrı sağlayıcı akışıdır.
-
-### 03 · Şifremi Unuttum
-
-Şifre kurtarma işlemi, Identity tarafından üretilen kullanıcıya özel token’ı içeren e-posta bağlantısıyla yürütülür.
-
-```mermaid
-flowchart LR
-    A["Şifre yenileme<br/>talebi"]
-    B["Identity<br/>Özel token"]
-    C["E-posta<br/>Yenileme bağlantısı"]
-    D["Yeni şifre<br/>Token kontrolü"]
-    E["Şifre güncellendi<br/>Giriş ekranı"]
-    A c1@--> B
-    B c2@--> C
-    C c3@--> D
-    D c4@--> E
-    class A entry;
-    class B,C process;
-    class D decision;
-    class E success;
-
-    classDef entry fill:#EFF6FF,stroke:#3B82F6,color:#172554,stroke-width:1.5px;
-    classDef process fill:#F5F3FF,stroke:#8B5CF6,color:#2E1065,stroke-width:1.5px;
-    classDef success fill:#ECFDF5,stroke:#10B981,color:#064E3B,stroke-width:1.5px;
-    classDef decision fill:#FFF7ED,stroke:#F59E0B,color:#78350F,stroke-width:1.5px;
-    classDef failure fill:#FFF1F2,stroke:#F43F5E,color:#881337,stroke-width:1.5px;
-
-    c1@{ animation: slow }
-    c2@{ animation: slow }
-    c3@{ animation: slow }
-    c4@{ animation: slow }
-```
-
-Token, bağlantıya eklenmeden önce URL’ye uygun biçimde kodlanır. Şifre güncellemesi `ResetPasswordAsync` ile gerçekleştirilir. Geçersiz token veya şifre kuralı ihlalinde işlem reddedilir. Şifre sıfırlamak, hesap doğrulamasının yerine geçmez.
 
 ### 04 · Sepet ve Ödeme
 
@@ -381,110 +314,6 @@ flowchart LR
 ```
 
 Teslimat ilerletme yalnızca Paid siparişlerde yapılır. Garson son adımı 5 dakika içinde geri alabilir; admin için süre sınırı uygulanmaz. Geri alma da kaydedilir ve yayınlanır. Müşteri bildirim grubuna katılırken sipariş sahipliği kontrol edilir.
-
-### 06 · Dijital Barista
-
-Asistan, uygulamanın menü bilgileriyle beslenir ve önerilerini mevcut ürünlerle ilişkilendirir.
-
-```mermaid
-flowchart LR
-    A["Müşteri sorusu"]
-    B["Güncel menü<br/>Veritabanı"]
-    C["OpenAI<br/>Yanıt ve ürün kimlikleri"]
-    D["Ürün eşleştirme"]
-    E["Yanıt ve öneriler"]
-    A f1@--> B
-    B f2@--> C
-    C f3@--> D
-    D f4@--> E
-    class A entry;
-    class B,C,D process;
-    class E success;
-
-    classDef entry fill:#EFF6FF,stroke:#3B82F6,color:#172554,stroke-width:1.5px;
-    classDef process fill:#F5F3FF,stroke:#8B5CF6,color:#2E1065,stroke-width:1.5px;
-    classDef success fill:#ECFDF5,stroke:#10B981,color:#064E3B,stroke-width:1.5px;
-    classDef decision fill:#FFF7ED,stroke:#F59E0B,color:#78350F,stroke-width:1.5px;
-    classDef failure fill:#FFF1F2,stroke:#F43F5E,color:#881337,stroke-width:1.5px;
-
-    f1@{ animation: slow }
-    f2@{ animation: slow }
-    f3@{ animation: slow }
-    f4@{ animation: slow }
-```
-
-Kapsam dışı olarak sınıflandırılan sorular için yönlendirici yanıt gösterilir. Önerilen ürün kimlikleri veritabanından alınmış katalogla eşleştirilir.
-
-### 07 · Yorum Moderasyonu
-
-Yorum oluşturma isteği, kullanıcı yetkisi ve içerik kontrolünden sonra değerlendirilir.
-
-```mermaid
-flowchart LR
-    A["Yorum isteği<br/>Admin / Writer"]
-    B["Doğrulama<br/>Form · Oturum · Rol"]
-    C{"OpenAI<br/>İçerik kontrolü"}
-    D["Yorumu kaydet"]
-    E["Yorumu reddet"]
-    A g1@--> B
-    B g2@--> C
-    C g3@-->|"SAFE"| D
-    C g4@-->|"TOXIC"| E
-    class A entry;
-    class B process;
-    class C decision;
-    class D success;
-    class E failure;
-
-    classDef entry fill:#EFF6FF,stroke:#3B82F6,color:#172554,stroke-width:1.5px;
-    classDef process fill:#F5F3FF,stroke:#8B5CF6,color:#2E1065,stroke-width:1.5px;
-    classDef success fill:#ECFDF5,stroke:#10B981,color:#064E3B,stroke-width:1.5px;
-    classDef decision fill:#FFF7ED,stroke:#F59E0B,color:#78350F,stroke-width:1.5px;
-    classDef failure fill:#FFF1F2,stroke:#F43F5E,color:#881337,stroke-width:1.5px;
-
-    g1@{ animation: slow }
-    g2@{ animation: slow }
-    g3@{ animation: slow }
-    g4@{ animation: slow }
-```
-
-Uygunsuz olarak sınıflandırılan yorum kaydedilmez; kullanıcıya geri bildirim verilir.
-
-### 08 · PDF Sipariş Belgesi
-
-Belge üretimi, sipariş sahipliği ve ödeme durumu kontrolünden sonra gerçekleştirilir.
-
-```mermaid
-flowchart LR
-    A["Belge talebi"]
-    B["Sahiplik ve<br/>Paid kontrolü"]
-    C["Sipariş ve<br/>satıcı bilgileri"]
-    D["QuestPDF"]
-    E["Görüntüle<br/>veya indir"]
-    A h1@--> B
-    B h2@--> C
-    C h3@--> D
-    D h4@--> E
-    class A entry;
-    class B decision;
-    class C,D process;
-    class E success;
-
-    classDef entry fill:#EFF6FF,stroke:#3B82F6,color:#172554,stroke-width:1.5px;
-    classDef process fill:#F5F3FF,stroke:#8B5CF6,color:#2E1065,stroke-width:1.5px;
-    classDef success fill:#ECFDF5,stroke:#10B981,color:#064E3B,stroke-width:1.5px;
-    classDef decision fill:#FFF7ED,stroke:#F59E0B,color:#78350F,stroke-width:1.5px;
-    classDef failure fill:#FFF1F2,stroke:#F43F5E,color:#881337,stroke-width:1.5px;
-
-    h1@{ animation: slow }
-    h2@{ animation: slow }
-    h3@{ animation: slow }
-    h4@{ animation: slow }
-```
-
-Başkasına ait veya ödenmemiş sipariş için kişisel PDF çıktısı sunulmaz.
-
----
 
 ### 📂 Proje Organizasyonu
 
@@ -729,6 +558,7 @@ SİPARİŞLER
 <img width="1908" height="940" alt="Ekran görüntüsü 2026-09-24 131822" src="https://github.com/user-attachments/assets/78b0bab9-f9fc-4562-8005-cdad476c157e" />
 
 <img width="1887" height="942" alt="Ekran görüntüsü 2026-09-24 131836" src="https://github.com/user-attachments/assets/6675eedb-ed41-47be-8d5e-5078665abcd8" />
+
 
 
 
