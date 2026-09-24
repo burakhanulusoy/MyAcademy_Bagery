@@ -1,4 +1,4 @@
-<div align="center">
+<img width="1900" height="948" alt="Ekran görüntüsü 2026-09-24 122332" src="https://github.com/user-attachments/assets/b82794fd-8a55-4ce7-b890-50a03fb7cf53" /><img width="1885" height="942" alt="Ekran görüntüsü 2026-09-24 122224" src="https://github.com/user-attachments/assets/254d9696-6c1e-49d6-aa1c-13baac7fd4e1" /><div align="center">
 
 # 🥐 MyAcademy_Bagery
 
@@ -524,227 +524,236 @@ MyAcademy_Bagery/
 
 ## 📸 Ekran Görüntüleri ve Kullanım Senaryoları
 
-<!-- GÖRSEL EKLEME: Her bölümdeki img satırları hazırdır. Görseli docs/images/ altına koyabilir veya src değerini GitHub'a yüklediğin görsel bağlantısıyla değiştirebilirsin. Ardından ilgili img satırının çevresindeki yorum işaretlerini kaldır. Her img satırı bir fotoğraf alanıdır; aynı bölüme ek görseller ekleyebilirsin. -->
 
-### 🏠 Ana Sayfa ve İşletme Vitrini
 
-<details>
-<summary><b>Ana Sayfa Görsellerini Görmek İçin Tıklayın</b></summary>
-<br>
 
-> Ziyaretçileri karşılayan ürün sunumları, tanıtım alanları, işletme bilgileri ve dinamik içerikler.
+##ana sayfa
+<img width="1886" height="946" alt="Ekran görüntüsü 2026-09-24 120822" src="https://github.com/user-attachments/assets/68b9cd7c-6af3-4c96-b307-2b9a6d1e27c7" />
+<img width="1893" height="948" alt="Ekran görüntüsü 2026-09-24 120836" src="https://github.com/user-attachments/assets/eb64eb14-2d52-4b04-9df1-ff4ef2e40a24" />
+<img width="1888" height="946" alt="Ekran görüntüsü 2026-09-24 120843" src="https://github.com/user-attachments/assets/80e9389a-2c1f-46c1-bc6e-1d7a0021233d" />
+<img width="1882" height="948" alt="Ekran görüntüsü 2026-09-24 120852" src="https://github.com/user-attachments/assets/67f429fb-15cc-47b8-b82e-9249542e16ef" />
 
-<!-- <img width="100%" alt="Ana sayfa üst bölüm" src="docs/images/ana-sayfa-01.png" /> -->
 
-<!-- <img width="100%" alt="Ana sayfa ürün ve tanıtım alanları" src="docs/images/ana-sayfa-02.png" /> -->
+<img width="1895" height="943" alt="Ekran görüntüsü 2026-09-24 120917" src="https://github.com/user-attachments/assets/ffc6849f-1f85-4d83-ab20-94ed0752987e" />
 
-<!-- <img width="100%" alt="İşletme içerikleri ve alt bölüm" src="docs/images/ana-sayfa-03.png" /> -->
 
-</details>
+<img width="1891" height="945" alt="Ekran görüntüsü 2026-09-24 120932" src="https://github.com/user-attachments/assets/ef71cdd2-88bb-4013-992f-14f7c3f0d526" />
 
----
+<img width="1890" height="947" alt="Ekran görüntüsü 2026-09-24 120941" src="https://github.com/user-attachments/assets/80651a49-5c4d-4969-8d8a-54fa0ff382d0" />
 
-### 🥐 Ürün Kataloğu ve Varyant Seçimi
+<img width="1888" height="942" alt="Ekran görüntüsü 2026-09-24 120951" src="https://github.com/user-attachments/assets/6edeac7d-73ed-4b76-a8e1-9dcf099ca9e3" />
+<img width="1895" height="950" alt="Ekran görüntüsü 2026-09-24 120959" src="https://github.com/user-attachments/assets/c92acfc5-03cc-4e3d-b909-02db7061fa93" />
 
-<details>
-<summary><b>Ürün Ekranlarını Görmek İçin Tıklayın</b></summary>
-<br>
+#Blog yazıları
+<img width="1888" height="946" alt="Ekran görüntüsü 2026-09-24 121656" src="https://github.com/user-attachments/assets/80696e2d-1b56-421b-8acb-86bbdc646c7a" />
 
-> Müşterinin ürünleri incelediği, ürün detaylarına ulaştığı ve uygun varyantı seçerek sepetine eklediği süreç.
 
-<!-- <img width="100%" alt="Ürün kataloğu" src="docs/images/urun-katalogu.png" /> -->
+<img width="1890" height="943" alt="Ekran görüntüsü 2026-09-24 121702" src="https://github.com/user-attachments/assets/fb7f7baa-62fd-41cd-a795-eaf4b77d0b67" />
 
-<!-- <img width="100%" alt="Ürün detay sayfası" src="docs/images/urun-detayi.png" /> -->
+<img width="1885" height="945" alt="Ekran görüntüsü 2026-09-24 121709" src="https://github.com/user-attachments/assets/e1be59ef-4816-409d-b51c-ae87e3f27835" />
+<img width="1891" height="958" alt="Ekran görüntüsü 2026-09-24 121718" src="https://github.com/user-attachments/assets/d19f0304-6908-42da-8645-466e1dc53ee1" />
 
-<!-- <img width="100%" alt="Ürün varyantları ve fiyatları" src="docs/images/urun-varyantlari.png" /> -->
 
-</details>
 
----
+blog yazabılmek ıcıınvgırıs gereklı
+<img width="1890" height="951" alt="Ekran görüntüsü 2026-09-24 121752" src="https://github.com/user-attachments/assets/e33388b0-c625-4780-9369-276c24310d2f" />
 
-### 🛒 Sepet, Kupon ve Tutar Hesaplama
+<img width="1887" height="948" alt="Ekran görüntüsü 2026-09-24 122005" src="https://github.com/user-attachments/assets/662a4c14-1b21-45c5-9638-4eca15bf5274" />
 
-<details>
-<summary><b>Sepet ve Kupon Görsellerini Görmek İçin Tıklayın</b></summary>
-<br>
+open ai astra yorum analizi
+<img width="1887" height="946" alt="Ekran görüntüsü 2026-09-24 122045" src="https://github.com/user-attachments/assets/b9a5cebe-17f6-47bc-911b-732ec2b963c3" />
+<img width="1885" height="937" alt="Ekran görüntüsü 2026-09-24 122014" src="https://github.com/user-attachments/assets/c56ce187-ac2a-4c1b-a7ef-620e55a58e40" />
 
-> Sepet kalemleri, adet değişiklikleri, kupon uygulaması ve kargo dahil ödeme özetinin gösterildiği ekranlar.
 
-<!-- <img width="100%" alt="Sepet ve tutar özeti" src="docs/images/sepet.png" /> -->
 
-<!-- <img width="100%" alt="Kupon uygulaması" src="docs/images/kupon-uygulama.png" /> -->
+#open ai astra  kafe akıllı baristasi 
+<img width="1903" height="943" alt="Ekran görüntüsü 2026-09-24 122127" src="https://github.com/user-attachments/assets/dc315cbf-7140-4acd-a192-7c73935856a3" />
+<img width="1901" height="942" alt="Ekran görüntüsü 2026-09-24 122141" src="https://github.com/user-attachments/assets/8bd26448-8aff-49c6-ad33-e2d735c02438" />
 
-</details>
+<img width="1885" height="942" alt="Ekran görüntüsü 2026-09-24 122224" src="https://github.com/user-attachments/assets/91216c09-c7fe-4d53-9a20-bc7e58974621" />
 
----
+<img width="1900" height="948" alt="Ekran görüntüsü 2026-09-24 122304" src="https://github.com/user-attachments/assets/60acdf4e-1b87-4552-b16d-71487ad9a408" />
 
-### 💳 PayTR Ödeme ve Taksit Süreci
+#iletişim
+<img width="1885" height="942" alt="Ekran görüntüsü 2026-09-24 122322" src="https://github.com/user-attachments/assets/e06257c0-be42-4c20-847d-ef361c5aa2a8" />
 
-<details>
-<summary><b>Ödeme Akışını Görmek İçin Tıklayın</b></summary>
-<br>
 
-> Ödeme bilgilerinin girilmesi, taksit seçeneklerinin görüntülenmesi, 3D doğrulama ve ödeme sonucunun kullanıcıya sunulması.
 
-<!-- <img width="100%" alt="Ödeme formu" src="docs/images/odeme-formu.png" /> -->
+<img width="1900" height="948" alt="Ekran görüntüsü 2026-09-24 122332" src="https://github.com/user-attachments/assets/c8335ac1-aeea-46b2-a808-8a2138cd013f" />
 
-<!-- <img width="100%" alt="Taksit seçenekleri" src="docs/images/taksit-secenekleri.png" /> -->
+<img width="1892" height="942" alt="Ekran görüntüsü 2026-09-24 122612" src="https://github.com/user-attachments/assets/6d0abf17-c4c4-44e8-8156-672a8d006807" />
 
-<!-- <img width="100%" alt="Ödeme sonuç ekranı" src="docs/images/odeme-sonucu.png" /> -->
+<img width="1887" height="940" alt="Ekran görüntüsü 2026-09-24 122645" src="https://github.com/user-attachments/assets/94e7619b-1d62-46c5-933d-2a4028e3cead" />
 
-</details>
+eposta spam için kod gönderme mantığı
+<img width="1887" height="945" alt="Ekran görüntüsü 2026-09-24 122657" src="https://github.com/user-attachments/assets/df6c765c-7d2a-467f-b23b-818bc39d901e" />
 
----
+<img width="1888" height="938" alt="Ekran görüntüsü 2026-09-24 122710" src="https://github.com/user-attachments/assets/eb51e8bc-65c1-4f0e-8aed-dfac04083c0f" />
+<img width="1883" height="945" alt="Ekran görüntüsü 2026-09-24 122724" src="https://github.com/user-attachments/assets/341fdad7-54f1-4a29-984a-068071c3cfa8" />
 
-### 📦 Siparişlerim ve Canlı Teslimat Takibi
+admim panleınde gelen mesajlar
+<img width="1897" height="963" alt="Ekran görüntüsü 2026-09-24 122757" src="https://github.com/user-attachments/assets/9f39ba9b-536d-4232-8aee-b30470df63d8" />
 
-<details>
-<summary><b>Sipariş Takip Ekranlarını Görmek İçin Tıklayın</b></summary>
-<br>
+<img width="1908" height="902" alt="Ekran görüntüsü 2026-09-24 122806" src="https://github.com/user-attachments/assets/b7830d8c-d552-4b21-a1ea-d50a37a79722" />
+<img width="1910" height="940" alt="Ekran görüntüsü 2026-09-24 122814" src="https://github.com/user-attachments/assets/20c33886-7ee0-49c1-a590-5c793c95c15c" />
 
-> Kullanıcının kendi sipariş geçmişini incelediği ve sipariş detayından güncel teslimat durumunu takip ettiği alan.
 
-<!-- <img width="100%" alt="Kişisel sipariş listesi" src="docs/images/siparislerim.png" /> -->
 
-<!-- <img width="100%" alt="Sipariş detayları" src="docs/images/siparis-detayi.png" /> -->
 
-<!-- <img width="100%" alt="Canlı teslimat durumu" src="docs/images/canli-teslimat.png" /> -->
+# giriş ve kayıt ol , Google ile giriş ayfyalı
+<img width="1900" height="950" alt="Ekran görüntüsü 2026-09-24 123736" src="https://github.com/user-attachments/assets/18ccd8ac-e7d0-4575-a6be-96468b07d6d0" />
+<img width="1885" height="956" alt="Ekran görüntüsü 2026-09-24 124117" src="https://github.com/user-attachments/assets/fd6eae75-7d1f-4d5a-89e9-eb49d299fd79" />
+<img width="1895" height="942" alt="Ekran görüntüsü 2026-09-24 124306" src="https://github.com/user-attachments/assets/9add6cc4-8436-4ec1-9cac-3eefeefdc936" />
 
-</details>
+<img width="1891" height="952" alt="Ekran görüntüsü 2026-09-24 124355" src="https://github.com/user-attachments/assets/738b80ec-3995-4197-83ea-eed5a6656dd1" />
+<img width="1892" height="950" alt="Ekran görüntüsü 2026-09-24 124400" src="https://github.com/user-attachments/assets/801fe38f-4981-4083-b80d-e402ec627f8a" />
 
----
 
-### 📬 Sipariş E-postası ve PDF Çıktısı
 
-<details>
-<summary><b>E-posta ve PDF Örneklerini Görmek İçin Tıklayın</b></summary>
-<br>
+şifremş unuttum 
+<img width="1902" height="948" alt="Ekran görüntüsü 2026-09-24 124500" src="https://github.com/user-attachments/assets/9abf13a8-60cb-4e65-b5d8-4c9d8416535d" />
+<img width="1897" height="953" alt="Ekran görüntüsü 2026-09-24 124536" src="https://github.com/user-attachments/assets/c96dc1d1-6ea7-41a5-9f90-8af7f71a0e1a" />
 
-> Başarılı ödeme sonrasında gönderilen sipariş onayı ve QuestPDF ile oluşturulan sipariş belgesinin görünümü.
+<img width="692" height="498" alt="Ekran görüntüsü 2026-09-24 124609" src="https://github.com/user-attachments/assets/3a457fb9-00f4-4c99-b949-9d4cddd6bf85" />
+<img width="1895" height="953" alt="Ekran görüntüsü 2026-09-24 124618" src="https://github.com/user-attachments/assets/ff0a89d3-d973-45c7-b02e-eb2cba42bd9a" />
+<img width="1900" height="943" alt="Ekran görüntüsü 2026-09-24 124637" src="https://github.com/user-attachments/assets/0f7504f6-66a4-479a-8845-e281b957beb3" />
 
-<!-- <img width="100%" alt="Sipariş onay e-postası" src="docs/images/siparis-eposta.png" /> -->
 
-<!-- <img width="100%" alt="PDF sipariş belgesi" src="docs/images/siparis-pdf.png" /> -->
 
-</details>
+#ürünler ve sepet sayfası
 
----
+<img width="1882" height="945" alt="Ekran görüntüsü 2026-09-24 124914" src="https://github.com/user-attachments/assets/b1f09c25-9903-479f-a00d-568eb00c204b" />
 
-### 🤖 Dijital Barista ve Ürün Önerileri
+<img width="1891" height="942" alt="Ekran görüntüsü 2026-09-24 124920" src="https://github.com/user-attachments/assets/90cd3ef1-e924-451f-9ebc-670f7655711f" />
+<img width="1892" height="946" alt="Ekran görüntüsü 2026-09-24 124928" src="https://github.com/user-attachments/assets/042d1d97-392f-4a9e-a981-7d8e2109cdf7" />
 
-<details>
-<summary><b>Yapay Zekâ Ekranlarını Görmek İçin Tıklayın</b></summary>
-<br>
+filteleme mantığı 
+<img width="1887" height="947" alt="Ekran görüntüsü 2026-09-24 124947" src="https://github.com/user-attachments/assets/6508d6ed-050a-451d-8538-28ccd50c3dd4" />
 
-> Menü hakkında soru sorma, bütçeye uygun ürün seçimi ve yiyecek–içecek önerilerini inceleme deneyimi.
+ürü detayı 
+<img width="1891" height="948" alt="Ekran görüntüsü 2026-09-24 125004" src="https://github.com/user-attachments/assets/b40c74d2-5f5b-4fa4-a8c0-698b855a551b" />
 
-<!-- <img width="100%" alt="Dijital barista sohbet ekranı" src="docs/images/dijital-barista.png" /> -->
+<img width="1886" height="946" alt="Ekran görüntüsü 2026-09-24 125010" src="https://github.com/user-attachments/assets/356562e2-c86b-421a-861a-f0243b69b4cf" />
 
-<!-- <img width="100%" alt="Menüye dayalı ürün önerileri" src="docs/images/ai-urun-onerileri.png" /> -->
+sepete ekleme 
+<img width="1892" height="953" alt="Ekran görüntüsü 2026-09-24 125025" src="https://github.com/user-attachments/assets/a2bd496a-eede-443b-95f6-992c4ee92cca" />
+<img width="1883" height="947" alt="Ekran görüntüsü 2026-09-24 125043" src="https://github.com/user-attachments/assets/0df7163d-cd89-470a-a27a-31b15c8e56ef" />
 
-</details>
+<img width="1896" height="922" alt="Ekran görüntüsü 2026-09-24 125049" src="https://github.com/user-attachments/assets/835fbb26-35fa-4dbb-88b1-de7f5725f2bf" />
 
----
+kupon ekleme ve hataları görme
+<img width="1887" height="947" alt="Ekran görüntüsü 2026-09-24 125100" src="https://github.com/user-attachments/assets/28def7c7-5ed7-4eaf-a143-0abad2c38c43" />
 
-### 🔑 Kayıt, Giriş ve Hesap Doğrulama
+<img width="1891" height="953" alt="Ekran görüntüsü 2026-09-24 125109" src="https://github.com/user-attachments/assets/5af0ca15-9297-47ae-b8b5-63df41413e5b" />
 
-<details>
-<summary><b>Hesap İşlemlerini Görmek İçin Tıklayın</b></summary>
-<br>
 
-> Identity ile e-posta doğrulama kodu, doğrulanmamış hesapta giriş kontrolü, Google ile giriş ve kullanıcıya özel bağlantıyla şifre yenileme adımları.
+<img width="1890" height="923" alt="Ekran görüntüsü 2026-09-24 130620" src="https://github.com/user-attachments/assets/5c14d553-8907-44c1-835c-079ccfbaa127" />
 
-<!-- <img width="100%" alt="Kayıt formu" src="docs/images/kayit.png" /> -->
+siapriş için kişinin sisteme girmesi gerekir
+<img width="1897" height="945" alt="Ekran görüntüsü 2026-09-24 125123" src="https://github.com/user-attachments/assets/0b7f71c2-58bd-49dd-9109-0e92e132e6b9" />
 
-<!-- <img width="100%" alt="Giriş ve Google ile oturum açma" src="docs/images/giris.png" /> -->
 
-<!-- <img width="100%" alt="E-posta doğrulama ekranı" src="docs/images/eposta-dogrulama.png" /> -->
+#PAYTR ENTEGRASYONU
 
-<!-- <img width="100%" alt="Şifre yenileme ekranı" src="docs/images/sifre-yenileme.png" /> -->
+<img width="1895" height="961" alt="Ekran görüntüsü 2026-09-24 125140" src="https://github.com/user-attachments/assets/d30910f3-d6e6-427d-bd1b-0e0ce356bafa" />
+<img width="1893" height="942" alt="Ekran görüntüsü 2026-09-24 125354" src="https://github.com/user-attachments/assets/8791f0c8-60be-4f18-b949-bb0f3336db9d" />
+<img width="1886" height="945" alt="Ekran görüntüsü 2026-09-24 125328" src="https://github.com/user-attachments/assets/5266412f-b590-465c-b33c-9af6d07dea7e" />
+<img width="1898" height="410" alt="Ekran görüntüsü 2026-09-24 125433" src="https://github.com/user-attachments/assets/4ceb0c89-716c-4e45-a43e-b27718666ad0" />
+<img width="1887" height="952" alt="Ekran görüntüsü 2026-09-24 125445" src="https://github.com/user-attachments/assets/908fa325-f299-410a-b052-ed59fded31f5" />
 
-<!-- <img width="100%" alt="Hesap doğrulama e-postası" src="docs/images/hesap-dogrulama-eposta.png" /> -->
+<img width="1892" height="952" alt="Ekran görüntüsü 2026-09-24 125456" src="https://github.com/user-attachments/assets/84087032-cd0c-4e28-bb05-752ac611dba4" />
+<img width="1867" height="952" alt="Ekran görüntüsü 2026-09-24 130827" src="https://github.com/user-attachments/assets/e0f6c960-0e11-4aa7-a6d6-6d4fe8315624" />
+<img width="1857" height="933" alt="Ekran görüntüsü 2026-09-24 130912" src="https://github.com/user-attachments/assets/3190ccff-1dac-4c60-b0e4-be1f60ce1854" />
 
-<!-- <img width="100%" alt="Kullanıcıya özel şifre yenileme bağlantısı" src="docs/images/sifre-yenileme-eposta.png" /> -->
 
-</details>
 
----
+#sİGNALr ENTEGRASYONU VE GARSON PANELİ
+<img width="1910" height="978" alt="Ekran görüntüsü 2026-09-24 130647" src="https://github.com/user-attachments/assets/2534ddbb-7495-4429-b621-952b2e165ff2" />
+<img width="1896" height="946" alt="Ekran görüntüsü 2026-09-24 130704" src="https://github.com/user-attachments/assets/44ae0635-4cb2-41c3-9e60-301038c9e4f5" />
+<img width="1883" height="952" alt="Ekran görüntüsü 2026-09-24 130737" src="https://github.com/user-attachments/assets/2e3eea2b-4946-4521-862f-89a31929fc5b" />
+<img width="1897" height="945" alt="Ekran görüntüsü 2026-09-24 130719" src="https://github.com/user-attachments/assets/c51ed65e-5e53-49b1-961e-3e144ba69d21" />
 
-### ✍️ Blog, Yazar Paneli ve Yorum Moderasyonu
 
-<details>
-<summary><b>Blog ve Yazar Ekranlarını Görmek İçin Tıklayın</b></summary>
-<br>
 
-> Blog içerikleri, yazarın kendi yazılarını yönetmesi ve uygunsuz olarak sınıflandırılan yorumlara verilen geri bildirim.
+#ADMİN PANELİ
 
-<!-- <img width="100%" alt="Blog detay sayfası" src="docs/images/blog-detayi.png" /> -->
+<img width="1887" height="935" alt="Ekran görüntüsü 2026-09-24 131011" src="https://github.com/user-attachments/assets/ebf248a6-fb94-41d5-bd2b-b33be672b588" />
+<img width="1882" height="942" alt="Ekran görüntüsü 2026-09-24 131023" src="https://github.com/user-attachments/assets/4da23d06-62ef-43d8-a728-98f165c2ffd7" />
+<img width="1888" height="947" alt="Ekran görüntüsü 2026-09-24 131030" src="https://github.com/user-attachments/assets/a0f6e384-f898-4951-911c-15edf9a27768" />
+<img width="1896" height="947" alt="Ekran görüntüsü 2026-09-24 131051" src="https://github.com/user-attachments/assets/bc44a1e3-51b6-4b23-9bf8-57160500964d" />
 
-<!-- <img width="100%" alt="Yazar yönetim paneli" src="docs/images/yazar-paneli.png" /> -->
 
-<!-- <img width="100%" alt="Yorum moderasyonu geri bildirimi" src="docs/images/yorum-moderasyonu.png" /> -->
+<img width="1890" height="945" alt="Ekran görüntüsü 2026-09-24 131058" src="https://github.com/user-attachments/assets/c334208c-82b1-4898-8229-ff62b76dd6e6" />
+<img width="1887" height="945" alt="Ekran görüntüsü 2026-09-24 131105" src="https://github.com/user-attachments/assets/ff21a365-473c-4283-85d7-17d1bc33f6ee" />
+<img width="1892" height="957" alt="Ekran görüntüsü 2026-09-24 131134" src="https://github.com/user-attachments/assets/3d6683bd-74ad-45ad-a670-460417bab266" />
 
-</details>
 
----
 
-### 📊 Satış Analizleri ve Yönetim Özeti
+BANNER
+<img width="1905" height="942" alt="Ekran görüntüsü 2026-09-24 131145" src="https://github.com/user-attachments/assets/4c9b3f02-220a-41fc-83f3-4ccc98db45fa" />
+KATEGORİLER
+<img width="1901" height="942" alt="Ekran görüntüsü 2026-09-24 131200" src="https://github.com/user-attachments/assets/2b980409-3c03-4145-800f-a4a877eccc08" />
+<img width="1910" height="941" alt="Ekran görüntüsü 2026-09-24 131155" src="https://github.com/user-attachments/assets/b82c8478-ce75-48c5-9b9d-fc9341d7b5a2" />
+ÜRÜNLER
+<img width="1892" height="943" alt="Ekran görüntüsü 2026-09-24 131210" src="https://github.com/user-attachments/assets/7ca9d248-58d2-4b63-91b1-cea33cc4b614" />
+<img width="1893" height="940" alt="Ekran görüntüsü 2026-09-24 131220" src="https://github.com/user-attachments/assets/e7feecc7-cebb-464c-adce-4be318e01055" />
+<img width="1892" height="942" alt="Ekran görüntüsü 2026-09-24 131230" src="https://github.com/user-attachments/assets/75ee1708-d6cb-4493-bf09-621c7af7c551" />
+<img width="1887" height="950" alt="Ekran görüntüsü 2026-09-24 131239" src="https://github.com/user-attachments/assets/15c07311-d34b-49a8-83b0-4a4c4934955c" />
+<img width="1891" height="946" alt="Ekran görüntüsü 2026-09-24 131245" src="https://github.com/user-attachments/assets/c95035c2-caf4-4865-bbf5-b46808122beb" />
+MARKALRIMIZ
+<img width="1910" height="945" alt="Ekran görüntüsü 2026-09-24 131316" src="https://github.com/user-attachments/assets/70c68b95-28a5-401d-9dbd-0670e3ee7c0e" />
 
-<details>
-<summary><b>Dashboard Görsellerini Görmek İçin Tıklayın</b></summary>
-<br>
+PROMOSYON VE KUPONLAR
+<img width="1906" height="945" alt="Ekran görüntüsü 2026-09-24 131324" src="https://github.com/user-attachments/assets/d3d9718d-a36e-4f6a-9e01-498939f927fb" />
+<img width="1906" height="945" alt="Ekran görüntüsü 2026-09-24 131441" src="https://github.com/user-attachments/assets/61bd1463-a75f-4b6a-8402-7754f6291689" />
+<img width="1892" height="937" alt="Ekran görüntüsü 2026-09-24 131632" src="https://github.com/user-attachments/assets/18cc911a-1338-49ac-af82-46ba366f62af" />
+<img width="535" height="275" alt="Ekran görüntüsü 2026-09-24 131701" src="https://github.com/user-attachments/assets/39df7907-4acb-4432-bdd4-6913f8a144e3" />
 
-> Dönemsel satış göstergeleri, ürün performansı, kategori dağılımları ve kupon kullanımına ait yönetim ekranları.
+TARİHÇEMİZ
+<img width="1901" height="940" alt="Ekran görüntüsü 2026-09-24 131712" src="https://github.com/user-attachments/assets/6084af64-8e69-403b-b729-4c4e877e28a1" />
+YORUM YAPNALAR
+<img width="1901" height="941" alt="Ekran görüntüsü 2026-09-24 131717" src="https://github.com/user-attachments/assets/3b26614a-f86e-41be-a142-9b174b74f275" />
+BLOGLAR VE BLOGLARIM
 
-<!-- <img width="100%" alt="Satış dashboard genel görünüm" src="docs/images/satis-dashboard.png" /> -->
+<img width="1897" height="942" alt="Ekran görüntüsü 2026-09-24 131723" src="https://github.com/user-attachments/assets/28df6ed4-0bcf-462a-9369-6b17255d7c90" />
+<img width="1907" height="942" alt="Ekran görüntüsü 2026-09-24 131729" src="https://github.com/user-attachments/assets/8e84eb77-7a06-4a74-a4b3-6c84dc0c419d" />
+<img width="1912" height="952" alt="Ekran görüntüsü 2026-09-24 131739" src="https://github.com/user-attachments/assets/38081834-0c58-4f41-83b0-cf3b2a4a753d" />
+YORUMLAR 
+<img width="1888" height="936" alt="Ekran görüntüsü 2026-09-24 131747" src="https://github.com/user-attachments/assets/bea54b2a-7ef8-49b1-a6e2-b7135bae46e0" />
+İLETİŞİM BİLGİKARI
+<img width="1907" height="945" alt="Ekran görüntüsü 2026-09-24 131756" src="https://github.com/user-attachments/assets/d5a84a3a-d4d9-4883-8b3f-754691f65289" />
+<img width="1902" height="935" alt="Ekran görüntüsü 2026-09-24 131802" src="https://github.com/user-attachments/assets/0bd12c34-fdb1-420f-95dd-39d375637ddd" />
 
-<!-- <img width="100%" alt="Ürün ve kategori performansı" src="docs/images/urun-performansi.png" /> -->
+SİPARİŞLER
+<img width="1896" height="945" alt="Ekran görüntüsü 2026-09-24 131814" src="https://github.com/user-attachments/assets/5fcf6840-01f8-47cc-820a-b4603bd388d9" />
+<img width="1908" height="940" alt="Ekran görüntüsü 2026-09-24 131822" src="https://github.com/user-attachments/assets/78b0bab9-f9fc-4562-8005-cdad476c157e" />
 
-<!-- <img width="100%" alt="Site genel görünüm paneli" src="docs/images/site-genel-gorunum.png" /> -->
+<img width="1887" height="942" alt="Ekran görüntüsü 2026-09-24 131836" src="https://github.com/user-attachments/assets/6675eedb-ed41-47be-8d5e-5078665abcd8" />
 
-</details>
 
----
 
-### 🛠️ Admin Yönetim Paneli
 
-<details>
-<summary><b>Yönetim Ekranlarını Görmek İçin Tıklayın</b></summary>
-<br>
 
-> Ürün, kategori, varyant, kullanıcı, rol, kupon, taksit oranı ve site içeriklerinin yönetildiği alanlar.
 
-<!-- <img width="100%" alt="Ürün yönetimi" src="docs/images/admin-urunler.png" /> -->
 
-<!-- <img width="100%" alt="Varyant yönetimi" src="docs/images/admin-varyantlar.png" /> -->
 
-<!-- <img width="100%" alt="Kullanıcı ve rol yönetimi" src="docs/images/admin-kullanici-rol.png" /> -->
 
-<!-- <img width="100%" alt="Kupon yönetimi" src="docs/images/admin-kuponlar.png" /> -->
 
-<!-- <img width="100%" alt="İçerik ve iletişim yönetimi" src="docs/images/admin-icerikler.png" /> -->
 
-</details>
 
----
 
-### 🚚 Garson Panosu ve Teslimat Operasyonu
 
-<details>
-<summary><b>Teslimat Panosunu Görmek İçin Tıklayın</b></summary>
-<br>
 
-> Ödenmiş siparişlerin personel tarafından izlenmesi, teslimat durumunun güncellenmesi ve işlem geçmişinin incelenmesi.
 
-<!-- <img width="100%" alt="Garson teslimat panosu" src="docs/images/garson-panosu.png" /> -->
 
-<!-- <img width="100%" alt="Teslimat durum güncellemesi" src="docs/images/teslimat-durum.png" /> -->
 
-<!-- <img width="100%" alt="Teslimat işlem geçmişi" src="docs/images/teslimat-gecmisi.png" /> -->
 
-</details>
 
----
+
+
+
+
+
 
 ## ⚙️ Kurulum
 
