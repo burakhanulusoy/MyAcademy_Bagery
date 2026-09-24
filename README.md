@@ -604,6 +604,9 @@ Ekran görüntüleri, müşteri deneyiminden yönetim panellerine uzanan süreç
 
 <img width="100%" alt="PayTR Ödeme Entegrasyonu — Görsel 8" src="https://github.com/user-attachments/assets/3190ccff-1dac-4c60-b0e4-be1f60ce1854" />
 
+<img width="1725" height="666" alt="Ekran görüntüsü 2026-09-24 145640" src="https://github.com/user-attachments/assets/0b886308-5070-4c9f-89c5-af490fbe349f" />
+
+
 </details>
 
 ---
