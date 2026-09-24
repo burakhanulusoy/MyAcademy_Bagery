@@ -17,6 +17,9 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
                 "Google",
                 request.RedirectUrl);
 
+            // YENİ: tarayıcıda açık hesapla doğrudan girmesin, her seferinde hesap seçtirsin
+            properties.SetParameter("prompt", "select_account");
+
             return Task.FromResult(properties);
         }
     }

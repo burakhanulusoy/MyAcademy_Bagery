@@ -1,9 +1,7 @@
 ﻿using Bagery.WebUI.Exceptions;
 using Bagery.WebUI.MediatorPattern.Commands.UserCommands;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Bagery.WebUI.Controllers
 {
@@ -21,7 +19,6 @@ namespace Bagery.WebUI.Controllers
             return RedirectToAction("Index", "ConfirmAccount", new { email = command.Email });
         }
 
-
         public IActionResult Login()
         {
             return View();
@@ -33,31 +30,14 @@ namespace Bagery.WebUI.Controllers
             try
             {
                 var userRoles = await _mediator.Send(command);
-                // YENİ: [Authorize] bir sayfadan gelindiyse (ör. /Payment/Checkout) oraya geri dön
+
+                // [Authorize] bir sayfadan gelindiyse (ör. /Payment/Checkout) oraya geri dön
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
                     return LocalRedirect(returnUrl);
                 }
-                if (userRoles.Contains("Admin"))
-                {
-                    return RedirectToAction("Dashboard", "Static", new { area = "Admin" });
-                }
-                if (userRoles.Contains("Waiter"))
-                {
-                    return RedirectToAction("Index", "Board", new { area = "Waiter" }); // YENİ: garson doğrudan panoya
-                }
-                if (userRoles.Contains("Writer"))
-                {
-                    return RedirectToAction("Dashboard", "Static", new { area = "Writer" });
-                }
 
-                if (userRoles.Contains("User"))
-                {
-                    return RedirectToAction("Index", "Static", new { area = "User" });
-                }
-              
-
-                return RedirectToAction("Index", "Home");
+                return RedirectToPanel(userRoles);
             }
             catch (IdentityException ex)
             {
@@ -68,20 +48,15 @@ namespace Bagery.WebUI.Controllers
 
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
+
             return View(command);
-
-
         }
-
-
 
         public async Task<IActionResult> Logout()
         {
             await _mediator.Send(new LogoutUserCommand());
-
-            return RedirectToAction("Index", "Default", new { Area = string.Empty });
+            return RedirectToAction("Index", "Default", new { area = string.Empty });
         }
-
 
         public IActionResult AccessDenied()
         {
@@ -91,10 +66,9 @@ namespace Bagery.WebUI.Controllers
         [Route("User/PageNotFound")]
         public IActionResult PageNotFound(int code)
         {
-            // code parametresi buraya "404" olarak gelir. 
+            // code parametresi buraya "404" olarak gelir.
             return View();
         }
-
 
         [HttpGet]
         public IActionResult ForgotPassword()
@@ -127,7 +101,6 @@ namespace Bagery.WebUI.Controllers
             return RedirectToAction("Login");
         }
 
-
         [HttpPost]
         public async Task<IActionResult> GoogleLogin()
         {
@@ -144,16 +117,8 @@ namespace Bagery.WebUI.Controllers
             {
                 var userRoles = await _mediator.Send(new GoogleCallbackCommand(remoteError));
 
-                if (userRoles.Contains("Admin"))
-                    return RedirectToAction("Index", "Banner", new { area = "Admin" });
-
-                if (userRoles.Contains("Writer"))
-                    return RedirectToAction("Dashboard", "Static", new { area = "Writer" });
-
-                if (userRoles.Contains("User"))
-                    return RedirectToAction("Index", "Static", new { area = "User" });
-
-                return RedirectToAction("Index", "Home");
+                // DEĞİŞTİ: normal girişle aynı yönlendirme kullanılıyor
+                return RedirectToPanel(userRoles);
             }
             catch (IdentityException ex)
             {
@@ -162,7 +127,23 @@ namespace Bagery.WebUI.Controllers
             }
         }
 
+        // YENİ: rol sıralaması tek yerde; hem normal giriş hem Google girişi aynı hedeflere gider
+        private IActionResult RedirectToPanel(IList<string> roles)
+        {
+            if (roles.Contains("Admin"))
+                return RedirectToAction("Dashboard", "Static", new { area = "Admin" });
 
+            if (roles.Contains("Waiter"))
+                return RedirectToAction("Index", "Board", new { area = "Waiter" });
 
+            if (roles.Contains("Writer"))
+                return RedirectToAction("Dashboard", "Static", new { area = "Writer" });
+
+            if (roles.Contains("User"))
+                return RedirectToAction("Index", "Static", new { area = "User" });
+
+            // Rolü olmayan hesap: şablon sayfası yerine sitenin ana sayfası
+            return RedirectToAction("Index", "Default", new { area = string.Empty });
+        }
     }
 }

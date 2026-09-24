@@ -58,6 +58,17 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
                     user.EmailConfirmed = true;
                     await _userManager.UpdateAsync(user);
                 }
+
+                // YENİ: rolü olmayan eski hesaplar panelsiz kalmasın
+                var currentRoles = await _userManager.GetRolesAsync(user);
+
+                if (currentRoles.Count == 0)
+                {
+                    var assignRole = await _userManager.AddToRoleAsync(user, "User");
+
+                    if (!assignRole.Succeeded)
+                        throw new IdentityException(assignRole.Errors);
+                }
             }
             else
             {
@@ -86,7 +97,6 @@ namespace Bagery.WebUI.MediatorPattern.Handlers.UserHandlers
                 if (!loginResult.Succeeded)
                     throw new IdentityException(loginResult.Errors);
             }
-
 
             // Geçici external cookie'yi temizle
             await _signInManager.SignOutAsync();
