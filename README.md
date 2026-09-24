@@ -585,6 +585,13 @@ SİPARİŞLER
 
 
 
+
+
+
+
+
+
+
 ## ⚙️ Kurulum
 
 <details>
