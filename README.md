@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🥐 MyAcademy_Bagery
+# 🥐 Bagery
 
 ### Yapay Zekâ Destekli Kafe ve Pastane Yönetim Uygulaması
 
